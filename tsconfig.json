@@ -15,7 +15,7 @@
     "skipLibCheck": true,
     "strict": true,
     "target": "es5",
-    "types": ["@testing-library/jest-dom"],
+    // "types": ["@testing-library/jest-dom"],
     "plugins": [
       {
         "name": "next"

@@ -6,8 +6,11 @@
   "timestamp": "2025.06.07, 19:45:00 +0300",
   "changed": "2025.06.07, 19:45",
   "keywords": [],
-  "author": "",
+  "author": "lilliputten@gmail.com",
   "license": "ISC",
+  "engines": {
+    "node": "20.x"
+  },
   "dependencies": {
     "@babel/eslint-parser": "^7.25.9",
     "@commitlint/cli": "^19.6.0",
@@ -38,14 +41,10 @@
     "eslint-plugin-react": "^7.37.2",
     "eslint-plugin-tailwindcss": "^3.17.5",
     "eslint-plugin-yaml": "^1.0.3",
-    "lucide-react": "^0.414.0",
+    "express": "^5.1.0",
     "npm-run-all": "^4.1.5",
-    "postcss": "^8.4.49",
     "prettier": "^3.4.1",
     "prettier-plugin-tailwindcss": "^0.6.9",
-    "prisma": "^6.0.0",
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
     "rimraf": "^6.0.1",
     "sass": "^1.81.0",
     "stylelint": "^16.11.0",
@@ -56,12 +55,32 @@
     "stylelint-scss": "^6.10.0",
     "tailwind-merge": "^2.5.5",
     "tailwindcss": "^3.4.15",
+    "tailwindcss-animate": "^1.0.7",
     "tinycolor2": "^1.6.0",
-    "typescript": "^5.7.2",
-    "express": "^5.1.0"
+    "typescript": "^5.7.2"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.3",
+    "@types/node": "^22.15.30",
+    "concurrently": "^9.1.2"
   },
   "scripts": {
-    "build": "echo No build command yet",
+    "postinstall-TODO": "pnpm run prisma-generate && pnpm run prisma-db-push",
+    "prettier": "echo --Run prettier-- && prettier --write --cache . | grep -v '(cached)' || true",
+    "stylelint": "echo --Lint styles-- && stylelint --allow-empty-input ./**/*.{css,scss,less}",
+    "stylelint-fix": "echo --Lint styles-- && stylelint --allow-empty-input ./**/*.{css,scss,less} --fix",
+    "type-check": "echo --Run typescript linter-- && tsc --pretty --noEmit",
+    "check-editorconfig": "editorconfig-checker",
+    "eslint-debug": "echo --Lint sources with eslint in debug mode-- && cross-env DEBUG=eslint:cli-engine eslint .",
+    "eslint-fix": "echo --Lint and auto-fix sources with eslint-- && eslint --fix .",
+    "eslint": "echo --Lint sources with eslint-- && eslint .",
+    "lint-all": "echo --Run all pre-commit check-ups-- && npm-run-all stylelint eslint type-check && echo --All check-ups passed--",
+    "check-all": "echo --Run all pre-commit check-ups-- && npm-run-all prettier lint-all && echo --All checks passed--",
+    "vercel-dev-UNUSED": "vercel dev",
+    "build-UNUSED": "echo No build command yet",
+    "dev": "concurrently \"pnpm --filter server run dev\" \"pnpm --filter client run dev\"",
+    "dev-SEP": "concurrently \"cd server && pnpm run dev\" \"cd client && pnpm run dev\"",
+    "build": "pnpm --filter server run build && pnpm --filter client run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   }
 }
