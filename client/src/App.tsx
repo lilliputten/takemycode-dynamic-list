@@ -3,7 +3,7 @@ import React from 'react';
 import reactLogo from './assets/react.svg';
 import viteLogo from '/vite.svg';
 
-import './App.css';
+import '@/App.css';
 
 const vercelUrl = import.meta.env.VERCEL_URL;
 const viteVercelUrl = import.meta.env.VITE_VERCEL_URL;

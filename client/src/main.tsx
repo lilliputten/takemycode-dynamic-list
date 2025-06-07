@@ -1,14 +1,15 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 
-import './index.css';
+import '@/index.css';
 
-import App from './App';
+import { isDev } from '@/config/env';
+import App from '@/App';
 
 const node = document.getElementById('root');
 
 const VITE_NO_STRICT_MODE = import.meta.env.VITE_NO_STRICT_MODE;
-const isDev = import.meta.env.DEV; // process.env.NODE_ENV === 'development';
+// const isDev = import.meta.env.DEV; // process.env.NODE_ENV === 'development';
 
 console.log('[main]', {
   isDev,
