@@ -22,10 +22,6 @@
       "dest": "server/dist/index.js"
     },
     {
-      "src": "/root",
-      "dest": "client/dist/index.html"
-    },
-    {
       "src": "/",
       "dest": "client/dist/index.html"
     },
