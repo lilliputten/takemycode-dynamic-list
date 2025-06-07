@@ -4,7 +4,7 @@
     "target": "ES2022",
     "lib": ["ES2023"],
     "module": "ESNext",
-    "sourceType": "module",
+    // "sourceType": "module",
     "skipLibCheck": true,
 
     /* Bundler mode */

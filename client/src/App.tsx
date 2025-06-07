@@ -5,8 +5,19 @@ import viteLogo from '/vite.svg';
 
 import './App.css';
 
+const vercelUrl = import.meta.env.VERCEL_URL;
+const defaultDevUrl = 'http://localhost:51732'; // Vite default local dev server url
+const rootUrl = vercelUrl || defaultDevUrl;
+
 function App() {
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState(2);
+
+  console.log('[App]', {
+    vercelUrl,
+    defaultDevUrl,
+    rootUrl,
+  });
+  debugger;
 
   return (
     <>
@@ -19,6 +30,9 @@ function App() {
         </a>
       </div>
       <h1>Vite + React</h1>
+      <p>vercelUrl: {vercelUrl}</p>
+      <p>defaultDevUrl: {defaultDevUrl}</p>
+      <p>rootUrl: {rootUrl}</p>
       <div className="card">
         <button onClick={() => setCount((count) => count + 1)}>count is {count}</button>
         <p>
