@@ -12,14 +12,13 @@
 /.storybook
 /.vscode
 /__mocks__
-/build
+build
 /coverage
 /.idea
 /i18n
-/node_modules
-/public
-/publish
-/types
+node_modules
+dist
+public
 
 # Log files
 
@@ -39,8 +38,10 @@ tsconfig.json
 **/*.tmp
 **/.*sw?
 **/*_
+**/*~
 package-lock.*
 pnpm-lock.*
 .DS_Store
 
 # This project...
+tsconfig*.json

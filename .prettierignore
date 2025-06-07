@@ -4,4 +4,4 @@ node_modules
 build
 .contentlayer
 pnpm-lock.yaml
-assets/
+assets
