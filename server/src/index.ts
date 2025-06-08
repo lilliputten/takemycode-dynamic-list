@@ -1,8 +1,14 @@
+import appInfo from '../../@shared-types/app-info.json';
 import { APIConfig } from '@shared-types/APIConfig';
 import cors from 'cors';
 import express from 'express';
 
-export const isDev = process.env.NODE_ENV === 'development';
+// Extract to config/env
+const isDev = process.env.NODE_ENV === 'development';
+const versionInfo = appInfo.versionInfo;
+
+// eslint-disable-next-line no-console
+console.log('[server/src/index] versionInfo:', versionInfo);
 
 const dataContentType = 'application/json; charset=utf-8';
 const VERCEL_URL = process.env.VERCEL_URL;
@@ -34,18 +40,34 @@ if (isDev) {
 // eslint-disable-next-line no-console
 console.log(`Starting a server on port ${PORT} on ${VERCEL_URL}...`);
 
+// DEBUG
+app.get('/api/version-info', (_req, res) => {
+  const data: APIConfig = {
+    versionInfo,
+  };
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.setHeader('Expires', '0');
+  res.setHeader('Content-Type', dataContentType);
+  res.end(JSON.stringify(data));
+});
+
 app.get('/api/config', (_req, res) => {
   const data: APIConfig = {
+    test: 1,
+    versionInfo,
     isDev,
     VERCEL_URL,
     PORT,
   };
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.setHeader('Expires', '0');
   res.setHeader('Content-Type', dataContentType);
   res.end(JSON.stringify(data));
 });
 
 app.get('/api/test', (_req, res) => {
   const data = {
+    test: 1,
     a: 1,
   };
   res.setHeader('Content-Type', dataContentType);

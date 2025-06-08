@@ -5,6 +5,7 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 
 const VERCEL_URL = process.env.VERCEL_URL;
 
+// eslint-disable-next-line no-console
 console.log('[vite.config] VERCEL_URL:', VERCEL_URL);
 
 // https://vite.dev/config/

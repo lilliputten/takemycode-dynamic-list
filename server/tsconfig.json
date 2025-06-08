@@ -121,5 +121,5 @@
       "@shared-types"
     ]
   },
-  "include": ["src", "../@shared-types/**/*.ts"]
+  "include": ["src", "../@shared-types/**/*"]
 }

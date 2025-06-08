@@ -6,6 +6,7 @@ import viteLogo from '/vite.svg';
 
 import '@/App.css';
 
+import { versionInfo } from '@/config/env';
 import { getConfig } from '@/api/methods/getConfig';
 
 function App() {
@@ -44,6 +45,7 @@ function App() {
       <h1>Vite + React</h1>
       <div style={{ textAlign: 'left' }}>
         <pre>round: 7</pre>
+        <pre>versionInfo: {versionInfo}</pre>
         <pre>result: {result}</pre>
       </div>
       <div className="card">

@@ -2,8 +2,8 @@
   "name": "takemycode-dynamic-list",
   "description": "Dynamic list implemented via ExpressJS and React with a Vercel-based hosting",
   "main": "src/api/index.ts",
-  "version": "0.0.0",
-  "timestamp": "2025.06.07, 19:45:00 +0300",
+  "version": "0.0.1",
+  "timestamp": "2025.06.08 04:09:59 +0300",
   "changed": "2025.06.07, 19:45",
   "keywords": [],
   "author": "lilliputten@gmail.com",
@@ -77,7 +77,7 @@
     "dev": "concurrently \"pnpm --filter server run dev\" \"pnpm --filter client run dev\"",
     "build": "pnpm --filter server run build && pnpm --filter client run build",
     "vercel-clean": "vercel remove --safe --yes takemycode-dynamic-list",
-    "vercel-publish": "pnpm build && vercel --prod && pnpm vercel-clean",
+    "vercel-publish": "pnpm build && vercel --prod --force && pnpm vercel-clean",
     "test": "echo \"Error: no test specified\" && exit 1"
   }
 }
