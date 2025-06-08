@@ -1,0 +1,33 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "version": 2,
+  "buildCommand": "echo \"Build started...\" && rm -vf /vercel/output server/dist client/dist && pnpm install && pnpm --filter server install && pnpm --filter client install && pnpm --filter server run build && pnpm --filter client run build",
+  "devCommand": "concurrently --kill-others \"pnpm --filter server run dev\" \"pnpm --filter client run dev\"",
+  "builds": [
+    {
+      "src": "server/dist/index.js",
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": ["server/dist/**"]
+      }
+    },
+    {
+      "src": "client/dist/**",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "server/dist/index.js"
+    },
+    {
+      "src": "/",
+      "dest": "client/dist/index.html"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "client/dist/$1"
+    }
+  ]
+}

@@ -4,12 +4,12 @@
 '$schema': https://json.schemastore.org/eslintrc
 root: true
 extends:
-  - next/core-web-vitals
+  # - next/core-web-vitals
   - prettier
   - plugin:tailwindcss/recommended
 plugins:
   - tailwindcss
-  - jest
+  # - jest
 rules:
   react/jsx-key: off
   tailwindcss/no-custom-classname: off
@@ -54,7 +54,7 @@ overrides:
       - 'plugin:@typescript-eslint/recommended'
     settings:
       react:
-        version: 'detect'
+        version: '19.1.0'
     parserOptions:
       ecmaVersion: 12
       sourceType: 'module'
@@ -109,7 +109,7 @@ overrides:
       '@typescript-eslint/no-extraneous-class':
         - 'error'
         - allowStaticOnly: true
-      '@typescript-eslint/no-non-null-assertion': warn
+      # '@typescript-eslint/no-non-null-assertion': warn
       '@typescript-eslint/no-useless-constructor': error
       '@typescript-eslint/prefer-for-of': warn
       '@typescript-eslint/prefer-function-type': warn
@@ -234,17 +234,17 @@ overrides:
         - 'warn'
         - 'always'
 
-  - # Tests...
-    files: '**/(__test__|jest)/**'
-    env:
-      jest: true
-      jest/globals: true
-    plugins:
-      - jest
-    extends:
-      - 'plugin:jest/recommended'
-    rules:
-      jest/prefer-expect-assertions: 'off'
+  # - # Tests...
+  #   files: '**/(__test__|jest)/**'
+  #   env:
+  #     jest: true
+  #     jest/globals: true
+  #   plugins:
+  #     - jest
+  #   extends:
+  #     - 'plugin:jest/recommended'
+  #   rules:
+  #     jest/prefer-expect-assertions: 'off'
 
   # - # Raw js project files...
   #   files: '**/*.js'
@@ -276,17 +276,17 @@ overrides:
   #       - 'warn'
   #       - 'always'
 
-  - # json files (@see https://www.npmjs.com/package/eslint-plugin-json)...
-    files: '**/*.json'
-    extends:
-      - 'plugin:json/recommended-legacy'
-    rules:
-      prettier/prettier: warn
-
   - # jsonc files - commented json (@see https://www.npmjs.com/package/eslint-plugin-jsonc)...
     files: '**/*.jsonc'
     extends:
       - 'plugin:jsonc/recommended-with-jsonc'
+    rules:
+      prettier/prettier: warn
+
+  - # json files (@see https://www.npmjs.com/package/eslint-plugin-json)...
+    files: '**/*.json'
+    extends:
+      - 'plugin:json/recommended-legacy'
     rules:
       prettier/prettier: warn
 

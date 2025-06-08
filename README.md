@@ -9,7 +9,7 @@ The minmal nextjs setup for IIS iisnode produciton environment
 
 ## Build info (auto-generated)
 
-- Project info: v.0.0.0 / 2025.06.07, 19:45:00 +0300
+- Project info: v.0.0.2 / 2025.06.08 06:04:58 +0300
 
 ## Resources
 
