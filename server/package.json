@@ -22,8 +22,9 @@
     "typescript": "^5.8.3"
   },
   "scripts": {
+    "type-check": "echo --Run typescript linter: server-- && tsc --pretty --noEmit",
     "build": "tsc",
-    "dev-2": "nodemon src/index.ts",
+    "dev2": "nodemon src/index.ts",
     "dev": "nodemon --watch src/**/*.ts --exec ts-node src/index.ts"
   }
 }
