@@ -1,7 +1,7 @@
 import appInfo from '../../@shared-types/app-info.json';
 import { APIConfig } from '@shared-types/APIConfig';
 import cors from 'cors';
-import express from 'express';
+import express, { Request, Response } from 'express';
 
 // Extract to config/env
 const isDev = process.env.NODE_ENV === 'development';
@@ -40,24 +40,13 @@ if (isDev) {
 // eslint-disable-next-line no-console
 console.log(`Starting a server on port ${PORT} on ${VERCEL_URL}...`);
 
-// DEBUG
-app.get('/api/version-info', (_req, res) => {
+app.get('/api/config', (_req: Request, res: Response) => {
   const data: APIConfig = {
-    versionInfo,
-  };
-  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
-  res.setHeader('Expires', '0');
-  res.setHeader('Content-Type', dataContentType);
-  res.end(JSON.stringify(data));
-});
-
-app.get('/api/config', (_req, res) => {
-  const data: APIConfig = {
-    test: 1,
-    versionInfo,
+    test: 4,
     isDev,
     VERCEL_URL,
     PORT,
+    versionInfo,
   };
   res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
   res.setHeader('Expires', '0');
@@ -65,7 +54,7 @@ app.get('/api/config', (_req, res) => {
   res.end(JSON.stringify(data));
 });
 
-app.get('/api/test', (_req, res) => {
+app.get('/api/test', (_req: Request, res: Response) => {
   const data = {
     test: 1,
     a: 1,

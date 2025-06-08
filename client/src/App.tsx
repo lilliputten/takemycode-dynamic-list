@@ -10,7 +10,7 @@ import { versionInfo } from '@/config/env';
 import { getConfig } from '@/api/methods/getConfig';
 
 function App() {
-  const [count, setCount] = React.useState(1);
+  const [count, setCount] = React.useState(0);
   const [result, setResult] = React.useState('');
 
   React.useEffect(() => {
@@ -44,7 +44,7 @@ function App() {
       </div>
       <h1>Vite + React</h1>
       <div style={{ textAlign: 'left' }}>
-        <pre>round: 7</pre>
+        <pre>client test: 9</pre>
         <pre>versionInfo: {versionInfo}</pre>
         <pre>result: {result}</pre>
       </div>

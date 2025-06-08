@@ -11,7 +11,7 @@ if [ -z "$CONFIG_IMPORTED" ]; then
   APP_ID=`git ls-remote --get-url | xargs basename -s .git`
 
   VERSION_FILE="project-version.txt"
-  PROJECT_INFO_FILE="@shared-types/app-info.txt"
+  PROJECT_INFO_FILE="public/app-info.txt"
   PROJECT_INFO_JSON_FILE="@shared-types/app-info.json"
 
   SRC_TAG_PREFIX="v" # "v" for default "v.X.Y.Z"
