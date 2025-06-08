@@ -1,9 +1,10 @@
 {
   "name": "server",
   "version": "0.0.3",
-  "timestamp": "2025.06.08 06:39:08 +0300",
+  "timestamp": "2025.06.08 21:39:28 +0300",
   "changed": "2025.06.08, 05:31",
   "description": "",
+  "type": "module",
   "main": "src/index.ts",
   "keywords": [],
   "author": "",
@@ -15,19 +16,29 @@
     "express": "^4.18.2"
   },
   "devDependencies": {
+    "@prisma/client": "^6.9.0",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
     "@types/node": "^22.15.30",
     "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
     "esbuild": "^0.25.5",
     "nodemon": "^3.1.10",
+    "prisma": "^6.9.0",
     "ts-node": "^10.9.2",
+    "tsx": "^4.19.4",
     "typescript": "^5.8.3"
   },
   "scripts": {
+    "prisma-generate": "echo --Generate database client-- && node prisma-switch.mjs && prisma generate",
+    "prisma-db-push": "echo --Create database-- && prisma db push",
+    "prisma-db-push-test": "echo --Create test database-- && cross-env DATABASE_URL='file:.data/test.db' prisma db push",
+    "prisma-studio": "echo --Run database explorer-- && prisma studio",
+    "postinstall": "pnpm run prisma-generate && pnpm run prisma-db-push",
     "type-check": "echo --Run typescript linter: server-- && tsc --pretty --noEmit",
-    "build-tsc": "tsc -b --verbose",
-    "build": "esbuild src/index.ts --bundle --platform=node --target=node20 --outfile=dist/index.js",
-    "dev": "nodemon --watch src/**/*.ts --exec ts-node src/index.ts"
+    "build": "tsc -b --verbose",
+    "build-esbuild": "esbuild src/index.ts --bundle --platform=node --target=node20 --outfile=dist/index.js",
+    "dev-ts-node": "nodemon --watch src/**/*.ts --exec ts-node src/index.ts",
+    "dev": "nodemon --watch src/**/*.ts --exec tsx src/index.ts"
   }
 }

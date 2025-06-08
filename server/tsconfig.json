@@ -13,8 +13,7 @@
     /* Language and Environment */
     "target": "es2016" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
     "lib": [
-      "es5",
-      "es6"
+      "es5"
     ] /* Specify a set of bundled library declaration files that describe the target runtime environment. */,
     // "jsx": "preserve",                                /* Specify what JSX code is generated. */
     // "libReplacement": true,                           /* Enable lib replacement. */
@@ -29,8 +28,11 @@
     // "moduleDetection": "auto",                        /* Control what method is used to detect module-format JS files. */
 
     /* Modules */
-    "module": "commonjs" /* Specify what module code is generated. */,
-    "moduleResolution": "node10" /* Specify how TypeScript looks up a file from a given module specifier. */,
+    // TODO: Try to run with unbilt project
+    "module": "ESNext",
+    "moduleResolution": "node",
+    // "module": "commonjs" [> Specify what module code is generated. <],
+    // "moduleResolution": "node10" [> Specify how TypeScript looks up a file from a given module specifier. <],
     // "rootDirs": [],                                   /* Allow multiple folders to be treated as one when resolving modules. */
     // "types": [],                                      /* Specify type package names to be included without being referenced in a source file. */
     // "allowUmdGlobalAccess": true,                     /* Allow accessing UMD globals from modules. */
@@ -110,17 +112,14 @@
     "skipLibCheck": true /* Skip type checking all .d.ts files. */,
 
     /* Paths */
-    // "rootDir": "." [> Specify the root folder within your source files. <],
+    "rootDir": "." /* Specify the root folder within your source files. */,
     "baseUrl": "." /* Specify the base directory to resolve non-relative module names. */,
     "paths": {
-      // Specify a set of entries that re-map imports to additional lookup locations.
-      "@shared-types/*": ["../@shared-types/*"],
+      "@shared-types/*": ["@shared-types/*"],
+      "@prisma-generated/*": ["prisma-generated/*"],
       "@/*": ["./src/*"]
     },
-    "typeRoots": [
-      // Specify multiple folders that act like './node_modules/@types'.
-      "@shared-types"
-    ]
+    "typeRoots": ["src/@types"]
   },
-  "include": ["src", "../@shared-types/**/*"]
+  "include": ["src/**/*", "@shared-types/**/*", "prisma-generated/**/*"]
 }

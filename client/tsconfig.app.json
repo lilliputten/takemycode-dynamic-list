@@ -28,10 +28,10 @@
     // "rootDir": "src" /* Specify the root folder within your source files. */,
     "baseUrl": ".",
     "paths": {
-      "@shared-types/*": ["../@shared-types/*"],
+      "@shared-types/*": ["../server/@shared-types/*"],
       "@/*": ["./src/*"]
     },
-    "typeRoots": ["../@shared-types"]
+    "typeRoots": ["../server/@shared-types"]
   },
-  "include": ["src", "../@shared-types/**/*.ts"]
+  "include": ["src", "../server/@shared-types/**/*.ts"]
 }

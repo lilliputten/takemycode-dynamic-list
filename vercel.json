@@ -5,10 +5,10 @@
   "devCommand": "concurrently --kill-others \"pnpm --filter server run dev\" \"pnpm --filter client run dev\"",
   "builds": [
     {
-      "src": "server/dist/index.js",
+      "src": "server/dist/src/index.js",
       "use": "@vercel/node",
       "config": {
-        "includeFiles": ["server/dist/**"]
+        "includeFiles": ["server/dist/src/**"]
       }
     },
     {
@@ -19,7 +19,7 @@
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "server/dist/index.js"
+      "dest": "server/dist/src/index.js"
     },
     {
       "src": "/",

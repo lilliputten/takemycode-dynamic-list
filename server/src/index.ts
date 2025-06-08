@@ -1,7 +1,12 @@
-import appInfo from '../../@shared-types/app-info.json';
+// import { PrismaClient } from '@prisma/client';
+// import { PrismaClient } from '@prisma-generated/prisma/client';
+import appInfo from '../@shared-types/app-info.json';
 import { APIConfig } from '@shared-types/APIConfig';
 import cors from 'cors';
 import express, { Request, Response } from 'express';
+
+import { CONFIG_ID, dataContentType, PORT, VERCEL_URL } from './config/env';
+import { getOrCreateConfig } from './features/config/actions/getOrCreateConfig';
 
 // Extract to config/env
 const isDev = process.env.NODE_ENV === 'development';
@@ -9,10 +14,6 @@ const versionInfo = appInfo.versionInfo;
 
 // eslint-disable-next-line no-console
 console.log('[server/src/index] versionInfo:', versionInfo);
-
-const dataContentType = 'application/json; charset=utf-8';
-const VERCEL_URL = process.env.VERCEL_URL;
-const PORT = process.env.PORT || 3000;
 
 const app = express();
 
@@ -54,8 +55,14 @@ app.get('/api/config', (_req: Request, res: Response) => {
   res.end(JSON.stringify(data));
 });
 
-app.get('/api/test', (_req: Request, res: Response) => {
+app.get('/api/test', async (_req: Request, res: Response) => {
+  const config = await getOrCreateConfig(CONFIG_ID);
+  console.log('[server/src/index.ts]', {
+    config,
+  });
+  debugger;
   const data = {
+    config,
     test: 1,
     a: 1,
   };

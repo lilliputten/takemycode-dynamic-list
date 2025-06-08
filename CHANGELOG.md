@@ -21,4 +21,3 @@ See also:
 
 - [Issue #1: Set up basic project environment](https://github.com/lilliputten/takemycode-dynamic-list/issues/1)
 - [Compare](https://github.com/lilliputten/takemycode-dynamic-list/compare/v.0.0.0...v.0.0.3)
-
