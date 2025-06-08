@@ -9,7 +9,7 @@ extends:
   - plugin:tailwindcss/recommended
 plugins:
   - tailwindcss
-  - jest
+  # - jest
 rules:
   react/jsx-key: off
   tailwindcss/no-custom-classname: off
@@ -234,17 +234,17 @@ overrides:
         - 'warn'
         - 'always'
 
-  - # Tests...
-    files: '**/(__test__|jest)/**'
-    env:
-      jest: true
-      jest/globals: true
-    plugins:
-      - jest
-    extends:
-      - 'plugin:jest/recommended'
-    rules:
-      jest/prefer-expect-assertions: 'off'
+  # - # Tests...
+  #   files: '**/(__test__|jest)/**'
+  #   env:
+  #     jest: true
+  #     jest/globals: true
+  #   plugins:
+  #     - jest
+  #   extends:
+  #     - 'plugin:jest/recommended'
+  #   rules:
+  #     jest/prefer-expect-assertions: 'off'
 
   # - # Raw js project files...
   #   files: '**/*.js'

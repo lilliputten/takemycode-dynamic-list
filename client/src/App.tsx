@@ -1,61 +1,20 @@
-import React from 'react';
+import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
 
-import reactLogo from '@/assets/react.svg';
-
-import viteLogo from '/vite.svg';
-
-import '@/App.css';
-
-import { versionInfo } from '@/config/env';
-import { getConfig } from '@/api/methods/getConfig';
+import { Home } from '@/pages/Home';
+import { Test } from '@/pages/Test';
 
 function App() {
-  const [count, setCount] = React.useState(0);
-  const [result, setResult] = React.useState('');
-
-  React.useEffect(() => {
-    getConfig()
-      .then((data) => {
-        const dataStr = JSON.stringify(data, null, 2);
-        console.log('[App:Effect] fetch: result', {
-          data,
-        });
-        setResult(dataStr);
-        return data;
-      })
-      .catch((error) => {
-        console.error('[App:Effect] fetch: caught error', {
-          error,
-        });
-        debugger;
-        setResult(String(error));
-      });
-  }, []);
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank" rel="noreferrer">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank" rel="noreferrer">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div style={{ textAlign: 'left' }}>
-        <pre>client test: 9</pre>
-        <pre>versionInfo: {versionInfo}</pre>
-        <pre>result: {result}</pre>
-      </div>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>count is {count}</button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">Click on the Vite and React logos to learn more</p>
-    </>
+    <BrowserRouter>
+      <nav className="flex items-center justify-center gap-3">
+        <Link to="/">Test</Link>
+        <Link to="/home">Home</Link>
+      </nav>
+      <Routes>
+        <Route path="/" element={<Test />} />
+        <Route path="/home" element={<Home />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

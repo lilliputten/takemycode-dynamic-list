@@ -15,11 +15,12 @@ export async function getConfig() {
     // 'X-Session-Token': sessionId, // X-Session-Token
     // 'Accept-Language': 'en',
   };
-  console.log('[api/methods/getConfig:Effect] fetch: start', {
-    url,
-    // method,
-    // headers,
-  });
+  /* console.log('[api/methods/getConfig:Effect] fetch: start', {
+   *   url,
+   *   // method,
+   *   // headers,
+   * });
+   */
   try {
     const res = await fetch(url, {
       method,
@@ -59,18 +60,20 @@ export async function getConfig() {
       debugger; // eslint-disable-line no-debugger
       throw new Error(errMsg);
     }
-    console.log('[api/methods/getConfig:Effect] fetch: result', {
-      res,
-      data,
-      dataStr,
-    });
+    /* console.log('[api/methods/getConfig:Effect] fetch: result', {
+     *   res,
+     *   data,
+     *   dataStr,
+     * });
+     */
     return data as APIConfig;
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error('[api/methods/getConfig:Effect] fetch: caught error', {
       error,
       url,
     });
-    debugger;
+    // debugger; // eslint-disable-line no-debugger
     throw new APIError('Can not receive config data (see console error).');
   }
 }
