@@ -1,8 +1,8 @@
 {
   "name": "client",
   "private": true,
-  "version": "0.0.2",
-  "timestamp": "2025.06.08 06:04:58 +0300",
+  "version": "0.0.3",
+  "timestamp": "2025.06.08 06:39:08 +0300",
   "changed": "2025.06.07, 19:45",
   "type": "module",
   "main": "src/main.tsx",
