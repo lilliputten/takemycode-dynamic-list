@@ -45,8 +45,3 @@ pnpm-lock.*
 
 # This project...
 tsconfig*.json
-
-# Prisma
-/server/prisma/.data
-/server/prisma-generated
-

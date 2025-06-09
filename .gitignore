@@ -54,10 +54,6 @@ next-env.d.ts
 *.tgz
 *.log
 
-/server/prisma/.data
-/server/prisma-generated
 /certificates
 /.vercel
-/vercel_output
-
 .vercel

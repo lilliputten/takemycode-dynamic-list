@@ -25,7 +25,6 @@
     // "noUncheckedSideEffectImports": true,
 
     /* Paths */
-    // "rootDir": "src" /* Specify the root folder within your source files. */,
     "baseUrl": ".",
     "paths": {
       "@shared-types/*": ["../server/src/shared-types/*"],

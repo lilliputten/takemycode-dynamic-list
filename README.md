@@ -7,7 +7,7 @@
 
 ## Build info (auto-generated)
 
-- Project info: v.0.0.3 / 2025.06.08 22:15:53 +0300
+- Project info: v.0.1.0 / 2025.06.10 01:10:27 +0300
 
 ## Resources
 
@@ -18,7 +18,7 @@
 
 Application structure:
 
-- [server](server): ExpressJS serverless funciton app (accessing to local or vercel/neon postgres database).
+- [server](server): ExpressJS serverless function app (accessing to local or vercel/neon postgres database).
 - [client](client): Static cleint applicaiton built via Vite/React/Tailwind.
 
 ## Installation
