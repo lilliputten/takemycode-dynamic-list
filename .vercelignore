@@ -1,0 +1,29 @@
+# ex: set ft=conf :
+
+.git
+.scripts
+.utils
+.vercel
+.vscode
+node_modules
+
+# Temporariy, swap & ignored files
+*.session
+*UNUSED
+*~
+*_
+.*.sw?
+*.tmp
+*.zip
+*.tgz
+*.log
+
+/*
+!vercel.json
+!client
+!server
+
+/client/*
+/server/*
+!client/dist
+!server/dist

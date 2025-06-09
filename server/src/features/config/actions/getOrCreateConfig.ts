@@ -1,9 +1,8 @@
-// import { Prisma } from '@prisma-generated/prisma';
+// import { Prisma } from '../../../../prisma-generated/prisma';
 
-import { prisma } from '@/lib/db/prisma';
-import { getErrorText } from '@/lib/helpers/strings';
-import { DatabaseError } from '@/shared/errors/DatabaseError';
-
+import { prisma } from '../../../lib/db/prisma';
+import { getErrorText } from '../../../lib/helpers/strings';
+import { DatabaseError } from '../../../shared/errors/DatabaseError';
 import { TConfigId } from '../types/TConfigId';
 
 export async function getOrCreateConfig(id: TConfigId) {

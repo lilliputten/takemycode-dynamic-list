@@ -1,4 +1,6 @@
-import { PrismaClient } from '@prisma-generated/prisma/client';
+import { PrismaClient } from '../../../prisma-generated/prisma';
+
+// import { PrismaClient } from '@prisma-generated/prisma/client';
 
 // export type TPrismaClient = PrismaClient;
 

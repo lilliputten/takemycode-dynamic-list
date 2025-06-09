@@ -4,7 +4,7 @@
   "main": "src/api/index.ts",
   "version": "0.0.3",
   "timestamp": "2025.06.08 22:15:53 +0300",
-  "changed": "2025.06.07, 19:45",
+  "changed": "2025.06.09, 05:46",
   "keywords": [],
   "author": "lilliputten@gmail.com",
   "license": "ISC",
@@ -54,9 +54,12 @@
     "lint-all": "echo --Run all pre-commit check-ups-- && npm-run-all stylelint eslint type-check && echo --All check-ups passed--",
     "check-all": "echo --Run all pre-commit check-ups-- && npm-run-all prettier lint-all && echo --All checks passed--",
     "dev": "concurrently \"pnpm --filter server run dev\" \"pnpm --filter client run dev\"",
-    "build": "pnpm --filter server run build && pnpm --filter client run build",
+    "build": "pnpm clean-all-builds && pnpm --filter server run build && pnpm --filter client run build",
+    "clean-all-builds": "rimraf -I server/dist client/dist",
     "vercel-clean": "vercel remove --safe --yes takemycode-dynamic-list",
-    "vercel-publish": "pnpm build && vercel --prod --force && pnpm vercel-clean",
+    "vercel-publish": "echo --Build and upload pre-built bundles-- && pnpm build && vercel --prod --force && pnpm vercel-clean",
+    "vercel-install": "echo --Install all vercel workspaces-- && pnpm install && pnpm --filter server install && pnpm --filter client install",
+    "vercel-build": "echo --Build all vercel workspaces-- && pnpm --filter server run build && pnpm --filter client run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   }
 }

@@ -58,3 +58,6 @@ next-env.d.ts
 /server/prisma-generated
 /certificates
 /.vercel
+/vercel_output
+
+.vercel

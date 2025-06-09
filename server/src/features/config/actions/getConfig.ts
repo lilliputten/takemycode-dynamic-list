@@ -1,7 +1,6 @@
-// import { Prisma } from '@prisma-generated/prisma';
+// import { Prisma } from '../../../../prisma-generated/prisma';
 
-import { prisma } from '@/lib/db';
-
+import { prisma } from '../../../lib/db';
 import { TConfigId } from '../types/TConfigId';
 
 export async function getConfig(id: TConfigId) {
