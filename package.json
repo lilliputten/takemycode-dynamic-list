@@ -42,7 +42,6 @@
     "stylelint-scss": "^6.10.0"
   },
   "scripts": {
-    "postinstall-TODO": "pnpm run prisma-generate && pnpm run prisma-db-push",
     "prettier": "echo --Run prettier-- && prettier --write --cache . | grep -v '(cached)' || true",
     "stylelint": "echo --Lint styles-- && stylelint --allow-empty-input ./**/*.{css,scss,less}",
     "stylelint-fix": "echo --Lint styles-- && stylelint --allow-empty-input ./**/*.{css,scss,less} --fix",
@@ -57,9 +56,7 @@
     "build": "pnpm clean-all-builds && pnpm --filter server run build && pnpm --filter client run build",
     "clean-all-builds": "rimraf -I server/dist client/dist",
     "vercel-clean": "vercel remove --safe --yes takemycode-dynamic-list",
-    "vercel-publish": "echo --Build and upload pre-built bundles-- && pnpm build && vercel --prod --force && pnpm vercel-clean",
-    "vercel-install": "echo --Install all vercel workspaces-- && pnpm install && pnpm --filter server install && pnpm --filter client install",
-    "vercel-build": "echo --Build all vercel workspaces-- && pnpm --filter server run build && pnpm --filter client run build",
+    "vercel-publish": "echo --Build and upload pre-built bundles-- && pnpm build && vercel --prod && pnpm vercel-clean",
     "test": "echo \"Error: no test specified\" && exit 1"
   }
 }
