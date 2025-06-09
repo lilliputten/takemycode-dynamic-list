@@ -1,4 +1,4 @@
-import appInfo from '../../../@shared-types/app-info.json';
+import appInfo from '@shared-types/app-info.json';
 
 export const isDev = import.meta.env.DEV; // process.env.NODE_ENV === 'development';
 export const isProd = !isDev;

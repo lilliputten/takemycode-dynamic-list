@@ -3,8 +3,8 @@
   "description": "Dynamic list implemented via ExpressJS and React with a Vercel-based hosting",
   "main": "src/api/index.ts",
   "version": "0.0.3",
-  "timestamp": "2025.06.08 06:39:08 +0300",
-  "changed": "2025.06.07, 19:45",
+  "timestamp": "2025.06.08 22:15:53 +0300",
+  "changed": "2025.06.09, 05:46",
   "keywords": [],
   "author": "lilliputten@gmail.com",
   "license": "ISC",
@@ -42,7 +42,6 @@
     "stylelint-scss": "^6.10.0"
   },
   "scripts": {
-    "postinstall-TODO": "pnpm run prisma-generate && pnpm run prisma-db-push",
     "prettier": "echo --Run prettier-- && prettier --write --cache . | grep -v '(cached)' || true",
     "stylelint": "echo --Lint styles-- && stylelint --allow-empty-input ./**/*.{css,scss,less}",
     "stylelint-fix": "echo --Lint styles-- && stylelint --allow-empty-input ./**/*.{css,scss,less} --fix",
@@ -54,9 +53,10 @@
     "lint-all": "echo --Run all pre-commit check-ups-- && npm-run-all stylelint eslint type-check && echo --All check-ups passed--",
     "check-all": "echo --Run all pre-commit check-ups-- && npm-run-all prettier lint-all && echo --All checks passed--",
     "dev": "concurrently \"pnpm --filter server run dev\" \"pnpm --filter client run dev\"",
-    "build": "pnpm --filter server run build && pnpm --filter client run build",
+    "build": "pnpm clean-all-builds && pnpm --filter server run build && pnpm --filter client run build",
+    "clean-all-builds": "rimraf -I server/dist client/dist",
     "vercel-clean": "vercel remove --safe --yes takemycode-dynamic-list",
-    "vercel-publish": "pnpm build && vercel --prod --force && pnpm vercel-clean",
+    "vercel-publish": "echo --Build and upload pre-built bundles-- && pnpm build && vercel --prod && pnpm vercel-clean",
     "test": "echo \"Error: no test specified\" && exit 1"
   }
 }

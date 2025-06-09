@@ -4,14 +4,7 @@ import path from 'path';
 import { defineConfig } from 'vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
-// import { reactRouter } from "@react-router/dev/vite";
-
-const VERCEL_URL = process.env.VERCEL_URL;
-
-// eslint-disable-next-line no-console
-console.log('[vite.config] VERCEL_URL:', VERCEL_URL);
-
-// https://vite.dev/config/
+// @see https://vite.dev/config/
 export default defineConfig({
   plugins: [
     // Plugins...
@@ -24,7 +17,28 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
-  define: {
-    'import.meta.env.VITE_VERCEL_URL': JSON.stringify(VERCEL_URL),
+  build: {
+    // Place all assets (JS, CSS, images) in the `static` folder
+    assetsDir: 'static',
+
+    rollupOptions: {
+      output: {
+        // Ensure index.html is at root (default behavior)
+        // No need to change entryFileNames or chunkFileNames for index.html
+        // Customize chunk and asset file names inside static folder
+        chunkFileNames: 'static/js/[name]-[hash].js',
+        entryFileNames: 'static/js/[name]-[hash].js',
+        assetFileNames: ({ name }) => {
+          if (/\.(css)$/.test(name ?? '')) {
+            return 'static/css/[name]-[hash][extname]';
+          }
+          if (/\.(png|jpe?g|svg|gif|tiff|bmp|ico|webp)$/.test(name ?? '')) {
+            return 'static/img/[name]-[hash][extname]';
+          }
+          // default static folder for other assets
+          return 'static/assets/[name]-[hash][extname]';
+        },
+      },
+    },
   },
 });

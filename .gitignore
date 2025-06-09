@@ -33,9 +33,6 @@ yarn-error.log*
 .env*
 !.env*.SAMPLE
 
-# vercel
-.vercel
-
 # typescript
 *.tsbuildinfo
 next-env.d.ts
@@ -57,8 +54,10 @@ next-env.d.ts
 *.tgz
 *.log
 
-/iisnode
-/prisma/.data
-.vercel
-certificates
+/server/prisma/.data
+/server/prisma-generated
+/certificates
+/.vercel
+/vercel_output
+
 .vercel

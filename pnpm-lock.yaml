@@ -7,7 +7,7 @@ settings:
 importers:
 
   .:
-    dependencies:
+    devDependencies:
       '@babel/eslint-parser':
         specifier: ^7.25.9
         version: 7.27.5(@babel/core@7.27.4)(eslint@8.57.1)

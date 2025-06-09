@@ -18,9 +18,9 @@
       {
         "name": "next"
       }
-    ]
+    ],
+    "typeRoots": ["@types/**/*"],
   },
-  "typeRoots": ["@types/**/*"],
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "types.d.ts", "@types/**/*.d.ts"],
+  "include": ["**/*.ts", "**/*.tsx", "types.d.ts", "@types/**/*.d.ts"],
   "exclude": ["**/*~", "node_modules", ".next", "**/*.tmp", "**/*.bak", "**/.*.sw?"]
 }

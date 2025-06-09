@@ -12,7 +12,7 @@ if [ -z "$CONFIG_IMPORTED" ]; then
 
   VERSION_FILE="project-version.txt"
   PROJECT_INFO_FILE="public/app-info.txt"
-  PROJECT_INFO_JSON_FILE="@shared-types/app-info.json"
+  PROJECT_INFO_JSON_FILE="server/@shared-types/app-info.json"
 
   SRC_TAG_PREFIX="v" # "v" for default "v.X.Y.Z"
 

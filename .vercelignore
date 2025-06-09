@@ -1,0 +1,22 @@
+# ex: set ft=conf :
+
+# Temporariy, swap & ignored files
+*.session
+*UNUSED
+*~
+*_
+.*.sw?
+*.tmp
+*.zip
+*.tgz
+*.log
+
+/*
+!vercel.json
+!client
+!server
+
+/client/*
+/server/*
+!client/dist
+!server/dist

@@ -1,0 +1,38 @@
+// ex: set ft=jsonc:sw=2:ts=4:
+// @changed 2025.06.08, 20:02
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit:
+  // https://code.visualstudio.com/docs/editor/debugging#_launch-configurations
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node-terminal",
+      "name": "Run local dev server",
+      "request": "launch",
+      "command": "pnpm --filter server run dev",
+      "cwd": "${workspaceFolder}/server",
+      "skipFiles": ["!${workspaceRoot}/server/node_modules/**/*.js"],
+      "runtimeArgs": ["--preserve-symlinks"]
+    },
+    {
+      "name": "server: dev-migrate",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "pnpm --filter server dev-migrate"
+    },
+    {
+      "name": "server: dev",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "pnpm --filter server dev"
+    },
+    {
+      "name": "Jest single test",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "pnpm exec jest --no-watch --testTimeout=60000 NAME.test"
+    }
+  ]
+}

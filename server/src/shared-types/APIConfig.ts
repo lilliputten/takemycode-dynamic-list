@@ -1,4 +1,7 @@
+import { TServerConfig } from './TServerConfig';
+
 export interface APIConfig {
+  config?: TServerConfig; // Prisma.ConfigMinAggregateOutputType;
   test?: string | number | boolean;
   versionInfo: string;
   isDev?: boolean;
