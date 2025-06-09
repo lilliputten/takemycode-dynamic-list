@@ -1,4 +1,5 @@
 {
+  "search.excludeFolders": ["dist", ".git", "node_modules", ".venv"],
   "search.exclude": {
     "*.session": true,
     "tsconfig.tsbuildinfo": true,

@@ -17,6 +17,18 @@
       "runtimeArgs": ["--preserve-symlinks"]
     },
     {
+      "name": "server: dev-migrate",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "pnpm --filter server dev-migrate"
+    },
+    {
+      "name": "server: dev",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "pnpm --filter server dev"
+    },
+    {
       "name": "Jest single test",
       "type": "node-terminal",
       "request": "launch",

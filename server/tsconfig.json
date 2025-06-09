@@ -111,22 +111,18 @@
     "skipLibCheck": true /* Skip type checking all .d.ts files. */,
 
     /* Paths */
-    "rootDir": "." /* Specify the root folder within your source files. */,
+    // "rootDir": "." [> Specify the root folder within your source files. <],
     "baseUrl": "." /* Specify the base directory to resolve non-relative module names. */,
-    /* // Don't use absolute paths due to ocercomplicated configuration for prisma client and its relative paths to engines?
-     * "paths": {
-     *   "@shared-types/*": ["@shared-types/*"],
-     *   "@prisma-generated/*": ["prisma-generated/*"],
-     *   "@/*": ["./src/*"]
-     * },
-     */
-    "typeRoots": ["src/@types"]
+    // Don't use absolute paths due to ocercomplicated configuration for prisma client and its relative paths to engines?
+    "paths": {
+      "@shared-types/*": ["./src/@shared-types/*"],
+      "@/*": ["./src/*"]
+    },
+    "typeRoots": ["./src/@types"]
   },
   "include": [
     // All sources
-    "index.js",
-    "src/**/*",
-    "@shared-types/**/*",
-    "prisma-generated/**/*"
+    // "index.js",
+    "src/**/*"
   ]
 }

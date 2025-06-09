@@ -1,8 +1,7 @@
-// import { Prisma } from '@prisma-generated/prisma';
-import { Prisma } from '../prisma-generated/prisma';
+import { TServerConfig } from './TServerConfig';
 
 export interface APIConfig {
-  config?: Prisma.ConfigMinAggregateOutputType;
+  config?: TServerConfig; // Prisma.ConfigMinAggregateOutputType;
   test?: string | number | boolean;
   versionInfo: string;
   isDev?: boolean;

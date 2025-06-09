@@ -1,80 +1,59 @@
-import { APIConfig } from '../@shared-types/APIConfig';
-import appInfo from '../@shared-types/app-info.json';
-import cors from 'cors';
-import express, { Request, Response } from 'express';
+/* eslint-disable no-console */
 
-import { CONFIG_ID, dataContentType, isDev, isVercel, PORT, VERCEL_URL } from './config/env';
-import { getOrCreateConfig } from './features/config/actions/getOrCreateConfig';
+import { DATABASE_URL, isDev, isVercel, VERCEL_URL } from '@/config/env';
+import { pool } from '@/lib/db/postgres';
+import { createApp, TExpressApp } from '@/express-app';
+import { migrate } from '@/migrate';
+import appInfo from '@/shared-types/app-info.json';
 
 // Extract to config/env
 const versionInfo = appInfo.versionInfo;
 
 // eslint-disable-next-line no-console
 console.log('[server/src/index] versionInfo:', versionInfo);
+console.log('[server/src/index] process.argv:', process.argv);
 console.log('[server/src/index] VERCEL_URL:', VERCEL_URL);
+console.log('[server/src/index] DATABASE_URL:', DATABASE_URL);
 console.log('[server/src/index] isVercel:', isVercel);
 console.log('[server/src/index] isDev:', isDev);
+// console.log('[server/src/index] createApp:', createApp);
 
-const app = express();
+if (!DATABASE_URL) {
+  // eslint-disable-next-line no-console, prettier/prettier
+  console.error(
+    'No DATABASE_URL has provided. Use `set -a; source .env; set +a` in to expose local variables.',
+  );
+  debugger; // eslint-disable-line no-debugger
+  process.exit(1);
+}
 
-// Set up the server app...
-app.use(cors());
+let app: TExpressApp | undefined;
 
-// // TODO:
-// app.use(express.bodyParser());
-// app.use(express.cookieParser());
-// app.use(express.session({ secret: `cool beans` }));
-// app.use(express.methodOverride());
-// app.use(app.router);
-// app.use(express.static(`public`));
+if (process.argv?.includes('--migrate')) {
+  // Do migrations...
+  console.log('Migration started...');
+  migrate()
+    .then((result) => {
+      console.log('Migration finished:', result || 'OK');
+      process.exit();
+    })
+    .catch((error) => {
+      console.error('Migration error:', error);
+      debugger; // eslint-disable-line no-debugger
+      process.exit();
+    });
+} else {
+  // Create the server...
+  app = createApp();
+}
 
-// CORS middleware (for local dev server, at least)
-app.use((_req, res, next) => {
-  res.header(`Access-Control-Allow-Origin`, `*`);
-  res.header(`Access-Control-Allow-Methods`, `GET,PUT,POST,DELETE`);
-  res.header(`Access-Control-Allow-Headers`, `Content-Type`);
-  next();
-});
-
-app.get('/api/config', async (_req: Request, res: Response) => {
-  const config = await getOrCreateConfig(CONFIG_ID);
-  console.log('[server/src/index.ts] config', {
-    config,
-  });
-  debugger;
-  const data: APIConfig = {
-    config,
-    test: 4,
-    isDev,
-    VERCEL_URL,
-    PORT,
-    versionInfo,
-  };
-  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
-  res.setHeader('Expires', '0');
-  res.setHeader('Content-Type', dataContentType);
-  res.end(JSON.stringify(data));
-});
-
-app.get('/api/test', async (_req: Request, res: Response) => {
-  const data = {
-    test: 1,
-    a: 1,
-  };
-  res.setHeader('Content-Type', dataContentType);
-  res.end(JSON.stringify(data));
-});
-
-// if (!isVercel || isDev) {
-// eslint-disable-next-line no-console
-console.log(`Starting a server on port ${PORT} on ${VERCEL_URL}...`);
-app.listen(PORT, () => {
-  // eslint-disable-next-line no-console
-  console.log(`Server ready on port ${PORT}.`);
-});
-// } else {
-//   // eslint-disable-next-line no-console
-//   console.log(`Serverless mode (without port listening) on ${VERCEL_URL}...`);
-// }
+// Shutdown gracefully
+async function serverShutDown() {
+  console.log('[server/src/index:serverShutDown]');
+  await pool.end();
+  process.exit(0);
+}
+process.on('SIGINT', serverShutDown);
+process.on('SIGTERM', serverShutDown);
 
 export default app;

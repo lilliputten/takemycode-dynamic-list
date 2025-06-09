@@ -4,7 +4,7 @@
   "timestamp": "2025.06.08 22:15:53 +0300",
   "changed": "2025.06.09, 06:09",
   "description": "",
-  "main": "index.js",
+  "main": "src/index.ts",
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -12,38 +12,26 @@
     "node": "20.x"
   },
   "dependencies": {
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "pg": "^8.16.0"
   },
   "devDependencies": {
-    "@prisma/client": "^6.9.0",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
     "@types/node": "^22.15.30",
-    "@vercel/ncc": "^0.38.3",
+    "@types/pg": "^8.15.4",
     "cors": "^2.8.5",
-    "cross-env": "^7.0.3",
+    "dotenv": "^16.5.0",
     "esbuild": "^0.25.5",
-    "mkdirp": "^3.0.1",
     "nodemon": "^3.1.10",
-    "prisma": "^6.9.0",
-    "rimraf": "^6.0.1",
-    "serverless-http": "^3.2.0",
     "tsx": "^4.19.4",
     "typescript": "^5.8.3"
   },
   "scripts": {
-    "prisma-generate": "echo --Generate database client-- && rimraf prisma-generated && prisma generate && prisma db push",
-    "prisma-set-local": "echo --Set local prisma-- && node prisma-switch.mjs local && pnpm prisma-generate || echo No prisma regeneration required",
-    "prisma-set-vercel": "echo --Set vercel prisma-- && node prisma-switch.mjs vercel && pnpm prisma-generate || echo No prisma regeneration required",
-    "prisma-studio": "echo --Run database explorer-- && prisma studio",
-    "postinstall": "echo --Generate prisma client and update database-- && pnpm run prisma-generate",
     "type-check": "echo --Run typescript linter: server-- && tsc --pretty --noEmit",
-    "build-dist": "echo --Build with esbuild-- && esbuild src/index.ts --bundle --legal-comments=none --platform=node --target=node20 --outfile=dist/index.js && cp -Rvf prisma-generated dist/",
-    "build-dist-tsc": "echo --Build dist folder-- && tsc -b --verbose && cp -Rvf prisma-generated dist/ && ncc build dist/src/index.js -o dist/bundle",
-    "build": "echo --Build vercel server-- && pnpm prisma-set-vercel && pnpm build-dist",
-    "build-local": "echo --Build local server-- && pnpm prisma-set-local && pnpm build-dist",
-    "build-OLD": "echo --Build server via tsc-- && pnpm prisma-set-vercel && tsc -b --verbose && cp -Rvf prisma-generated dist/ && ncc build dist/index.js -o dist/bundle",
+    "build": "echo --Build server with esbuild-- && esbuild src/index.ts --bundle --legal-comments=none --platform=node --target=node20 --outfile=dist/index.js && cp -Rvf src/migrations dist/",
     "dev-node": "echo --Serve built bundle-- && node dist/index.js",
-    "dev": "echo --Run tsx dev server-- && nodemon --watch src/**/*.ts --exec tsx index.js"
+    "dev-migrate": "echo --Run tsx dev server-- && tsx src/index.js --migrate",
+    "dev": "echo --Run tsx dev server-- && nodemon --watch src/**/*.ts --exec tsx src/index.ts"
   }
 }
