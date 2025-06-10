@@ -16,13 +16,17 @@
     "pg": "^8.16.0"
   },
   "devDependencies": {
+    "@types/connect-pg-simple": "^7.0.3",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
+    "@types/express-session": "^1.18.2",
     "@types/node": "^22.15.30",
     "@types/pg": "^8.15.4",
+    "connect-pg-simple": "^10.0.0",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "esbuild": "^0.25.5",
+    "express-session": "^1.18.1",
     "nodemon": "^3.1.10",
     "tsx": "^4.19.4",
     "typescript": "^5.8.3"
@@ -32,6 +36,6 @@
     "build": "echo --Build server with esbuild-- && esbuild src/index.ts --bundle --legal-comments=none --platform=node --target=node20 --outfile=dist/index.js && cp -Rvf src/migrations dist/",
     "dev-node": "echo --Serve built bundle-- && node dist/index.js",
     "dev-migrate": "echo --Run tsx dev server-- && tsx src/index.js --migrate",
-    "dev": "echo --Run tsx dev server-- && nodemon --watch src/**/*.ts --exec tsx src/index.ts"
+    "dev": "echo --Run tsx dev server-- && nodemon --watch src/**/*.ts --exec tsx src/index.ts --dev"
   }
 }

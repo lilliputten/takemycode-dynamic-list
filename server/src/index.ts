@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 
-import { DATABASE_URL, isDev, isVercel, VERCEL_URL } from '@/config/env';
+import { DATABASE_URL, isDev, isVercel, ORIGIN_HOST, VERCEL_URL } from '@/config/env';
 import { pool } from '@/lib/db/postgres';
 import { createApp, TExpressApp } from '@/express-app';
 import { migrate } from '@/migrate';
@@ -13,6 +13,7 @@ const versionInfo = appInfo.versionInfo;
 console.log('[server/src/index] versionInfo:', versionInfo);
 console.log('[server/src/index] process.argv:', process.argv);
 console.log('[server/src/index] VERCEL_URL:', VERCEL_URL);
+console.log('[server/src/index] ORIGIN_HOST:', ORIGIN_HOST);
 console.log('[server/src/index] DATABASE_URL:', DATABASE_URL);
 console.log('[server/src/index] isVercel:', isVercel);
 console.log('[server/src/index] isDev:', isDev);
