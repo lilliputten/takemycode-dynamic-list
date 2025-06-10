@@ -1,9 +1,12 @@
 /* eslint-disable no-console */
 
+import ConnectPgSimple from 'connect-pg-simple';
 import cors from 'cors';
 import express, { Request, Response } from 'express';
+import expressSession from 'express-session';
 
-import { dataContentType, isDev, PORT, VERCEL_URL } from '@/config/env';
+import { dataContentType, isDev, ORIGIN_HOST, PORT, VERCEL_URL } from '@/config/env';
+import { pool } from '@/lib/db/postgres';
 import { getServerConfig } from '@/features/config/actions/getServerConfig';
 import { APIConfig } from '@/shared-types/APIConfig';
 import appInfo from '@/shared-types/app-info.json';
@@ -11,40 +14,86 @@ import appInfo from '@/shared-types/app-info.json';
 // Extract to config/env
 const versionInfo = appInfo.versionInfo;
 
+/** Amount of milliseconds in a day */
+const dayTicks = 24 * 60 * 60 * 1000;
+
+/** Session validity period (days) */
+const sessionValidityDays = isDev ? 1 : 7;
+
 export type TExpressApp = ReturnType<typeof express>;
 
 export function createApp() {
   const app = express();
 
+  /* // TODO: Also add the following express extensions (if/when needed):
+   * - express.bodyParser
+   * - express.cookieParser
+   * - express.methodOverride
+   * - express.static
+   * - app.router
+   */
+
   // Set up the server app...
-  app.use(cors());
+  const corsOptions = {
+    origin: ORIGIN_HOST,
+    credentials: true,
+    methods: ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type'],
+    optionsSuccessStatus: 204, // some legacy browsers choke on 204
+  };
+  const corsHandler = cors(corsOptions);
+  app.use(corsHandler);
+  app.options('*', corsHandler);
 
-  // // TODO:
-  // app.use(express.bodyParser());
-  // app.use(express.cookieParser());
-  // app.use(express.session({ secret: `cool beans` }));
-  // app.use(express.methodOverride());
-  // app.use(app.router);
-  // app.use(express.static(`public`));
+  // Configure session
+  const SessionStoreFactory = ConnectPgSimple(expressSession);
+  const sessionStore = new SessionStoreFactory({
+    // @see https://www.npmjs.com/package/connect-pg-simple
+    pool,
+  });
+  app.use(
+    expressSession({
+      // @see https://www.npmjs.com/package/express-session
+      store: sessionStore,
+      secret: process.env.SESSION_COOKIE_SECRET || 'some-secret',
+      resave: false,
+      cookie: {
+        // secure: true,
+        maxAge: sessionValidityDays * dayTicks, // Session validity period (days)
+      },
+    }),
+  );
 
-  // CORS middleware (for local dev server, at least)
-  if (isDev) {
-    app.use((_req, res, next) => {
-      res.header(`Access-Control-Allow-Origin`, `*`);
-      res.header(`Access-Control-Allow-Methods`, `GET,PUT,POST,DELETE`);
-      res.header(`Access-Control-Allow-Headers`, `Content-Type`);
-      next();
-    });
-  }
+  // Default request processing
+  app.use((_req, _res, next) => {
+    /* // CORS headers (unused: see cors settings above)
+     * res.header('Access-Control-Allow-Credentials', 'true');
+     * res.header('Access-Control-Allow-Origin', ORIGIN_HOST);
+     * res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+     * res.header('Access-Control-Allow-Headers', 'Content-Type');
+     */
+    next();
+  });
 
-  app.get('/api/config', async (_req: Request, res: Response) => {
+  app.get('/api/config', async (req: Request, res: Response) => {
+    const test = 5;
+    // Check session
+    const session = req.session;
+    const sessionId = session.id;
+    // Get config from the database
     const config = await getServerConfig();
-    console.log('[Vserver/src/express-app.ts] config', {
+    console.log('[server/src/express-app.ts] config', {
+      sessionId,
+      session,
       config,
     });
+    // DEMO: It's possible to store some simple data in the session (TODO: Find solution to calm typescript)
+    // @ts-ignore
+    req.session.test = test;
     const data: APIConfig = {
+      sessionId,
       config,
-      test: 4,
+      test,
       isDev,
       VERCEL_URL,
       PORT,

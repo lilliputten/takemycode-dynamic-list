@@ -57,6 +57,16 @@ Used local or vercel based neon postgess instance, configured through environmen
 
 See migration files in [server/src/migrations](server/src/migrations).
 
+## Server sessions
+
+Used:
+
+- [express-session](https://www.npmjs.com/package/express-session#compatible-session-stores)
+- [connect-pg-simple](https://www.npmjs.com/package/connect-pg-simple)
+
+See `node_modules/connect-pg-simple/table.sql` (copied to [server/src/migrations/01-init/connect-pg-simple-table.sql](server/src/migrations/01-init/connect-pg-simple-table.sql)).
+Environment variable: `SESSION_COOKIE_SECRET`.
+
 ## See also
 
 - [Changelog](CHANGELOG.md)

@@ -1,6 +1,7 @@
 import { TServerConfig } from './TServerConfig';
 
 export interface APIConfig {
+  sessionId?: string;
   config?: TServerConfig; // Prisma.ConfigMinAggregateOutputType;
   test?: string | number | boolean;
   versionInfo: string;

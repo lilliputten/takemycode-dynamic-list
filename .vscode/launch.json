@@ -9,7 +9,7 @@
   "configurations": [
     {
       "type": "node-terminal",
-      "name": "Run local dev server",
+      "name": "server: dev",
       "request": "launch",
       "command": "pnpm --filter server run dev",
       "cwd": "${workspaceFolder}/server",
@@ -21,12 +21,6 @@
       "type": "node-terminal",
       "request": "launch",
       "command": "pnpm --filter server dev-migrate"
-    },
-    {
-      "name": "server: dev",
-      "type": "node-terminal",
-      "request": "launch",
-      "command": "pnpm --filter server dev"
     },
     {
       "name": "Jest single test",

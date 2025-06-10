@@ -3,33 +3,25 @@ import type { APIConfig } from '@shared-types/APIConfig';
 import { configApiUrl } from '@/config/routes';
 import { APIError } from '@/shared/errors/APIError';
 
+const jsonContentType = 'application/json; charset=utf-8';
+
 export async function getConfig() {
   const url = configApiUrl;
   const method = 'GET';
   const headers = {
-    Accept: 'application/json',
-    'Content-Type': 'application/json',
-    // 'X-CSRFToken': csrftoken || '',
-    // Credentials: 'include',
-    // Cookie: csrftoken && `csrftoken=${csrftoken}`,
-    // 'X-Session-Token': sessionId, // X-Session-Token
+    Accept: jsonContentType,
+    'Content-Type': jsonContentType,
     // 'Accept-Language': 'en',
   };
-  /* console.log('[api/methods/getConfig:Effect] fetch: start', {
-   *   url,
-   *   // method,
-   *   // headers,
-   * });
-   */
   try {
     const res = await fetch(url, {
       method,
       headers,
-      // credentials: 'include',
+      credentials: 'include', // Allow to pass cookies (session, csrf etc)
       // body: requestData ? JSON.stringify(requestData) : null,
     });
     const { ok, status, statusText } = res;
-    // TODO: Check is it json?
+    // TODO: Check if it's json response?
     let data: (unknown & { detail?: string }) | undefined = undefined;
     let dataStr: string = '';
     try {
