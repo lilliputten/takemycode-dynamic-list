@@ -12,7 +12,7 @@
   font-weight: 400;
 
   /* Set font size to approx fit 20 lines in the list */
-  font-size: max(16px, 2.6vh);
+  font-size: max(16px, 2vh);
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);

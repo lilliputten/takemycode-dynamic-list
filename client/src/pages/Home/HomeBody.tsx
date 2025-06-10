@@ -1,9 +1,25 @@
+import { TRecord } from '@shared-types/TRecord';
+
 import { isDev } from '@/config/env';
 import { cn } from '@/lib/utils';
 import { RecordsList } from '@/components/RecordsList';
 import { MaxWidthWrapper } from '@/blocks/MaxWidthWrapper';
 
-export function HomeBody() {
+interface TProps {
+  isPending: boolean;
+  records: TRecord[];
+  totalCount: number;
+  availCount: number;
+}
+
+export function HomeBody(props: TProps) {
+  const {
+    // All the params (TODO: Use context?)
+    isPending,
+    records,
+    totalCount,
+    availCount,
+  } = props;
   return (
     <div
       className={cn(
@@ -22,7 +38,12 @@ export function HomeBody() {
           'overflow-hidden',
         )}
       >
-        <RecordsList />
+        <RecordsList
+          isPending={isPending}
+          records={records}
+          totalCount={totalCount}
+          availCount={availCount}
+        />
       </MaxWidthWrapper>
     </div>
   );

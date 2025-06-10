@@ -10,6 +10,8 @@ import { pool } from '@/lib/db/postgres';
 import { getServerConfig } from '@/features/config/actions/getServerConfig';
 import { APIConfig } from '@/shared-types/APIConfig';
 import appInfo from '@/shared-types/app-info.json';
+import { TRecord } from '@/shared-types/TRecord';
+import { TRecordsData } from '@/shared-types/TRecordsData';
 
 // Extract to config/env
 const versionInfo = appInfo.versionInfo;
@@ -19,6 +21,9 @@ const dayTicks = 24 * 60 * 60 * 1000;
 
 /** Session validity period (days) */
 const sessionValidityDays = isDev ? 1 : 7;
+
+/** Default records count */
+const defaultCount = 20;
 
 export type TExpressApp = ReturnType<typeof express>;
 
@@ -65,13 +70,16 @@ export function createApp() {
   );
 
   // Default request processing
-  app.use((_req, _res, next) => {
+  app.use((_req, res, next) => {
     /* // CORS headers (unused: see cors settings above)
      * res.header('Access-Control-Allow-Credentials', 'true');
      * res.header('Access-Control-Allow-Origin', ORIGIN_HOST);
      * res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
      * res.header('Access-Control-Allow-Headers', 'Content-Type');
      */
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.setHeader('Expires', '0');
+    res.setHeader('Content-Type', dataContentType);
     next();
   });
 
@@ -99,9 +107,6 @@ export function createApp() {
       PORT,
       versionInfo,
     };
-    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
-    res.setHeader('Expires', '0');
-    res.setHeader('Content-Type', dataContentType);
     res.end(JSON.stringify(data));
   });
 
@@ -112,6 +117,39 @@ export function createApp() {
     };
     res.setHeader('Content-Type', dataContentType);
     res.end(JSON.stringify(data));
+  });
+
+  // Get data records
+  app.get('/api/data', async (req: Request, res: Response) => {
+    // Get parameters...
+    const count = Number(req.query.count) || defaultCount;
+    const start = Number(req.query.start) || 0;
+    // Check session
+    const session = req.session;
+    const sessionId = session.id;
+    // Get config from the database
+    const config = await getServerConfig();
+    console.log('[server/src/express-app.ts] data', {
+      count,
+      start,
+      sessionId,
+      session,
+      config,
+    });
+    // TODO: Use data generator, apply filter and sort
+    const totalCount = 50;
+    const availCount = totalCount;
+    const records = Array.from(Array(count)).map((_none, idx) => {
+      const id = idx + 1;
+      const text = `Item text ${id}`;
+      return { id, text } as TRecord;
+    });
+    const resData: TRecordsData = {
+      totalCount,
+      availCount,
+      records,
+    };
+    res.end(JSON.stringify(resData));
   });
 
   console.log(`Starting a server on port ${PORT} on ${VERCEL_URL}...`);
