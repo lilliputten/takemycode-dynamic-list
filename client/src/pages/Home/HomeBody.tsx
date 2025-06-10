@@ -1,25 +1,24 @@
-import { TRecord } from '@shared-types/TRecord';
+import { TRecordsData } from '@shared-types/TRecordsData';
 
 import { isDev } from '@/config/env';
 import { cn } from '@/lib/utils';
 import { RecordsList } from '@/components/RecordsList';
+import { LoadingSplash } from '@/blocks/LoadingSplash';
 import { MaxWidthWrapper } from '@/blocks/MaxWidthWrapper';
 
 interface TProps {
   isPending: boolean;
-  records: TRecord[];
-  totalCount: number;
-  availCount: number;
+  recordsData?: TRecordsData;
 }
 
 export function HomeBody(props: TProps) {
   const {
     // All the params (TODO: Use context?)
     isPending,
-    records,
-    totalCount,
-    availCount,
+    recordsData,
   } = props;
+  const hasData = !!recordsData;
+
   return (
     <div
       className={cn(
@@ -27,7 +26,7 @@ export function HomeBody(props: TProps) {
         'w-full flex-1',
         'flex flex-col',
         'px-4 py-2',
-        'overflow-hidden',
+        'relative overflow-hidden',
       )}
     >
       <MaxWidthWrapper
@@ -35,16 +34,19 @@ export function HomeBody(props: TProps) {
           isDev && '__HomeBody_Wrapper', // DEBUG
           'w-full flex-1',
           'flex flex-col',
-          'overflow-hidden',
+          'relative overflow-hidden',
         )}
       >
-        <RecordsList
-          isPending={isPending}
-          records={records}
-          totalCount={totalCount}
-          availCount={availCount}
-        />
+        {hasData && (
+          <RecordsList
+            // TODO: Use context?
+            isPending={isPending}
+            recordsData={recordsData}
+          />
+        )}
       </MaxWidthWrapper>
+      {/* TODO: Show fatal error splash here */}
+      <LoadingSplash isPending={!hasData} />
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { TRecord } from '@shared-types/TRecord';
+import { TRecordsData } from '@shared-types/TRecordsData';
 
 import { isDev } from '@/config/env';
 import { cn } from '@/lib/utils';
@@ -11,24 +11,17 @@ import { HomeHeader } from './HomeHeader';
 
 export function Home() {
   const [isPending, startTransition] = React.useTransition();
-  const [records, setRecords] = React.useState<TRecord[]>([]);
-  const [totalCount, setTotalCount] = React.useState<number>(0);
-  const [availCount, setAvailCount] = React.useState<number>(0);
+  const [recordsData, setRecordsData] = React.useState<TRecordsData | undefined>();
 
   React.useEffect(() => {
     startTransition(async () => {
       try {
         const data = await fetchServerData();
-        const { records, totalCount, availCount } = data;
+        const recordsData = data;
         console.log('[Home:Effect:Data]', {
-          records,
-          totalCount,
-          availCount,
-          data,
+          recordsData,
         });
-        setRecords(records);
-        setTotalCount(totalCount);
-        setAvailCount(availCount);
+        setRecordsData(recordsData);
       } catch (error) {
         // eslint-disable-next-line no-console
         console.error('[Home:Effect:Data]', error);
@@ -47,10 +40,9 @@ export function Home() {
     >
       <HomeHeader />
       <HomeBody
+        // TODO: Use context?
         isPending={isPending}
-        records={records}
-        totalCount={totalCount}
-        availCount={availCount}
+        recordsData={recordsData}
       />
       <HomeFooter />
     </div>

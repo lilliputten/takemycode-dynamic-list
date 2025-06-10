@@ -140,13 +140,14 @@ export function createApp() {
     const totalCount = 50;
     const availCount = totalCount;
     const records = Array.from(Array(count)).map((_none, idx) => {
-      const id = idx + 1;
+      const id = start + idx + 1;
       const text = `Item text ${id}`;
       return { id, text } as TRecord;
     });
     const resData: TRecordsData = {
       totalCount,
       availCount,
+      start,
       records,
     };
     res.end(JSON.stringify(resData));
