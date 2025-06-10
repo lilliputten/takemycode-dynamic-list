@@ -1,10 +1,9 @@
-# @changed 2024.08.04, 22:05
+# @changed 2025.06.10, 21:05
 # @see https://eslint.org/docs/rules/
 
 '$schema': https://json.schemastore.org/eslintrc
 root: true
 extends:
-  # - next/core-web-vitals
   - prettier
   - plugin:tailwindcss/recommended
 plugins:
@@ -32,7 +31,7 @@ settings:
   tailwindcss:
     callees:
       - cn
-    config: tailwind.config.ts
+    config: client/tailwind.config.ts
   next:
     rootDir: true
 
