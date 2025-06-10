@@ -1,6 +1,6 @@
 // import React from 'react';
 
-export function Home() {
+export function Hello() {
   return (
     <div>
       <h1 className="text-3xl font-bold underline">

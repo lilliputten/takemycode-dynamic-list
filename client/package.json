@@ -12,27 +12,30 @@
   "dependencies": {
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "react-router-dom": "^7.6.2"
+    "react-router-dom": "^7.6.2",
+    "tailwindcss": "^4.1.8"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",
+    "@tailwindcss/postcss": "^4.1.8",
+    "@tailwindcss/typography": "^0.5.16",
     "@tailwindcss/vite": "^4.1.8",
+    "@types/ms": "^2.1.0",
     "@types/node": "^22.15.30",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
     "@vitejs/plugin-react-swc": "^3.9.0",
     "autoprefixer": "^10.4.21",
+    "clsx": "^2.1.1",
     "concurrently": "^9.1.2",
-    "eslint": "^9.25.0",
-    "eslint-plugin-react-hooks": "^5.2.0",
-    "eslint-plugin-react-refresh": "^0.4.19",
     "globals": "^16.0.0",
     "mkdirp": "^3.0.1",
+    "ms": "^2.1.3",
     "rimraf": "^6.0.1",
-    "tailwindcss": "^4.1.8",
+    "tailwind-merge": "^3.3.0",
+    "tailwindcss-animate": "^1.0.7",
     "tinycolor2": "^1.6.0",
     "typescript": "~5.8.3",
-    "typescript-eslint": "^8.30.1",
     "vite": "^6.3.5",
     "vite-tsconfig-paths": "^5.1.4"
   },
@@ -40,7 +43,6 @@
     "type-check": "echo --Run typescript linter: client-- && tsc --pretty --noEmit",
     "dev": "echo --Run vite dev server: client-- && vite",
     "build": "echo --Build client via vite-- && tsc -b && vite build",
-    "lint": "eslint .",
     "preview": "vite preview"
   }
 }

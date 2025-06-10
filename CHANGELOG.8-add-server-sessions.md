@@ -3,6 +3,8 @@
  @changed 2025.06.10, 03:08
 -->
 
-- [Add server sessions](https://github.com/lilliputten/takemycode-dynamic-list/issues/8)
+- Issue: [Add server sessions](https://github.com/lilliputten/takemycode-dynamic-list/issues/8)
+
+## Add to changelog:
 
 - Issue #8: Added server sessions, fixed cors settings on client and server.
