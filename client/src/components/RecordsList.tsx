@@ -1,6 +1,3 @@
-// import { DndContext, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
-// import type { Active, UniqueIdentifier } from '@dnd-kit/core';
-// import { arrayMove, SortableContext, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import { TRecordsData } from '@shared-types/TRecordsData';
 
 import React from 'react';

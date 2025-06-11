@@ -1,9 +1,10 @@
-import { TRecord } from '@shared-types/TRecord';
 import { TRecordsData } from '@shared-types/TRecordsData';
 
 import React from 'react';
 import { arrayMove } from '@dnd-kit/sortable';
+import { toast } from 'react-toastify';
 
+import { defaultToastOptions } from '@/config/defaultToastOptions';
 import { isDev } from '@/config/env';
 import { cn } from '@/lib/utils';
 import { RecordsList } from '@/components/RecordsList';
@@ -52,7 +53,8 @@ export function Home() {
   /** Load data handler */
   const loadData = React.useCallback(
     (startIndex: number, stopIndex: number) => {
-      /* // UNUSED: Check if no active loading process...
+      /* // UNUSED: Postponed loading
+       * Check if no active loading process...
        * if (memo.currentLoad) {
        *   // ...Otherwise postpone the requested load...
        *   if (!memo.requestedLoad) {
@@ -76,16 +78,17 @@ export function Home() {
        */
       const start = startIndex;
       const count = stopIndex - startIndex + 1;
-      console.log('[Home:Callback:loadData] start', startIndex, stopIndex, {
-        currentLoad: memo.currentLoad,
-        start,
-        count,
-      });
+      /* console.log('[Home:Callback:loadData] start', startIndex, stopIndex, {
+       *   currentLoad: memo.currentLoad,
+       *   start,
+       *   count,
+       * });
+       */
       return new Promise<void>((resolve, reject) => {
         startTransition(async () => {
           try {
             // DEBUG: Delay
-            await new Promise((resolve) => setTimeout(resolve, 2000));
+            await new Promise((resolve) => setTimeout(resolve, 1000));
             const data = await fetchServerData({ start, count });
             // Combine records...
             setRecordsData((recordsData) => {
@@ -97,23 +100,28 @@ export function Home() {
                 ...data,
                 records,
               };
-              console.log('[Home:Callback:loadData] success', {
-                loadedCount: data.records.length,
-                totalCount: data.totalCount,
-                availCount: data.availCount,
-                newRecordsData,
-                recordsData,
-                records,
-                data,
-                start,
-              });
+              /* console.log('[Home:Callback:loadData] success', {
+               *   loadedCount: data.records.length,
+               *   totalCount: data.totalCount,
+               *   availCount: data.availCount,
+               *   newRecordsData,
+               *   recordsData,
+               *   records,
+               *   data,
+               *   start,
+               * });
+               */
+              // Show success toast
+              toast.success('Data succesfully loaded.', defaultToastOptions);
               resolve();
-              if (memo.requestedLoad) {
-                const { startIndex, stopIndex } = memo.requestedLoad;
-                console.log('[Home:Callback:loadData] starting requestedLoad', startIndex, stopIndex);
-                setTimeout(() => loadData(startIndex, stopIndex), 0);
-                memo.requestedLoad = undefined;
-              }
+              /* // UNUSED: Postponed loading
+               * if (memo.requestedLoad) {
+               *   const { startIndex, stopIndex } = memo.requestedLoad;
+               *   console.log('[Home:Callback:loadData] starting requestedLoad', startIndex, stopIndex);
+               *   setTimeout(() => loadData(startIndex, stopIndex), 0);
+               *   memo.requestedLoad = undefined;
+               * }
+               */
               return newRecordsData;
             });
           } catch (error) {
@@ -123,10 +131,13 @@ export function Home() {
               count,
             });
             debugger; // eslint-disable-line no-debugger
-            // TODO: Show toast
+            // Show error toast
+            toast.error('Error loading data.', defaultToastOptions);
             reject(error);
           } finally {
-            memo.currentLoad = undefined;
+            /* // UNUSED: Postponed loading
+             * memo.currentLoad = undefined;
+             */
           }
         });
       });

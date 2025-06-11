@@ -1,4 +1,5 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify';
 
 import { AppNavBar } from '@/components/AppNavBar';
 import { Hello } from '@/pages/Hello';
@@ -20,6 +21,7 @@ function App() {
     <BrowserRouter>
       <AppNavBar />
       <AppRoutes />
+      <ToastContainer />
     </BrowserRouter>
   );
 }
