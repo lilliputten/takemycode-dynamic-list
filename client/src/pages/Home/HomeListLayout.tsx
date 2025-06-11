@@ -1,10 +1,11 @@
+import React from 'react';
+
 import { isDev } from '@/config/env';
 import { cn } from '@/lib/utils';
 import { LoadingSplash } from '@/blocks/LoadingSplash';
 import { MaxWidthWrapper } from '@/blocks/MaxWidthWrapper';
-import { TPropsWithChildren } from '@/types/react';
 
-interface TProps extends TPropsWithChildren {
+interface TProps extends React.PropsWithChildren {
   hasData: boolean;
   isPending: boolean;
 }
@@ -21,7 +22,7 @@ export function HomeListLayout(props: TProps) {
         isDev && '__HomeListLayout', // DEBUG
         'w-full flex-1',
         'flex flex-col',
-        'px-4 py-2',
+        'p-4',
         'relative overflow-hidden',
       )}
     >

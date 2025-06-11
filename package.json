@@ -15,7 +15,6 @@
     "@babel/eslint-parser": "^7.25.9",
     "@ianvs/prettier-plugin-sort-imports": "^4.4.0",
     "@types/node": "^20.17.9",
-    "@types/tinycolor2": "^1.4.6",
     "@typescript-eslint/eslint-plugin": "^8.16.0",
     "@typescript-eslint/parser": "^8.16.0",
     "concurrently": "^9.1.2",
