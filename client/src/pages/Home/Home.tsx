@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 
 import { defaultToastOptions } from '@/config/defaultToastOptions';
 import { isDev } from '@/config/env';
+import { getRemSize } from '@/lib/getRemSize';
 import { cn } from '@/lib/utils';
 import { RecordsList } from '@/components/RecordsList';
 import { SortableWrapper } from '@/components/SortableWrapper';
@@ -16,10 +17,12 @@ import { HomeHeader } from './HomeHeader';
 import { HomeListLayout } from './HomeListLayout';
 
 interface TMemo {
+  /** Currently loading request (usign if we limit only one loading request in the same time */
   currentLoad?: {
     startIndex: number;
     stopIndex: number;
   };
+  /** Postponed requested data to load. Required optimization. */
   requestedLoad?: {
     startIndex: number;
     stopIndex: number;
@@ -30,6 +33,17 @@ export function Home() {
   const [isPending, startTransition] = React.useTransition();
   const [recordsData, setRecordsData] = React.useState<TRecordsData | undefined>();
   const [checkedRecords, setCheckedRecords] = React.useState<number[]>([]);
+
+  /** Approximate 'window' size for initial data load (a little more than window can fit) */
+  const initialRecordsCount = React.useMemo(() => {
+    const remSize = getRemSize();
+    const windowSize = window.innerHeight || 480;
+    const value = Math.round(windowSize / remSize);
+    return value;
+  }, []);
+
+  // Local filter value
+  const [filterText, setFilterText] = React.useState('Filter text');
 
   const memo = React.useMemo<TMemo>(() => ({}), []);
 
@@ -78,12 +92,12 @@ export function Home() {
        */
       const start = startIndex;
       const count = stopIndex - startIndex + 1;
-      /* console.log('[Home:Callback:loadData] start', startIndex, stopIndex, {
-       *   currentLoad: memo.currentLoad,
-       *   start,
-       *   count,
-       * });
-       */
+      // DEBUG: Indicate data load start
+      console.log('[Home:Callback:loadData] start', startIndex, stopIndex, {
+        currentLoad: memo.currentLoad,
+        start,
+        count,
+      });
       return new Promise<void>((resolve, reject) => {
         startTransition(async () => {
           try {
@@ -100,19 +114,19 @@ export function Home() {
                 ...data,
                 records,
               };
-              /* console.log('[Home:Callback:loadData] success', {
-               *   loadedCount: data.records.length,
-               *   totalCount: data.totalCount,
-               *   availCount: data.availCount,
-               *   newRecordsData,
-               *   recordsData,
-               *   records,
-               *   data,
-               *   start,
-               * });
-               */
+              // DEBUG: Show loaded data
+              console.log('[Home:Callback:loadData] success', {
+                loadedCount: data.records.length,
+                totalCount: data.totalCount,
+                availCount: data.availCount,
+                newRecordsData,
+                recordsData,
+                records,
+                data,
+                start,
+              });
               // Show success toast
-              toast.success('Data succesfully loaded.', defaultToastOptions);
+              setTimeout(() => toast.success('Data succesfully loaded.', defaultToastOptions), 0);
               resolve();
               /* // UNUSED: Postponed loading
                * if (memo.requestedLoad) {
@@ -132,7 +146,7 @@ export function Home() {
             });
             debugger; // eslint-disable-line no-debugger
             // Show error toast
-            toast.error('Error loading data.', defaultToastOptions);
+            setTimeout(() => toast.error('Error loading data.', defaultToastOptions), 0);
             reject(error);
           } finally {
             /* // UNUSED: Postponed loading
@@ -148,7 +162,8 @@ export function Home() {
   /** Fully reload all the data */
   const reloadData = React.useCallback(() => {
     // TODO: Reset/init data
-    loadData(0, 20);
+    setRecordsData(undefined);
+    loadData(0, initialRecordsCount);
   }, [loadData]);
 
   /** Load data on init */
@@ -184,6 +199,19 @@ export function Home() {
     // TODO: Send update to the server
   }, []);
 
+  /** Fully reload all the data */
+  const saveFilter = React.useCallback(
+    (filterText: string) => {
+      console.log('[Home:saveFilter]', {
+        filterText,
+      });
+      setFilterText(filterText);
+      // TODO: Send data to the server & reload data
+      reloadData();
+    },
+    [reloadData],
+  );
+
   return (
     <div
       className={cn(
@@ -192,7 +220,14 @@ export function Home() {
         'overflow-hidden',
       )}
     >
-      <HomeHeader />
+      <HomeHeader
+        isPending={isPending}
+        hasData={hasData}
+        reloadData={reloadData}
+        saveFilter={saveFilter}
+        initialFilter={filterText}
+        actualFilter={filterText}
+      />
       <HomeListLayout isPending={isPending} hasData={hasData}>
         {hasData && (
           <SortableWrapper

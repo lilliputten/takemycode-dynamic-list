@@ -39,12 +39,12 @@ export function AppNavBar() {
         <div
           className={cn(
             isDev && '__AppNav_Title', // DEBUG
-            'truncate',
+            'truncate text-xl',
           )}
         >
           Dynamic List Demo App
         </div>
-        {/*
+        {/* // UNUSED: Top-lvel menu
         <div
           className={cn(
             isDev && '__AppNav_MenuBox', // DEBUG

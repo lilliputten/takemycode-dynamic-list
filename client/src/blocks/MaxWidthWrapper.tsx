@@ -10,7 +10,7 @@ export function MaxWidthWrapper(props: TPropsWithChildrenAndClassName) {
         isDev && '__MaxWidthWrapper', // DEBUG
         // isDev && 'border', // DEBUG
         className,
-        'mx-auto max-w-2xl',
+        'mx-auto max-w-3xl',
       )}
     >
       {children}
