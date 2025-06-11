@@ -14,13 +14,11 @@ export function HomeFooter() {
       <MaxWidthWrapper
         className={cn(
           isDev && '__HomeFooter_Wrapper', // DEBUG
-          'text-xs',
+          'text-sm',
           'opacity-50',
-          // 'overflow-hidden text-ellipsis whitespace-nowrap',
           'truncate',
         )}
       >
-        {/* TODO: Content */}
         {versionInfo}
       </MaxWidthWrapper>
     </footer>

@@ -36,7 +36,7 @@ export function HomeListLayout(props: TProps) {
       >
         {children}
       </MaxWidthWrapper>
-      {/* TODO: Show fatal error splash here */}
+      {/* TODO: Show a fatal error splash here? */}
       <LoadingSplash isPending={!hasData} />
     </div>
   );

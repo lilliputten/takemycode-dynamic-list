@@ -10,13 +10,14 @@
   --primaryColor: #48f;
   --secondaryColor: #fb1;
   --appDestructiveColor: #f55;
+  --formSize: 2.5em;
 
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
   /* Set font size to approx fit 20 lines in the list */
-  font-size: max(16px, 1.65vh);
+  /* font-size: max(14px, 1.62vh); */
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
@@ -50,6 +51,74 @@ body {
   align-content: space-around;
 }
 
+/* Tailwind forms
+ * @see https://v1.tailwindcss.com/components/forms
+ */
+.input {
+  @apply appearance-none rounded border px-3 py-1 leading-tight shadow;
+  height: var(--formSize);
+}
+.input.inactive,
+.input.disabled {
+  @apply pointer-events-none;
+}
+.input.disabled {
+  @apply opacity-50;
+}
+
+.input-text {
+  /* @apply shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline; */
+}
+.input-primary {
+  @apply border-1 ring-(--primaryColor) border-blue-500 focus:outline-none focus:ring;
+}
+
+/* Tailwind buttons
+ * @see https://v1.tailwindcss.com/components/buttons
+ */
+.btn {
+  @apply box-border flex items-center gap-2 truncate rounded px-4 py-1 transition-all;
+  height: var(--formSize);
+}
+.btn.inactive,
+.btn.disabled {
+  @apply pointer-events-none;
+}
+.btn.disabled {
+  @apply opacity-50;
+}
+.btn:not(.inactive):not(.disabled) {
+  @apply cursor-pointer;
+}
+.btn-icon {
+  @apply justify-center px-1;
+  min-width: var(--formSize); /* Try to make it square */
+}
+.btn-plain {
+}
+.btn-plain:hover {
+  @apply bg-blue-400/20;
+}
+.btn-framed {
+  @apply border-1 border-blue-500;
+}
+.btn-framed:hover {
+  @apply bg-blue-400/20;
+}
+.btn-primary {
+  @apply bg-(--primaryColor);
+}
+.btn-primary:hover {
+  @apply bg-(--primaryColor)/80;
+}
+.btn-blue {
+  @apply bg-blue-500;
+}
+.btn-blue:hover {
+  @apply bg-blue-400;
+}
+
+/*
 button {
   border-radius: 8px;
   border: 1px solid transparent;
@@ -68,6 +137,7 @@ button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
+*/
 
 @media (prefers-color-scheme: light) {
   :root {

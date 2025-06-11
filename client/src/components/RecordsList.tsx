@@ -1,6 +1,3 @@
-// import { DndContext, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
-// import type { Active, UniqueIdentifier } from '@dnd-kit/core';
-// import { arrayMove, SortableContext, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import { TRecordsData } from '@shared-types/TRecordsData';
 
 import React from 'react';
@@ -26,7 +23,6 @@ const remsPerItem = 2.5;
 
 export function RecordsList(props: TProps) {
   const {
-    // All the params (TODO: Use context?)
     // isPending,
     recordsData,
     loadMoreItems,
@@ -45,7 +41,6 @@ export function RecordsList(props: TProps) {
     // All the data
     records,
     availCount,
-    // start,
     // totalCount,
   } = recordsData;
 
@@ -68,10 +63,10 @@ export function RecordsList(props: TProps) {
     return () => observer.disconnect();
   }, []);
 
-  const rowRenderer = ({ index, style /* , data */ }: ListChildComponentProps) => {
+  const rowRenderer = ({ index, style }: ListChildComponentProps) => {
     const record = records[index];
     if (!record) {
-      // console.warn('[RecordsList:rowRenderer] No record for index', index);
+      // Display empty row if no record has loaded
       return <RecordEmpty style={style} index={index} />;
     }
     return (
@@ -94,7 +89,7 @@ export function RecordsList(props: TProps) {
         isDev && '__RecordsList', // DEBUG
         'w-full flex-1',
         'transition-all',
-        // isPending && 'pointer-events-none opacity-20',
+        'relative overflow-hidden',
       )}
     >
       <InfiniteLoader
