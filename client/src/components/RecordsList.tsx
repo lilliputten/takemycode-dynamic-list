@@ -1,5 +1,9 @@
-import React from 'react';
+// import { DndContext, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+// import type { Active, UniqueIdentifier } from '@dnd-kit/core';
+// import { arrayMove, SortableContext, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import { TRecordsData } from '@shared-types/TRecordsData';
+
+import React from 'react';
 import { FixedSizeList, ListChildComponentProps } from 'react-window';
 import InfiniteLoader from 'react-window-infinite-loader';
 
@@ -18,12 +22,12 @@ interface TProps {
   toggleRecord: (recordId: number, checked: boolean) => void;
 }
 
-const remsPerItem = 2;
+const remsPerItem = 2.5;
 
 export function RecordsList(props: TProps) {
   const {
     // All the params (TODO: Use context?)
-    isPending,
+    // isPending,
     recordsData,
     loadMoreItems,
     checkedRecords,
@@ -64,7 +68,7 @@ export function RecordsList(props: TProps) {
     return () => observer.disconnect();
   }, []);
 
-  const rowRenderer = ({ index, style, data }: ListChildComponentProps) => {
+  const rowRenderer = ({ index, style /* , data */ }: ListChildComponentProps) => {
     const record = records[index];
     if (!record) {
       // console.warn('[RecordsList:rowRenderer] No record for index', index);
@@ -89,7 +93,8 @@ export function RecordsList(props: TProps) {
       className={cn(
         isDev && '__RecordsList', // DEBUG
         'w-full flex-1',
-        isPending && 'pointer-events-none opacity-50',
+        'transition-all',
+        // isPending && 'pointer-events-none opacity-20',
       )}
     >
       <InfiniteLoader
@@ -105,7 +110,7 @@ export function RecordsList(props: TProps) {
             height={size.height}
             onItemsRendered={onItemsRendered}
             itemKey={itemKey}
-            // itemData={checkedRecords}
+            itemData={checkedRecords}
             ref={ref}
           >
             {rowRenderer}

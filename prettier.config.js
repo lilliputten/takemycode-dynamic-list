@@ -8,6 +8,8 @@ module.exports = {
   trailingComma: 'all',
   printWidth: 100,
   importOrder: [
+    '@shared',
+    '',
     '^(react/(.*)$)|^(react$)',
     '^(next/(.*)$)|^(next$)',
     '^(jest/(.*)$)|^(jest)',

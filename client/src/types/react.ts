@@ -8,8 +8,7 @@ export type TReactNode = React.ReactNode | TReactPrimitive;
 export interface TPropsWithClassName {
   className?: string;
 }
-export type TPropsWithChildren = React.PropsWithChildren;
-export type TPropsWithChildrenAndClassName = TPropsWithChildren & TPropsWithClassName;
+export type TPropsWithChildrenAndClassName = React.PropsWithChildren & TPropsWithClassName;
 
 export function isClassComponent(component: unknown) {
   return typeof component === 'function' && !!component.prototype.isReactComponent;
