@@ -1,28 +1,24 @@
-import { TRecordsData } from '@shared-types/TRecordsData';
-
 import { isDev } from '@/config/env';
 import { cn } from '@/lib/utils';
-import { RecordsList } from '@/components/RecordsList';
 import { LoadingSplash } from '@/blocks/LoadingSplash';
 import { MaxWidthWrapper } from '@/blocks/MaxWidthWrapper';
+import { TPropsWithChildren } from '@/types/react';
 
-interface TProps {
+interface TProps extends TPropsWithChildren {
+  hasData: boolean;
   isPending: boolean;
-  recordsData?: TRecordsData;
 }
 
-export function HomeBody(props: TProps) {
+export function HomeListLayout(props: TProps) {
   const {
-    // All the params (TODO: Use context?)
-    isPending,
-    recordsData,
+    // isPending,
+    hasData,
+    children,
   } = props;
-  const hasData = !!recordsData;
-
   return (
     <div
       className={cn(
-        isDev && '__HomeBody', // DEBUG
+        isDev && '__HomeListLayout', // DEBUG
         'w-full flex-1',
         'flex flex-col',
         'px-4 py-2',
@@ -31,19 +27,13 @@ export function HomeBody(props: TProps) {
     >
       <MaxWidthWrapper
         className={cn(
-          isDev && '__HomeBody_Wrapper', // DEBUG
+          isDev && '__HomeListLayout_Wrapper', // DEBUG
           'w-full flex-1',
           'flex flex-col',
           'relative overflow-hidden',
         )}
       >
-        {hasData && (
-          <RecordsList
-            // TODO: Use context?
-            isPending={isPending}
-            recordsData={recordsData}
-          />
-        )}
+        {children}
       </MaxWidthWrapper>
       {/* TODO: Show fatal error splash here */}
       <LoadingSplash isPending={!hasData} />
