@@ -5,7 +5,7 @@ import { APIError } from '@/shared/errors/APIError';
 
 const jsonContentType = 'application/json; charset=utf-8';
 
-export async function getConfig() {
+export async function fetchConfig() {
   const url = configApiUrl;
   const method = 'GET';
   const headers = {
@@ -22,7 +22,7 @@ export async function getConfig() {
     });
     const { ok, status, statusText } = res;
     // TODO: Check if it's json response?
-    let data: (unknown & { detail?: string }) | undefined = undefined;
+    let data: (APIConfig & { detail?: string }) | undefined = undefined;
     let dataStr: string = '';
     try {
       dataStr = await res.text();
@@ -34,38 +34,27 @@ export async function getConfig() {
       // TODO: To generate an error?
     }
     if (!ok || status !== 200) {
-      const errMsg = ['Error:' + ' ' + status, data?.detail || statusText]
-        .filter(Boolean)
-        .join(': ');
+      const errMsg = [`Error: ${status}`, data?.detail || statusText].filter(Boolean).join(': ');
       // eslint-disable-next-line no-console
-      console.error('[api/methods/getConfig:Effect] fetch: not ok error', errMsg, {
+      console.error('[api/methods/fetchConfig:Effect] fetch: not ok error', errMsg, {
         ok,
         data,
         statusText,
         status,
         res,
         url,
-        // requestData,
-        // method,
-        // headers,
       });
       debugger; // eslint-disable-line no-debugger
       throw new Error(errMsg);
     }
-    /* console.log('[api/methods/getConfig:Effect] fetch: result', {
-     *   res,
-     *   data,
-     *   dataStr,
-     * });
-     */
     return data as APIConfig;
   } catch (error) {
     // eslint-disable-next-line no-console
-    console.error('[api/methods/getConfig:Effect] fetch: caught error', {
+    console.error('[api/methods/fetchConfig:Effect] fetch: caught error', {
       error,
       url,
     });
     // debugger; // eslint-disable-line no-debugger
-    throw new APIError('Can not receive config data (see console error).');
+    throw new APIError('Can not fetch config data (see console error).');
   }
 }
