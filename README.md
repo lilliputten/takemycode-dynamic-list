@@ -1,13 +1,13 @@
 <!--
  @since 2025.06.07, 19:45
- @changed 2025.06.12, 11:18
+ @changed 2025.06.12, 15:31
 -->
 
 # Dynamic list implemented via ExpressJS and React
 
 ## Build info (auto-generated)
 
-- Project info: v.0.1.1 / 2025.06.12 14:56:23 +0300
+- Project info: v.0.1.1 / 2025.06.12 15:14:05 +0300
 
 ## Resources
 
@@ -61,12 +61,19 @@ See migration files in [server/src/migrations](server/src/migrations).
 
 Create the database with a commands:
 
+- [server/src/migrations/01-init/00-init-scheme.sql](server/src/migrations/01-init/00-init-scheme.sql): Scheme initialization.
+- [server/src/migrations/01-init/01-connect-pg-simple-table.sql](server/src/migrations/01-init/01-connect-pg-simple-table.sql): Session table, as required by [connect-pg-simple](https://www.npmjs.com/package/connect-pg-simple) plugin.
+- [server/src/migrations/01-init/02-system-tables.sql](server/src/migrations/01-init/02-system-tables.sql): Maintenance tables (might be used for migrations and other system things).
+- [server/src/migrations/01-init/03-data-tables.sql](server/src/migrations/01-init/03-data-tables.sql): Applied tables, stored the filter, sorting order and checked records state.
+
 ```bash
-psql "$DATABASE_URL" < server/src/migrations/01-init/00-init-scheme.sql &&
-psql "$DATABASE_URL" < server/src/migrations/01-init/01-connect-pg-simple-table.sql &&
-psql "$DATABASE_URL" < server/src/migrations/01-init/02-system-tables.sql &&
+psql "$DATABASE_URL" < server/src/migrations/01-init/00-init-scheme.sql
+psql "$DATABASE_URL" < server/src/migrations/01-init/01-connect-pg-simple-table.sql
+psql "$DATABASE_URL" < server/src/migrations/01-init/02-system-tables.sql
 psql "$DATABASE_URL" < server/src/migrations/01-init/03-data-tables.sql
 ```
+
+See also a script [server/src/migrations/01-init/install-all.sh](server/src/migrations/01-init/install-all.sh).
 
 HINT: Use `set -a; source .env; set +a` in to expose local variables form a local `.env` file. Check the environment variable via: `echo $DATABASE_URL`
 
@@ -85,6 +92,8 @@ Environment variable: `SESSION_COOKIE_SECRET`.
 - [Add a 'Reset order' action button.](https://github.com/lilliputten/takemycode-dynamic-list/issues/19)
 - [Optimize incremental data load in `client/src/pages/Home/Home:loadData`.](https://github.com/lilliputten/takemycode-dynamic-list/issues/18)
 - Allow to check/uncheck all the records.
+- Fix 'infinity' scrollbar to show real loaded/total data relatioin in Firefox. Also, it's impossible to jump to the bottommost items by keyboard, by press End, only by PgDns.
+- Add periodical data cleaning code invocation on the server.
 
 See other [issues](https://github.com/lilliputten/takemycode-dynamic-list/issues) in the project' repository.
 

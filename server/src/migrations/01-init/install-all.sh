@@ -15,4 +15,3 @@ psql "$DATABASE_URL" < 01-connect-pg-simple-table.sql && \
 psql "$DATABASE_URL" < 02-system-tables.sql && \
 psql "$DATABASE_URL" < 03-data-tables.sql && \
 echo OK
-
