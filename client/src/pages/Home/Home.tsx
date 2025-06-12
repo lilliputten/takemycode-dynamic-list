@@ -136,6 +136,8 @@ export function Home() {
       // currentLoad: memo.currentLoad,
       start,
       count,
+      startIndex,
+      stopIndex,
     });
     return new Promise<void>((resolve, reject) => {
       startTransition(async () => {
@@ -155,18 +157,21 @@ export function Home() {
               ...data,
               records,
             };
-            // DEBUG: Show loaded data info
-            // eslint-disable-next-line no-console
-            console.log('[Home:Callback:loadData] success', {
-              loadedCount: data.records.length,
-              totalCount: data.totalCount,
-              availCount: data.availCount,
-              newRecordsData,
-              recordsData,
-              records,
-              data,
-              start,
-            });
+            /* // DEBUG: Show loaded data info
+             * // eslint-disable-next-line no-console
+             * console.log('[Home:Callback:loadData] success', {
+             *   loadedCount: data.records.length,
+             *   totalCount: data.totalCount,
+             *   availCount: data.availCount,
+             *   newRecordsData,
+             *   recordsData,
+             *   records,
+             *   data,
+             *   start,
+             *   startIndex,
+             *   stopIndex,
+             * });
+             */
             // Show success toast
             setTimeout(() => toast.success('Data succesfully loaded.', defaultToastOptions), 0);
             resolve();

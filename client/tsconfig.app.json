@@ -4,20 +4,13 @@
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
     "target": "ES2020",
     "useDefineForClassFields": true,
-    "lib": [
-      "ES2020",
-      "DOM",
-      "DOM.Iterable"
-      // "es5",
-      // "dom"
-    ],
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
 
     /* Bundler mode */
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
-    // "verbatimModuleSyntax": true,
     "moduleDetection": "force",
     "noEmit": true,
     "jsx": "react-jsx",
@@ -27,16 +20,23 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    // "erasableSyntaxOnly": true,
-    // "noUncheckedSideEffectImports": true,
 
     /* Paths */
     "baseUrl": ".",
     "paths": {
       "@shared-types/*": ["../server/src/shared-types/*"],
+      // DEBUG: Exposing some packages to debug & patch
+      // "react-window/*": ["./react-window/*"],
+      // "react-window-infinite-loader/*": ["./react-window-infinite-loader/*"],
       "@/*": ["./src/*"]
     },
     "typeRoots": ["../server/src/shared-types"]
   },
-  "include": ["src", "../server/src/shared-types/**/*.ts"]
+  "include": [
+    "../server/src/shared-types/**/*.ts",
+    // DEBUG: Exposing some packages to debug & patch
+    // "./react-window",
+    // "./react-window-infinite-loader",
+    "./src"
+  ]
 }

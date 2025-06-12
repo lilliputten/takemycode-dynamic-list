@@ -57,3 +57,5 @@ next-env.d.ts
 /certificates
 /.vercel
 .vercel
+
+client/@dnd-kit

@@ -45,3 +45,5 @@ pnpm-lock.*
 
 # This project...
 tsconfig*.json
+
+client/@dnd-kit
