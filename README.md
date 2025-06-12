@@ -64,7 +64,7 @@ See migration files in [server/src/migrations](server/src/migrations):
 - [02-system-tables.sql](server/src/migrations/01-init/02-system-tables.sql): Maintenance tables (might be used for migrations and other system things).
 - [03-data-tables.sql](server/src/migrations/01-init/03-data-tables.sql): Applied tables, stored the filter, sorting order and checked records state.
 
-Create the database with a commands:
+Create the database via commands:
 
 ```bash
 psql "$DATABASE_URL" < server/src/migrations/01-init/00-init-scheme.sql
