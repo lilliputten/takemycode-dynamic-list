@@ -1,6 +1,6 @@
 <!--
  @since 2025.06.07, 19:45
- @changed 2025.06.10, 01:03
+ @changed 2025.06.12, 11:18
 -->
 
 # Dynamic list implemented via ExpressJS and React
@@ -53,9 +53,22 @@ Run local servers via `pnpm dev`: it will start both client and server apps loca
 
 ## Database
 
+PostgreSQL database used in the project to store sessions and user data for records orders, checked statuses and filters (per session).
+
 Used local or vercel based neon postgess instance, configured through environment `DATABASE_URL` variable.
 
 See migration files in [server/src/migrations](server/src/migrations).
+
+Create the database with a commands:
+
+```bash
+psql "$DATABASE_URL" < server/src/migrations/01-init/00-init-scheme.sql &&
+psql "$DATABASE_URL" < server/src/migrations/01-init/01-connect-pg-simple-table.sql &&
+psql "$DATABASE_URL" < server/src/migrations/01-init/02-system-tables.sql &&
+psql "$DATABASE_URL" < server/src/migrations/01-init/03-data-tables.sql
+```
+
+HINT: Use `set -a; source .env; set +a` in to expose local variables form a local `.env` file. Check the environment variable via: `echo $DATABASE_URL`
 
 ## Server sessions
 
@@ -64,8 +77,16 @@ Used:
 - [express-session](https://www.npmjs.com/package/express-session#compatible-session-stores)
 - [connect-pg-simple](https://www.npmjs.com/package/connect-pg-simple)
 
-See `node_modules/connect-pg-simple/table.sql` (copied to [server/src/migrations/01-init/connect-pg-simple-table.sql](server/src/migrations/01-init/connect-pg-simple-table.sql)).
+See `node_modules/connect-pg-simple/table.sql` (copied to [server/src/migrations/01-init/01-connect-pg-simple-table.sql](server/src/migrations/01-init/01-connect-pg-simple-table.sql)).
 Environment variable: `SESSION_COOKIE_SECRET`.
+
+## TODO
+
+- [Add a 'Reset order' action button.](https://github.com/lilliputten/takemycode-dynamic-list/issues/19)
+- [Optimize incremental data load in `client/src/pages/Home/Home:loadData`.](https://github.com/lilliputten/takemycode-dynamic-list/issues/18)
+- Allow to check/uncheck all the records.
+
+See other [issues](https://github.com/lilliputten/takemycode-dynamic-list/issues) in the project' repository.
 
 ## See also
 

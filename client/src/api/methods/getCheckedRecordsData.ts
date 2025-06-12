@@ -1,16 +1,16 @@
-import { saveOrderApiUrl } from '@/config/routes';
+import { getCheckedApiUrl } from '@/config/routes';
 import { jsonContentType } from '@/config/server';
 import { APIError } from '@/shared/errors/APIError';
 import { TServerDetailsResponse } from '@/types/server';
 
-interface TParams {
-  recordId: number;
-  targetId: number;
+interface TServerData {
+  /** List of checked record ids... */
+  list: number[];
 }
 
-export async function saveOrderToServer(params: TParams) {
-  const url = saveOrderApiUrl;
-  const method = 'POST';
+export async function getCheckedRecordsData() {
+  const url = getCheckedApiUrl;
+  const method = 'GET';
   const headers = {
     Accept: jsonContentType,
     'Content-Type': jsonContentType,
@@ -20,24 +20,27 @@ export async function saveOrderToServer(params: TParams) {
       method,
       headers,
       credentials: 'include', // Allow to pass cookies (session, csrf etc)
-      body: JSON.stringify(params),
     });
     const { ok, status, statusText } = res;
     // TODO: Check if it's json response?
-    let data: TServerDetailsResponse | undefined = undefined;
+    let data: (TServerData & TServerDetailsResponse) | undefined = undefined;
     let dataStr: string = '';
     try {
       dataStr = await res.text();
       data = JSON.parse(dataStr);
-    } catch (
-      _e // eslint-disable-line @typescript-eslint/no-unused-vars
-    ) {
-      // NOOP // TODO: To generate an error?
+      if (!data) {
+        throw new Error('Got empty data');
+      }
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('[api/methods/getCheckedRecordsData] data parse error', error);
+      // debugger; // eslint-disable-line no-debugger
+      throw new Error('Cannot parse data');
     }
     if (!ok || status !== 200) {
       const errMsg = [`Error: ${status}`, data?.detail || statusText].filter(Boolean).join(': ');
       // eslint-disable-next-line no-console
-      console.error('[api/methods/saveOrderToServer] response error', errMsg, {
+      console.error('[api/methods/getCheckedRecordsData] response error', errMsg, {
         ok,
         data,
         statusText,
@@ -48,13 +51,14 @@ export async function saveOrderToServer(params: TParams) {
       debugger; // eslint-disable-line no-debugger
       throw new Error(errMsg);
     }
+    return data.list || [];
   } catch (error) {
     // eslint-disable-next-line no-console
-    console.error('[api/methods/saveOrderToServer] caught error', {
+    console.error('[api/methods/getCheckedRecordsData] caught error', {
       error,
       url,
     });
     // debugger; // eslint-disable-line no-debugger
-    throw new APIError('Can not save records order to server (see console error).');
+    throw new APIError('Can not fetch records data (see console error).');
   }
 }

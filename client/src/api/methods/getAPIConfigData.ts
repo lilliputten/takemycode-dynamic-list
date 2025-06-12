@@ -5,7 +5,7 @@ import { jsonContentType } from '@/config/server';
 import { APIError } from '@/shared/errors/APIError';
 import { TServerDetailsResponse } from '@/types/server';
 
-export async function fetchConfig() {
+export async function getAPIConfigData() {
   const url = configApiUrl;
   const method = 'GET';
   const headers = {
@@ -36,7 +36,7 @@ export async function fetchConfig() {
     if (!ok || status !== 200) {
       const errMsg = [`Error: ${status}`, data?.detail || statusText].filter(Boolean).join(': ');
       // eslint-disable-next-line no-console
-      console.error('[api/methods/fetchConfig:Effect] fetch: not ok error', errMsg, {
+      console.error('[api/methods/getAPIConfigData:Effect] fetch: not ok error', errMsg, {
         ok,
         data,
         statusText,
@@ -50,7 +50,7 @@ export async function fetchConfig() {
     return data as APIConfig;
   } catch (error) {
     // eslint-disable-next-line no-console
-    console.error('[api/methods/fetchConfig:Effect] fetch: caught error', {
+    console.error('[api/methods/getAPIConfigData:Effect] fetch: caught error', {
       error,
       url,
     });

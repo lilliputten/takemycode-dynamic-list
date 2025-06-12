@@ -7,14 +7,14 @@ import viteLogo from '/vite.svg';
 import './Test.css';
 
 import { versionInfo } from '@/config/env';
-import { fetchConfig } from '@/api/methods/fetchConfig';
+import { getAPIConfigData } from '@/api/methods/getAPIConfigData';
 
 export function Test() {
   const [count, setCount] = React.useState(0);
   const [result, setResult] = React.useState('');
 
   React.useEffect(() => {
-    fetchConfig()
+    getAPIConfigData()
       .then((data) => {
         const dataStr = JSON.stringify(data, null, 2);
         /* console.log('[Test:Effect] fetch: result', {

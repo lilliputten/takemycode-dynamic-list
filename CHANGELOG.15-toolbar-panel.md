@@ -7,4 +7,3 @@
 
 - Issue #15: Added toast notifications.
 - Issue #15: Added toolbar panel with an indicator, a filter and action buttons.
-

@@ -9,7 +9,6 @@ import appInfo from '@/shared-types/app-info.json';
 // Extract to config/env
 const versionInfo = appInfo.versionInfo;
 
-// eslint-disable-next-line no-console
 console.log('[server/src/index] versionInfo:', versionInfo);
 console.log('[server/src/index] process.argv:', process.argv);
 console.log('[server/src/index] VERCEL_URL:', VERCEL_URL);
@@ -17,7 +16,6 @@ console.log('[server/src/index] ORIGIN_HOST:', ORIGIN_HOST);
 console.log('[server/src/index] DATABASE_URL:', DATABASE_URL);
 console.log('[server/src/index] isVercel:', isVercel);
 console.log('[server/src/index] isDev:', isDev);
-// console.log('[server/src/index] createApp:', createApp);
 
 if (!DATABASE_URL) {
   // eslint-disable-next-line no-console, prettier/prettier

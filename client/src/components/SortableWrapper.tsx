@@ -24,19 +24,16 @@ interface TProps extends React.PropsWithChildren {
   isPending: boolean;
   recordsData: TRecordsData;
   checkedRecords: number[];
-  // toggleRecord: (recordId: number, checked: boolean) => void;
   changeRecordsOrder: (moveId: number, overId: number) => void;
 }
 
 export function SortableWrapper(props: TProps) {
   const {
-    // All the params (TODO: Use context?)
     children,
-    // isPending,
     recordsData,
     checkedRecords,
-    // toggleRecord,
     changeRecordsOrder,
+    // isPending,
   } = props;
 
   const { records } = recordsData;
@@ -44,7 +41,7 @@ export function SortableWrapper(props: TProps) {
   // Dnd-kit
   const [active, setActive] = React.useState<Active | null>(null);
   const activeRecord = React.useMemo(
-    () => records.find((item) => item.id === active?.id),
+    () => records.find((item) => item && item.id === active?.id),
     [active, records],
   );
   const sensors = useSensors(
