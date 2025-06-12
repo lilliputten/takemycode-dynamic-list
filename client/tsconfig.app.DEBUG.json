@@ -1,33 +1,42 @@
 {
   "compilerOptions": {
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
     "incremental": true,
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
     "target": "ES2020",
     "useDefineForClassFields": true,
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
-    "types": ["vite/client", "jest", "node"],
     "skipLibCheck": true,
 
+    /* Bundler mode */
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "moduleDetection": "force",
     "noEmit": true,
     "jsx": "react-jsx",
 
+    /* Linting */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
 
+    /* Paths */
     "baseUrl": ".",
     "paths": {
       "@shared-types/*": ["../server/src/shared-types/*"],
+      // DEBUG: Exposing some packages to debug & patch
+      // "react-window/*": ["./react-window/*"],
+      // "react-window-infinite-loader/*": ["./react-window-infinite-loader/*"],
       "@/*": ["./src/*"]
     },
-    "typeRoots": ["./node_modules/@types", "../server/src/shared-types", "./src/@types"]
+    "typeRoots": ["../server/src/shared-types"]
   },
-  "include": ["../server/src/shared-types/**/*.ts", "**/*.test.ts", "./src"]
+  "include": [
+    "../server/src/shared-types/**/*.ts",
+    // DEBUG: Exposing some packages to debug & patch
+    // "./react-window",
+    // "./react-window-infinite-loader",
+    "./src"
+  ]
 }

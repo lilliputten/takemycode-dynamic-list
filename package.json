@@ -14,6 +14,7 @@
   "devDependencies": {
     "@babel/eslint-parser": "^7.25.9",
     "@ianvs/prettier-plugin-sort-imports": "^4.4.0",
+    "@types/jest": "^29.5.14",
     "@types/node": "^20.17.9",
     "@typescript-eslint/eslint-plugin": "^8.16.0",
     "@typescript-eslint/parser": "^8.16.0",
@@ -52,11 +53,11 @@
     "check-all": "echo --Run all pre-commit check-ups-- && npm-run-all prettier lint-all && echo --All checks passed--",
     "dev-client": "pnpm --filter client run dev",
     "dev-server": "pnpm --filter server run dev",
-    "dev": "echo --Start both server and client dev servers-- && concurrently \"pnpm dev-server\" \"pnpm dev-client\"",
+    "dev": "echo --Start all workspaces dev servers-- && concurrently \"pnpm dev-server\" \"pnpm dev-client\"",
     "build": "pnpm clean-all-builds && pnpm --filter server run build && pnpm --filter client run build",
     "clean-all-builds": "rimraf -I server/dist client/dist",
     "vercel-clean": "vercel remove --safe --yes takemycode-dynamic-list",
     "vercel-publish": "echo --Build and upload pre-built bundles-- && pnpm build && vercel --prod && pnpm vercel-clean",
-    "test": "pnpm --filter server run test"
+    "test": "echo --Run test for all workspaces-- && pnpm --filter server run test && pnpm --filter client run test"
   }
 }
