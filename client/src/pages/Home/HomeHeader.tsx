@@ -1,5 +1,5 @@
 import React from 'react';
-import { Check, RefreshCcw, X } from 'lucide-react';
+import { Check, RefreshCcw, ThumbsUp, X } from 'lucide-react';
 
 import { isDev } from '@/config/env';
 import { cn } from '@/lib/utils';
@@ -7,28 +7,35 @@ import { MaxWidthWrapper } from '@/blocks/MaxWidthWrapper';
 
 interface THomeHeaderProps {
   hasData: boolean;
+  isNonBlockingPending: boolean;
   isPending: boolean;
   reloadData: () => void;
   saveFilter: (filterText: string) => void;
-  initialFilter: string;
+  // initialFilter: string;
   actualFilter: string;
 }
 
 export function HomeHeader(props: THomeHeaderProps) {
   const {
     // TODO?
+    isNonBlockingPending,
     isPending,
     hasData,
     reloadData,
     saveFilter,
-    initialFilter,
+    // initialFilter,
     actualFilter,
   } = props;
 
-  const [filterText, setFilterText] = React.useState(initialFilter);
+  const [filterText, setFilterText] = React.useState(actualFilter);
   const [isFilterChanged, setFilterChanged] = React.useState(false);
 
+  React.useEffect(() => {
+    setFilterText(actualFilter);
+  }, [actualFilter]);
+
   const isBusy = !hasData || isPending;
+  const isOperating = isBusy || isNonBlockingPending;
 
   return (
     <header
@@ -50,12 +57,13 @@ export function HomeHeader(props: THomeHeaderProps) {
             'btn btn-icon inactive',
             'bg-(--primaryColor)/15 !rounded-full',
           )}
+          title={isOperating ? 'Operating...' : 'All is Ok'}
         >
           {/* Show status indicator icon */}
-          {isPending || !hasData ? (
+          {isOperating ? (
             <RefreshCcw className="animate-spin" color="var(--primaryColor)" />
           ) : (
-            <Check color="var(--primaryColor)" />
+            <ThumbsUp color="var(--primaryColor)" />
           )}
         </div>
         <input
@@ -113,6 +121,7 @@ export function HomeHeader(props: THomeHeaderProps) {
           <RefreshCcw className={cn(isPending && 'animate-spin')} />
           Reload data
         </button>
+        {/* TODO: Add 'Reset order' button */}
       </MaxWidthWrapper>
     </header>
   );

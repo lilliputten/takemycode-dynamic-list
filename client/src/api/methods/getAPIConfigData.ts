@@ -1,11 +1,11 @@
 import type { APIConfig } from '@shared-types/APIConfig';
 
 import { configApiUrl } from '@/config/routes';
+import { jsonContentType } from '@/config/server';
 import { APIError } from '@/shared/errors/APIError';
+import { TServerDetailsResponse } from '@/types/server';
 
-const jsonContentType = 'application/json; charset=utf-8';
-
-export async function fetchConfig() {
+export async function getAPIConfigData() {
   const url = configApiUrl;
   const method = 'GET';
   const headers = {
@@ -22,7 +22,7 @@ export async function fetchConfig() {
     });
     const { ok, status, statusText } = res;
     // TODO: Check if it's json response?
-    let data: (APIConfig & { detail?: string }) | undefined = undefined;
+    let data: (APIConfig & TServerDetailsResponse) | undefined = undefined;
     let dataStr: string = '';
     try {
       dataStr = await res.text();
@@ -36,7 +36,7 @@ export async function fetchConfig() {
     if (!ok || status !== 200) {
       const errMsg = [`Error: ${status}`, data?.detail || statusText].filter(Boolean).join(': ');
       // eslint-disable-next-line no-console
-      console.error('[api/methods/fetchConfig:Effect] fetch: not ok error', errMsg, {
+      console.error('[api/methods/getAPIConfigData:Effect] fetch: not ok error', errMsg, {
         ok,
         data,
         statusText,
@@ -50,7 +50,7 @@ export async function fetchConfig() {
     return data as APIConfig;
   } catch (error) {
     // eslint-disable-next-line no-console
-    console.error('[api/methods/fetchConfig:Effect] fetch: caught error', {
+    console.error('[api/methods/getAPIConfigData:Effect] fetch: caught error', {
       error,
       url,
     });

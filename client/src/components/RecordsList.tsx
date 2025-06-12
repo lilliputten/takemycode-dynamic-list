@@ -14,12 +14,15 @@ import { RecordEmpty } from './RecordEmpty';
 interface TProps {
   isPending: boolean;
   recordsData: TRecordsData;
-  loadMoreItems: (startIndex: number, stopIndex: number) => Promise<void> | void; // InfiniteLoader.loadMoreItems;
+  loadMoreItems: (startIndex: number, stopIndex: number) => Promise<void>; // InfiniteLoader.loadMoreItems;
   checkedRecords: number[];
   toggleRecord: (recordId: number, checked: boolean) => void;
 }
 
-const remsPerItem = 2.5;
+// NOTE: The calculation of records range to load fails in
+// `react-window/createListComponent.ts:_getRangeToRender` for too long
+// scrolls. Eg, it breaks for items count=1000000 and remsPerItem=2.5.
+const remsPerItem = 2;
 
 export function RecordsList(props: TProps) {
   const {
