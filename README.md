@@ -61,10 +61,10 @@ See migration files in [server/src/migrations](server/src/migrations).
 
 Create the database with a commands:
 
-- [server/src/migrations/01-init/00-init-scheme.sql](server/src/migrations/01-init/00-init-scheme.sql): Scheme initialization.
-- [server/src/migrations/01-init/01-connect-pg-simple-table.sql](server/src/migrations/01-init/01-connect-pg-simple-table.sql): Session table, as required by [connect-pg-simple](https://www.npmjs.com/package/connect-pg-simple) plugin.
-- [server/src/migrations/01-init/02-system-tables.sql](server/src/migrations/01-init/02-system-tables.sql): Maintenance tables (might be used for migrations and other system things).
-- [server/src/migrations/01-init/03-data-tables.sql](server/src/migrations/01-init/03-data-tables.sql): Applied tables, stored the filter, sorting order and checked records state.
+- [00-init-scheme.sql](server/src/migrations/01-init/00-init-scheme.sql): Scheme initialization.
+- [01-connect-pg-simple-table.sql](server/src/migrations/01-init/01-connect-pg-simple-table.sql): Session table, as required by [connect-pg-simple](https://www.npmjs.com/package/connect-pg-simple) plugin.
+- [02-system-tables.sql](server/src/migrations/01-init/02-system-tables.sql): Maintenance tables (might be used for migrations and other system things).
+- [03-data-tables.sql](server/src/migrations/01-init/03-data-tables.sql): Applied tables, stored the filter, sorting order and checked records state.
 
 ```bash
 psql "$DATABASE_URL" < server/src/migrations/01-init/00-init-scheme.sql
