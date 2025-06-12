@@ -39,6 +39,7 @@ export function createApp() {
    */
 
   // Set up the server app...
+  app.use(express.json());
   const corsOptions = {
     origin: ORIGIN_HOST,
     credentials: true,
@@ -83,33 +84,6 @@ export function createApp() {
     next();
   });
 
-  app.get('/api/config', async (req: Request, res: Response) => {
-    const test = 5;
-    // Check session
-    const session = req.session;
-    const sessionId = session.id;
-    // Get config from the database
-    const config = await getServerConfig();
-    console.log('[server/src/express-app.ts] config', {
-      sessionId,
-      session,
-      config,
-    });
-    // DEMO: It's possible to store some simple data in the session (TODO: Find solution to calm typescript)
-    // @ts-ignore
-    req.session.test = test;
-    const data: APIConfig = {
-      sessionId,
-      config,
-      test,
-      isDev,
-      VERCEL_URL,
-      PORT,
-      versionInfo,
-    };
-    res.end(JSON.stringify(data));
-  });
-
   app.get('/api/test', async (_req: Request, res: Response) => {
     const data = {
       test: 1,
@@ -119,38 +93,188 @@ export function createApp() {
     res.end(JSON.stringify(data));
   });
 
-  // Get data records
-  app.get('/api/data', async (req: Request, res: Response) => {
-    // Get parameters...
-    const count = Number(req.query.count) || defaultCount;
-    const start = Number(req.query.start) || 0;
-    // Check session
+  app.get('/api/get-config', async (req: Request, res: Response) => {
+    // Get session
     const session = req.session;
     const sessionId = session.id;
-    // Get config from the database
-    const config = await getServerConfig();
-    console.log('[server/src/express-app.ts] data', {
-      count,
-      start,
+    try {
+      // Get config from the database
+      const config = await getServerConfig();
+      console.log('[server/src/express-app.ts:api:get-config]', {
+        sessionId,
+        session,
+        config,
+      });
+      /* // DEMO: It's possible to store some simple data in the session (TODO: Find solution to calm typescript)
+       * // @ts-ignore
+       * req.session.test = test;
+       */
+      const data: APIConfig = {
+        sessionId,
+        config,
+        isDev,
+        VERCEL_URL,
+        PORT,
+        versionInfo,
+      };
+      res.end(JSON.stringify(data));
+    } catch (error) {
+      const detail = String(error);
+      console.error('[server/src/express-app.ts:api:get-config] caught error', detail, {
+        sessionId,
+      });
+      debugger; // eslint-disable-line no-debugger
+      res.status(500).json({ detail });
+      return;
+    }
+  });
+
+  // Total records count
+  const totalCount = 10;
+
+  // Get data records
+  app.get('/api/get-data', async (req: Request, res: Response) => {
+    // Get session
+    const session = req.session;
+    const sessionId = session.id;
+    // Get parameters...
+    const start = Number(req.query.start) || 0;
+    let count = Number(req.query.count) || defaultCount;
+    try {
+      if (start < 0 || start > totalCount) {
+        res.status(500).json({ detail: 'Invalid start parameter' });
+        return;
+      }
+      if (count < 0) {
+        res.status(500).json({ detail: 'Invalid count parameter' });
+        return;
+      }
+      if (start + count > totalCount) {
+        count = totalCount - start;
+      }
+      console.log('[server/src/express-app.ts:api:get-data]', {
+        sessionId,
+        count,
+        start,
+      });
+      // TODO: Use data generator, apply filter and sort
+      const availCount = totalCount;
+      const records = Array.from(Array(count)).map((_none, idx) => {
+        const index = start + idx;
+        const id = index + 1;
+        let text = `Item ${id}`;
+        if (isDev) {
+          text = `[${index}] ${text}`;
+        }
+        return { id, text } as TRecord;
+      });
+      const resData: TRecordsData = {
+        start,
+        count: records.length,
+        records,
+        totalCount,
+        availCount,
+      };
+      res.end(JSON.stringify(resData));
+    } catch (error) {
+      const detail = String(error);
+      console.error('[server/src/express-app.ts:api:get-data] caught error', detail, {
+        sessionId,
+        count,
+        start,
+      });
+      debugger; // eslint-disable-line no-debugger
+      res.status(500).json({ detail });
+      return;
+    }
+  });
+
+  // Save order
+  app.post('/api/save-order', async (req: Request, res: Response) => {
+    // Get session
+    const session = req.session;
+    const sessionId = session.id;
+    // Get parameters...
+    const moveId = Number(req.body.moveId) || 0;
+    const overId = Number(req.body.overId) || 0;
+    try {
+      // Check valid ids
+      if (!moveId || !overId) {
+        throw new Error('Invalid record identifier(s) passed');
+      }
+      console.log('[server/src/express-app.ts:api:save-order] data', {
+        sessionId,
+        moveId,
+        overId,
+      });
+      // TODO: Save to database
+      res.end(JSON.stringify({ ok: true }));
+    } catch (error) {
+      const detail = String(error);
+      console.error('[server/src/express-app.ts:api:save-order] caught error', detail, {
+        moveId,
+        overId,
+      });
+      debugger; // eslint-disable-line no-debugger
+      res.status(500).json({ detail });
+      return;
+    }
+  });
+
+  // Save filter
+  app.post('/api/save-filter', async (req: Request, res: Response) => {
+    // Get session
+    const session = req.session;
+    const sessionId = session.id;
+    // Get parameters...
+    const filter = req.body.filter ? String(req.body.filter) : '';
+    console.log('[server/src/express-app.ts:api:save-filter] data', {
       sessionId,
-      session,
-      config,
+      filter,
     });
-    // TODO: Use data generator, apply filter and sort
-    const totalCount = 50;
-    const availCount = totalCount;
-    const records = Array.from(Array(count)).map((_none, idx) => {
-      const id = start + idx + 1;
-      const text = `Item ${id}`;
-      return { id, text } as TRecord;
-    });
-    const resData: TRecordsData = {
-      totalCount,
-      availCount,
-      start,
-      records,
-    };
-    res.end(JSON.stringify(resData));
+    try {
+      // TODO: Save to database
+      res.end(JSON.stringify({ ok: true }));
+    } catch (error) {
+      const detail = String(error);
+      console.error('[server/src/express-app.ts:api:save-filter] caught error', detail, {
+        filter,
+      });
+      debugger; // eslint-disable-line no-debugger
+      res.status(500).json({ detail });
+      return;
+    }
+  });
+
+  // Save checked
+  app.post('/api/save-checked', async (req: Request, res: Response) => {
+    // Get parameters...
+    const checked = Boolean(req.body.checked);
+    const recordId = Number(req.body.recordId) || 0;
+    try {
+      // Check valid ids
+      if (!recordId) {
+        throw new Error('Invalid record identifier passed');
+      }
+      // Get session
+      const session = req.session;
+      const sessionId = session.id;
+      console.log('[server/src/express-app.ts:api:save-checked] data', {
+        sessionId,
+        recordId,
+        checked,
+      });
+      // TODO: Save to database
+      res.end(JSON.stringify({ ok: true }));
+    } catch (error) {
+      const detail = String(error);
+      console.error('[server/src/express-app.ts:api:save-checked] caught error', detail, {
+        recordId,
+      });
+      debugger; // eslint-disable-line no-debugger
+      res.status(500).json({ detail });
+      return;
+    }
   });
 
   console.log(`Starting a server on port ${PORT} on ${VERCEL_URL}...`);

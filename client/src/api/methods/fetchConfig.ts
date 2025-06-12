@@ -1,9 +1,9 @@
 import type { APIConfig } from '@shared-types/APIConfig';
 
 import { configApiUrl } from '@/config/routes';
+import { jsonContentType } from '@/config/server';
 import { APIError } from '@/shared/errors/APIError';
-
-const jsonContentType = 'application/json; charset=utf-8';
+import { TServerDetailsResponse } from '@/types/server';
 
 export async function fetchConfig() {
   const url = configApiUrl;
@@ -22,7 +22,7 @@ export async function fetchConfig() {
     });
     const { ok, status, statusText } = res;
     // TODO: Check if it's json response?
-    let data: (APIConfig & { detail?: string }) | undefined = undefined;
+    let data: (APIConfig & TServerDetailsResponse) | undefined = undefined;
     let dataStr: string = '';
     try {
       dataStr = await res.text();

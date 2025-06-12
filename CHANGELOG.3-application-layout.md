@@ -5,6 +5,4 @@
 
 - [Issue #3: Create basic application layout (nav bar with control buttons & filters & adaptive layout)](https://github.com/lilliputten/takemycode-dynamic-list/issues/3)
 
-## Add to changelog:
-
 - Issue #3: Created a simple adaptive layout.

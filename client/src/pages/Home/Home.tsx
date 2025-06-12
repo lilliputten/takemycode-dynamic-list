@@ -11,6 +11,9 @@ import { cn } from '@/lib/utils';
 import { RecordsList } from '@/components/RecordsList';
 import { SortableWrapper } from '@/components/SortableWrapper';
 import { fetchServerData } from '@/api/methods/fetchServerData';
+import { saveCheckedToServer } from '@/api/methods/saveCheckedToServer';
+import { saveFilterToServer } from '@/api/methods/saveFilterToServer';
+import { saveOrderToServer } from '@/api/methods/saveOrderToServer';
 
 import { HomeFooter } from './HomeFooter';
 import { HomeHeader } from './HomeHeader';
@@ -29,8 +32,12 @@ interface TMemo {
   };
 }
 
+const __doDebugDelay = isDev;
+const __debugDelay = 500;
+
 export function Home() {
   const [isPending, startTransition] = React.useTransition();
+  const [isNonBlockingPending, startNonBlockingTransition] = React.useTransition();
   const [recordsData, setRecordsData] = React.useState<TRecordsData | undefined>();
   const [checkedRecords, setCheckedRecords] = React.useState<number[]>([]);
 
@@ -49,6 +56,7 @@ export function Home() {
 
   /** Toggle record state handler */
   const toggleRecord = React.useCallback((recordId: number, checked: boolean) => {
+    // Update local data...
     setCheckedRecords((checkedRecords) => {
       const isIncluded = checkedRecords.includes(recordId);
       // TODO: Invoke server handlers
@@ -60,6 +68,27 @@ export function Home() {
       }
       return checkedRecords;
     });
+    // Send update to the server...
+    startNonBlockingTransition(async () => {
+      try {
+        // DEBUG: Simulate network delay
+        if (__doDebugDelay) {
+          await new Promise((resolve) => setTimeout(resolve, __debugDelay));
+        }
+        await saveCheckedToServer({ recordId, checked });
+        // prettier-ignore
+        setTimeout(() => toast.success('Checked record data saved to the server.', defaultToastOptions), 0);
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('[Home:Callback:toggleRecord] error', error, {
+          recordId,
+          checked,
+        });
+        debugger; // eslint-disable-line no-debugger
+        // prettier-ignore
+        setTimeout(() => toast.error('Error saving checked record data to the server.', defaultToastOptions), 0);
+      }
+    });
   }, []);
 
   const hasData = !!recordsData;
@@ -67,7 +96,7 @@ export function Home() {
   /** Load data handler */
   const loadData = React.useCallback(
     (startIndex: number, stopIndex: number) => {
-      /* // UNUSED: Postponed loading
+      /* // UNUSED: Postponed loading (a naive implementation)
        * Check if no active loading process...
        * if (memo.currentLoad) {
        *   // ...Otherwise postpone the requested load...
@@ -93,6 +122,7 @@ export function Home() {
       const start = startIndex;
       const count = stopIndex - startIndex + 1;
       // DEBUG: Indicate data load start
+      // eslint-disable-next-line no-console
       console.log('[Home:Callback:loadData] start', startIndex, stopIndex, {
         currentLoad: memo.currentLoad,
         start,
@@ -101,8 +131,10 @@ export function Home() {
       return new Promise<void>((resolve, reject) => {
         startTransition(async () => {
           try {
-            // DEBUG: Delay
-            await new Promise((resolve) => setTimeout(resolve, 1000));
+            // DEBUG: Simulate network delay
+            if (__doDebugDelay) {
+              await new Promise((resolve) => setTimeout(resolve, __debugDelay));
+            }
             const data = await fetchServerData({ start, count });
             // Combine records...
             setRecordsData((recordsData) => {
@@ -114,7 +146,8 @@ export function Home() {
                 ...data,
                 records,
               };
-              // DEBUG: Show loaded data
+              // DEBUG: Show loaded data info
+              // eslint-disable-next-line no-console
               console.log('[Home:Callback:loadData] success', {
                 loadedCount: data.records.length,
                 totalCount: data.totalCount,
@@ -175,20 +208,24 @@ export function Home() {
    * @param {number} moveId - Source record id
    * @param {number} overId - Target record id: move source record after that one
    */
-  const handleMoveRecord = React.useCallback((moveId: number, overId: number) => {
+  const changeRecordsOrder = React.useCallback((moveId: number, overId: number) => {
     setRecordsData((recordsData) => {
       if (recordsData?.records) {
         const records = recordsData.records;
         const moveIndex = records.findIndex(({ id }) => id === moveId);
         const overIndex = records.findIndex(({ id }) => id === overId);
-        // Update local data
+        // Update local data.
+        // NOTE: If moveIndex > overIndex then source (move) item inserts after target (over), otherwise before
         const updatedRecords = arrayMove(records, moveIndex, overIndex);
-        console.log('[Home:Callback:handleMoveRecord] start', {
-          moveIndex,
-          overIndex,
-          moveId,
-          overId,
-        });
+        /* console.log('[Home:Callback:changeRecordsOrder] start', {
+         *   moveIndex,
+         *   overIndex,
+         *   moveId,
+         *   overId,
+         *   records,
+         *   updatedRecords,
+         * });
+         */
         recordsData = {
           ...recordsData,
           records: updatedRecords,
@@ -196,18 +233,54 @@ export function Home() {
       }
       return recordsData;
     });
-    // TODO: Send update to the server
+    // Send update to the server
+    startNonBlockingTransition(async () => {
+      try {
+        // DEBUG: Simulate network delay
+        if (__doDebugDelay) {
+          await new Promise((resolve) => setTimeout(resolve, __debugDelay));
+        }
+        await saveOrderToServer({ moveId, overId });
+        setTimeout(() => toast.success('Order data saved to the server.', defaultToastOptions), 0);
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('[Home:Callback:changeRecordsOrder] error', error, {
+          moveId,
+          overId,
+        });
+        debugger; // eslint-disable-line no-debugger
+        // Show error toast
+        setTimeout(() => toast.error('Error saving order data to server.', defaultToastOptions), 0);
+      }
+    });
   }, []);
 
   /** Fully reload all the data */
   const saveFilter = React.useCallback(
     (filterText: string) => {
-      console.log('[Home:saveFilter]', {
-        filterText,
-      });
+      // Set local data
       setFilterText(filterText);
-      // TODO: Send data to the server & reload data
-      reloadData();
+      // Send data to the server & reload data
+      startNonBlockingTransition(async () => {
+        try {
+          // DEBUG: Simulate network delay
+          if (__doDebugDelay) {
+            await new Promise((resolve) => setTimeout(resolve, __debugDelay));
+          }
+          await saveFilterToServer({ filter: filterText });
+          // prettier-ignore
+          setTimeout(() => toast.success('Filter saved to the server.', defaultToastOptions), 0);
+          reloadData();
+        } catch (error) {
+          // eslint-disable-next-line no-console
+          console.error('[Home:Callback:saveFilter] error', error, {
+            filterText,
+          });
+          debugger; // eslint-disable-line no-debugger
+          // prettier-ignore
+          setTimeout(() => toast.error('Error saving filter data to server.', defaultToastOptions), 0);
+        }
+      });
     },
     [reloadData],
   );
@@ -221,6 +294,7 @@ export function Home() {
       )}
     >
       <HomeHeader
+        isNonBlockingPending={isNonBlockingPending}
         isPending={isPending}
         hasData={hasData}
         reloadData={reloadData}
@@ -234,7 +308,7 @@ export function Home() {
             isPending={isPending}
             recordsData={recordsData}
             checkedRecords={checkedRecords}
-            handleMoveRecord={handleMoveRecord}
+            changeRecordsOrder={changeRecordsOrder}
           >
             <RecordsList
               isPending={isPending}

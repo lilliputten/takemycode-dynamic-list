@@ -10,7 +10,7 @@ import {
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
-import { arrayMove, SortableContext } from '@dnd-kit/sortable';
+import { SortableContext } from '@dnd-kit/sortable';
 
 import { Record } from './Record';
 import { SortableOverlay } from './SortableOverlay';
@@ -25,7 +25,7 @@ interface TProps extends React.PropsWithChildren {
   recordsData: TRecordsData;
   checkedRecords: number[];
   // toggleRecord: (recordId: number, checked: boolean) => void;
-  handleMoveRecord: (moveId: number, overId: number) => void;
+  changeRecordsOrder: (moveId: number, overId: number) => void;
 }
 
 export function SortableWrapper(props: TProps) {
@@ -36,7 +36,7 @@ export function SortableWrapper(props: TProps) {
     recordsData,
     checkedRecords,
     // toggleRecord,
-    handleMoveRecord,
+    changeRecordsOrder,
   } = props;
 
   const { records } = recordsData;
@@ -57,11 +57,7 @@ export function SortableWrapper(props: TProps) {
     const moveId: number = Number(active.id);
     const overId = Number(overRecord?.id);
     if (moveId && overId && moveId !== overId) {
-      console.log('[SortableWrapper:onDragEnd]', {
-        moveId,
-        overId,
-      });
-      handleMoveRecord(moveId, overId);
+      changeRecordsOrder(moveId, overId);
     }
     setActive(null);
   };

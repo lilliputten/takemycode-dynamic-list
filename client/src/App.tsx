@@ -1,5 +1,5 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { toast, ToastContainer } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 
 import { AppNavBar } from '@/components/AppNavBar';
 import { Hello } from '@/pages/Hello';

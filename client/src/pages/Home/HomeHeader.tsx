@@ -7,6 +7,7 @@ import { MaxWidthWrapper } from '@/blocks/MaxWidthWrapper';
 
 interface THomeHeaderProps {
   hasData: boolean;
+  isNonBlockingPending: boolean;
   isPending: boolean;
   reloadData: () => void;
   saveFilter: (filterText: string) => void;
@@ -17,6 +18,7 @@ interface THomeHeaderProps {
 export function HomeHeader(props: THomeHeaderProps) {
   const {
     // TODO?
+    isNonBlockingPending,
     isPending,
     hasData,
     reloadData,
@@ -52,7 +54,7 @@ export function HomeHeader(props: THomeHeaderProps) {
           )}
         >
           {/* Show status indicator icon */}
-          {isPending || !hasData ? (
+          {isBusy || isNonBlockingPending ? (
             <RefreshCcw className="animate-spin" color="var(--primaryColor)" />
           ) : (
             <Check color="var(--primaryColor)" />
@@ -113,6 +115,7 @@ export function HomeHeader(props: THomeHeaderProps) {
           <RefreshCcw className={cn(isPending && 'animate-spin')} />
           Reload data
         </button>
+        {/* TODO: Add 'Reset order' button */}
       </MaxWidthWrapper>
     </header>
   );
