@@ -3,8 +3,7 @@
   "private": true,
   "version": "0.1.1",
   "timestamp": "2025.06.12 15:14:05 +0300",
-  "changed": "2025.06.09, 01:38",
-  "type": "module",
+  "changed": "2025.06.13, 01:24",
   "main": "src/main.tsx",
   "engines": {
     "node": "20.x"
@@ -24,6 +23,7 @@
     "@tailwindcss/postcss": "^4.1.8",
     "@tailwindcss/typography": "^0.5.16",
     "@tailwindcss/vite": "^4.1.8",
+    "@types/jest": "^29.5.14",
     "@types/ms": "^2.1.0",
     "@types/node": "^22.15.30",
     "@types/react": "^19.1.2",
@@ -35,6 +35,7 @@
     "clsx": "^2.1.1",
     "concurrently": "^9.1.2",
     "globals": "^16.0.0",
+    "jest": "^30.0.0",
     "mkdirp": "^3.0.1",
     "ms": "^2.1.3",
     "react-toastify": "^11.0.5",
@@ -43,6 +44,7 @@
     "rimraf": "^6.0.1",
     "tailwind-merge": "^3.3.0",
     "tailwindcss-animate": "^1.0.7",
+    "ts-jest": "^29.4.0",
     "typescript": "~5.8.3",
     "vite": "^6.3.5",
     "vite-tsconfig-paths": "^5.1.4"
@@ -51,6 +53,7 @@
     "type-check": "echo --Run typescript linter: client-- && tsc --pretty --noEmit",
     "dev": "echo --Run vite dev server: client-- && vite",
     "build": "echo --Build client via vite-- && tsc -b && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "jest"
   }
 }
