@@ -94,6 +94,8 @@ Environment variable: `SESSION_COOKIE_SECRET`.
 - Allow to check/uncheck all the records.
 - Fix 'infinity' scrollbar to show real loaded/total data relatioin in Firefox. Also, it's impossible to jump to the bottommost items by keyboard, by press End, only by PgDns.
 - Add periodical data cleaning code invocation on the server.
+- Fix drag-n-drop on mobile devices.
+- Reduce action notifications amount (completely remove?).
 
 See other [issues](https://github.com/lilliputten/takemycode-dynamic-list/issues) in the project' repository.
 
