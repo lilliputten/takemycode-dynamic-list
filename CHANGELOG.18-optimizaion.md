@@ -5,4 +5,4 @@
 - Issue #18: Added helpers to work with clamps (will be used in loading data optimized algorithm).
 - Issue #18: Refactored server code & client.
 - Issue #18: Added optimization for data loading (using a postponed queue and range clamps joins).
-
+- Issue #18: Fixed mobile drag-n-drop issues (using @dnd-kit's MouseSensor and TouchSensor instead of PointerSensor).

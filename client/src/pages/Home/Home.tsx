@@ -58,8 +58,6 @@ function calcBatchSize(height: number = window?.innerHeight || 480) {
   return Math.ceil(height / remSize / 10) * 10;
 }
 
-const initialBatchSize = calcBatchSize();
-
 export function Home() {
   const nodeRef = React.useRef<HTMLDivElement>(null);
 
@@ -71,10 +69,10 @@ export function Home() {
   const [checkedRecords, setCheckedRecords] = React.useState<number[] | undefined>();
   const [filterText, setFilterText] = React.useState<string | undefined>();
 
-  const memo = React.useMemo<TMemo>(() => ({ requested: [], batchSize: initialBatchSize }), []);
+  const memo = React.useMemo<TMemo>(() => ({ requested: [], batchSize: calcBatchSize() }), []);
 
   /** Approximate 'window' size for initial data load (a little more than window can fit) */
-  const [batchSize, setBatchSize] = React.useState<number>(initialBatchSize);
+  const [batchSize, setBatchSize] = React.useState<number>(memo.batchSize);
 
   // Set batch size derived from the current node size and register an observer to update it on window resize
   React.useEffect(() => {
