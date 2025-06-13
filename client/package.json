@@ -5,6 +5,7 @@
   "timestamp": "2025.06.13 03:43:41 +0300",
   "changed": "2025.06.13, 01:24",
   "main": "src/main.tsx",
+  "type": "module",
   "engines": {
     "node": "20.x"
   },
