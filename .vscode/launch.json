@@ -1,5 +1,5 @@
 // ex: set ft=jsonc:sw=2:ts=4:
-// @changed 2025.06.08, 20:02
+// @changed 2025.06.13, 02:05
 {
   // Use IntelliSense to learn about possible attributes.
   // Hover to view descriptions of existing attributes.
@@ -23,7 +23,13 @@
       "command": "pnpm --filter server dev-migrate"
     },
     {
-      "name": "Jest single server test",
+      "name": "jest: client test",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "pnpm --filter client run test --no-watch --testTimeout=60000 extractTheBiggestClamp.test"
+    },
+    {
+      "name": "jest: server test",
       "type": "node-terminal",
       "request": "launch",
       "command": "pnpm --filter server run test --no-watch --testTimeout=60000 generateSortedRecords.test"
