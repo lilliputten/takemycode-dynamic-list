@@ -2,6 +2,15 @@ import { TRecord } from '@/shared-types/TRecord';
 import { TRecordsData } from '@/shared-types/TRecordsData';
 import { TSortedRecord } from '@/shared-types/TSortedRecord';
 
+function getIdForIndex(index: number) {
+  return index + 1;
+}
+
+function createRecordById(id: number) {
+  const text = `Item ${id}`;
+  return { id, text } as TRecord;
+}
+
 interface TGenerateSortedRecordsParams {
   start: number;
   count: number;
@@ -10,15 +19,14 @@ interface TGenerateSortedRecordsParams {
   filter?: string;
 }
 
-function getIdForIndex(index: number) {
-  return index + 1;
-}
-
-export function createRecordById(id: number) {
-  const text = `Item ${id}`;
-  return { id, text } as TRecord;
-}
-
+/** Generates records list in the given range (start, count) according to filter and order in sortedRecords
+ * @param {TGenerateSortedRecordsParams} params
+ * @param {number} params.start - Range start.
+ * @param {number} params.count - Range width.
+ * @param {number} params.totalCount - Total records count to generate.
+ * @param {TSortedRecord[]} params.sortedRecords - Records reordering data.
+ * @param {string} params.filter - Filter string (applies only to a record id id, treated as a string).
+ */
 export function generateSortedRecords(params: TGenerateSortedRecordsParams) {
   const {
     // Parameters
