@@ -17,6 +17,7 @@ interface TProps {
   loadMoreItems: (startIndex: number, stopIndex: number) => Promise<void>; // InfiniteLoader.loadMoreItems;
   checkedRecords: number[];
   toggleRecord: (recordId: number, checked: boolean) => void;
+  batchSize: number;
 }
 
 // NOTE: The calculation of records range to load fails in
@@ -31,9 +32,10 @@ export function RecordsList(props: TProps) {
     loadMoreItems,
     checkedRecords,
     toggleRecord,
+    batchSize,
   } = props;
 
-  const elementRef = React.useRef<HTMLDivElement>(null);
+  const nodeRef = React.useRef<HTMLDivElement>(null);
   const [size, setSize] = React.useState({
     width: 0,
     height: 0,
@@ -48,22 +50,21 @@ export function RecordsList(props: TProps) {
   } = recordsData;
 
   React.useEffect(() => {
-    if (!elementRef.current) {
-      return;
+    if (nodeRef.current) {
+      const observer = new ResizeObserver((entries) => {
+        for (const entry of entries) {
+          const { width, height } = entry.contentRect;
+          setSize({
+            // Update all dimensions
+            width,
+            height,
+            itemHeight: getRemSize() * remsPerItem,
+          });
+        }
+      });
+      observer.observe(nodeRef.current);
+      return () => observer.disconnect();
     }
-    const observer = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        const { width, height } = entry.contentRect;
-        setSize({
-          // Update all dimensions
-          width,
-          height,
-          itemHeight: getRemSize() * remsPerItem,
-        });
-      }
-    });
-    observer.observe(elementRef.current);
-    return () => observer.disconnect();
   }, []);
 
   const rowRenderer = ({ index, style }: ListChildComponentProps) => {
@@ -87,7 +88,7 @@ export function RecordsList(props: TProps) {
 
   return (
     <div
-      ref={elementRef}
+      ref={nodeRef}
       className={cn(
         isDev && '__RecordsList', // DEBUG
         'w-full flex-1',
@@ -96,9 +97,12 @@ export function RecordsList(props: TProps) {
       )}
     >
       <InfiniteLoader
+        // @see https://github.com/bvaughn/react-window-infinite-loader?tab=readme-ov-file#documentation
         isItemLoaded={isItemLoaded}
         loadMoreItems={loadMoreItems}
         itemCount={availCount}
+        minimumBatchSize={batchSize}
+        // threshold={batchSize}
       >
         {({ onItemsRendered, ref }) => (
           <FixedSizeList
