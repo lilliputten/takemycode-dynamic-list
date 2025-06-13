@@ -5,43 +5,64 @@ import React from 'react';
 import { arrayMove } from '@dnd-kit/sortable';
 import { toast } from 'react-toastify';
 
-import { defaultToastOptions } from '@/config/defaultToastOptions';
-import { isDev } from '@/config/env';
-import { getRemSize } from '@/lib/getRemSize';
-import { cn } from '@/lib/utils';
-import { RecordsList } from '@/components/RecordsList';
-import { SortableWrapper } from '@/components/SortableWrapper';
-import { fetchServerData } from '@/api/methods/fetchServerData';
-import { getAPIConfigData } from '@/api/methods/getAPIConfigData';
-import { getCheckedRecordsData } from '@/api/methods/getCheckedRecordsData';
-import { getServerSessionData } from '@/api/methods/getServerSessionData';
-import { saveCheckedToServer } from '@/api/methods/saveCheckedToServer';
-import { saveFilterToServer } from '@/api/methods/saveFilterToServer';
-import { saveOrderToServer } from '@/api/methods/saveOrderToServer';
+import {
+  extractTheBiggestClamp,
+  joinOverlappedClamps,
+  substractClamps,
+  TClamp,
+} from '@/lib/clamps';
+import { createDefer, TDefer } from '@/lib/createDefer';
+import {
+  fetchServerData,
+  getAPIConfigData,
+  getCheckedRecordsData,
+  getServerSessionData,
+  saveCheckedToServer,
+  saveFilterToServer,
+  saveOrderToServer,
+} from '@/api/methods';
+import { RecordsList, SortableWrapper } from '@/components';
+import { defaultToastOptions, isDev } from '@/config';
+import { cn, getRemSize } from '@/lib';
 
 import { HomeFooter } from './HomeFooter';
 import { HomeHeader } from './HomeHeader';
 import { HomeListLayout } from './HomeListLayout';
 
-/* // UNUSED: Postponed loading (a naive implementation)
- * interface TMemo {
- *   [>* Currently loading request (usign if we limit only one loading request in the same time <]
- *   currentLoad?: {
- *     startIndex: number;
- *     stopIndex: number;
- *   };
- *   [>* Postponed requested data to load. Required optimization. <]
- *   requestedLoad?: {
- *     startIndex: number;
- *     stopIndex: number;
- *   };
- * }
- */
+/** Debug delay */
+const __debugDelayFunc = isDev
+  ? async () => await new Promise((r) => setTimeout(r, 500))
+  : async () => {};
 
-const __doDebugDelay = isDev;
-const __debugDelay = 500;
+const postponedLoadDelay = 500;
+
+// Postponed loading and other memoized parameters
+interface TMemo {
+  /** Is there active data loading process? */
+  isLoading?: boolean;
+  /** Postponed load data function timeout handler */
+  timeoutHandler?: ReturnType<typeof setTimeout>;
+  /** Currently loading request promise */
+  loadingDefer?: TDefer<void>;
+  /** Currently loading request (usign if we limit only one loading request in the same time */
+  loadingClamp?: TClamp;
+  /** Postponed requested data to load */
+  requested: TClamp[];
+  /** Load data chunk size */
+  batchSize: number;
+}
+
+/** Calculate batch size for the dom node height (pixels) */
+function calcBatchSize(height: number = window?.innerHeight || 480) {
+  const remSize = getRemSize();
+  return Math.ceil(height / remSize / 10) * 10;
+}
+
+const initialBatchSize = calcBatchSize();
 
 export function Home() {
+  const nodeRef = React.useRef<HTMLDivElement>(null);
+
   const [isPending, startTransition] = React.useTransition();
   const [isNonBlockingPending, startNonBlockingTransition] = React.useTransition();
 
@@ -50,180 +71,148 @@ export function Home() {
   const [checkedRecords, setCheckedRecords] = React.useState<number[] | undefined>();
   const [filterText, setFilterText] = React.useState<string | undefined>();
 
-  /* // UNUSED: Postponed loading (a naive implementation)
-   * const memo = React.useMemo<TMemo>(() => ({}), []);
-   */
+  const memo = React.useMemo<TMemo>(() => ({ requested: [], batchSize: initialBatchSize }), []);
 
   /** Approximate 'window' size for initial data load (a little more than window can fit) */
-  const initialRecordsCount = React.useMemo(() => {
-    const remSize = getRemSize();
-    const windowSize = window.innerHeight || 480;
-    const value = Math.round(windowSize / remSize);
-    return value;
-  }, []);
+  const [batchSize, setBatchSize] = React.useState<number>(initialBatchSize);
 
-  /** Toggle record state handler */
-  const toggleRecord = React.useCallback((recordId: number, checked: boolean) => {
-    // Update local data...
-    setCheckedRecords((checkedRecords) => {
-      if (checkedRecords) {
-        const isIncluded = checkedRecords?.includes(recordId);
-        // TODO: Invoke server handlers
-        if (!checked && isIncluded) {
-          return checkedRecords.filter((id) => id !== recordId);
+  // Set batch size derived from the current node size and register an observer to update it on window resize
+  React.useEffect(() => {
+    if (nodeRef.current) {
+      const updateBatchSize = (batchSize: number) => setBatchSize((memo.batchSize = batchSize));
+      const observer = new ResizeObserver((entries) => {
+        for (const entry of entries) {
+          updateBatchSize(calcBatchSize(entry.contentRect.height));
         }
-        if (checked && !isIncluded) {
-          return checkedRecords.concat(recordId);
-        }
-      }
-      return checkedRecords;
-    });
-    // Send update to the server...
-    startNonBlockingTransition(async () => {
-      try {
-        // DEBUG: Simulate network delay
-        if (__doDebugDelay) {
-          await new Promise((resolve) => setTimeout(resolve, __debugDelay));
-        }
-        await saveCheckedToServer({ recordId, checked });
-        // prettier-ignore
-        setTimeout(() => toast.success('Checked record data saved to the server.', defaultToastOptions), 0);
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error('[Home:Callback:toggleRecord] error', error, {
-          recordId,
-          checked,
-        });
-        debugger; // eslint-disable-line no-debugger
-        // prettier-ignore
-        setTimeout(() => toast.error('Error saving checked record data to the server.', defaultToastOptions), 0);
-      }
-    });
-  }, []);
+      });
+      observer.observe(nodeRef.current);
+      updateBatchSize(calcBatchSize(nodeRef.current.offsetHeight));
+      return () => observer.disconnect();
+    }
+  }, [memo, nodeRef]);
 
   const hasData = !!(apiConfigData && recordsData && checkedRecords && filterText !== undefined);
 
   /** Load data handler */
-  const loadData = React.useCallback((startIndex: number, stopIndex: number) => {
-    /* // UNUSED: Postponed loading (a naive implementation)
-     * Check if no active loading process...
-     * if (memo.currentLoad) {
-     *   // ...Otherwise postpone the requested load...
-     *   if (!memo.requestedLoad) {
-     *     memo.requestedLoad = { startIndex, stopIndex };
-     *   } else {
-     *     // TODO: Optimize the load algoritm: prevent loading of wide
-     *     // sequences (the while data, eg: it's possible if the user scroll to
-     *     // the end of the list immediatelly)
-     *     if (memo.requestedLoad.startIndex > startIndex) {
-     *       memo.requestedLoad.startIndex = startIndex;
-     *     }
-     *     if (memo.requestedLoad.stopIndex < stopIndex) {
-     *       memo.requestedLoad.stopIndex = stopIndex;
-     *     }
-     *     // prettier-ignore
-     *     console.log('[Home:Callback:loadData] postponed loading', startIndex, stopIndex, memo.requestedLoad);
-     *   }
-     *   return;
-     * }
-     * memo.currentLoad = { startIndex, stopIndex };
-     */
-    const start = startIndex;
-    const count = stopIndex - startIndex + 1;
-    // DEBUG: Indicate data load start
-    // eslint-disable-next-line no-console
-    console.log('[Home:Callback:loadData] start', startIndex, stopIndex, {
-      // currentLoad: memo.currentLoad,
-      start,
-      count,
-      startIndex,
-      stopIndex,
-    });
-    return new Promise<void>((resolve, reject) => {
+  const loadRealData = React.useCallback(
+    (clamp: TClamp) => {
+      const { startIndex, stopIndex } = clamp;
+      // eslint-disable-next-line no-console
+      memo.loadingClamp = { startIndex, stopIndex };
+      const start = startIndex;
+      const count = stopIndex - startIndex + 1;
+      const __debugStr = `${startIndex}-${stopIndex} (${count})`;
+      // eslint-disable-next-line no-console
+      console.log('[Home:Callback:loadRealData] Started', __debugStr, {
+        loadingClamp: memo.loadingClamp,
+        requested: [...memo.requested],
+      });
+      if (!memo.loadingDefer) {
+        memo.loadingDefer = createDefer();
+      }
+      memo.isLoading = true;
       startTransition(async () => {
         try {
-          // DEBUG: Simulate network delay
-          if (__doDebugDelay) {
-            await new Promise((resolve) => setTimeout(resolve, __debugDelay));
-          }
+          await __debugDelayFunc();
           const data = await fetchServerData({ start, count });
-          // Combine records...
+          // Combine records and update state data...
           setRecordsData((recordsData) => {
             const records = recordsData?.records ? [...recordsData.records] : [];
             data.records.forEach((record, index) => {
               records[start + index] = record;
             });
-            const newRecordsData = {
-              ...data,
-              records,
-            };
-            /* // DEBUG: Show loaded data info
-             * // eslint-disable-next-line no-console
-             * console.log('[Home:Callback:loadData] success', {
-             *   loadedCount: data.records.length,
-             *   totalCount: data.totalCount,
-             *   availCount: data.availCount,
-             *   newRecordsData,
-             *   recordsData,
-             *   records,
-             *   data,
-             *   start,
-             *   startIndex,
-             *   stopIndex,
-             * });
-             */
-            // Show success toast
-            setTimeout(() => toast.success('Data succesfully loaded.', defaultToastOptions), 0);
-            resolve();
-            /* // UNUSED: Postponed loading
-             * if (memo.requestedLoad) {
-             *   const { startIndex, stopIndex } = memo.requestedLoad;
-             *   console.log('[Home:Callback:loadData] starting requestedLoad', startIndex, stopIndex);
-             *   setTimeout(() => loadData(startIndex, stopIndex), 0);
-             *   memo.requestedLoad = undefined;
-             * }
-             */
-            return newRecordsData;
+            return { ...data, records };
           });
+          // Show success toast
+          const successMsg = `Loaded ${stopIndex - startIndex + 1} record(s) (${startIndex + 1}-${stopIndex + 1}).`;
+          setTimeout(() => toast.success(successMsg, defaultToastOptions), 0);
+          // Resolve data
+          memo.loadingDefer?.resolve();
         } catch (error) {
           // eslint-disable-next-line no-console
-          console.error('[Home:Callback:loadData] error', error, {
+          console.error('[Home:Callback:loadRealData] error', error, {
             start,
             count,
           });
           debugger; // eslint-disable-line no-debugger
           // Show error toast
           setTimeout(() => toast.error('Error loading data.', defaultToastOptions), 0);
-          reject(error);
+          memo.loadingDefer?.reject(error);
         } finally {
-          /* // UNUSED: Postponed loading
-           * memo.currentLoad = undefined;
-           */
+          memo.loadingClamp = undefined;
+          memo.loadingDefer = undefined;
+          memo.isLoading = false;
+          // eslint-disable-next-line no-console
+          console.log('[Home:Callback:loadRealData] Finished', __debugStr, {
+            requested: [...memo.requested],
+          });
         }
       });
-    });
-  }, []);
+      return memo.loadingDefer.promise;
+    },
+    [memo],
+  );
+
+  /** Select next data clamp and load it */
+  const loadNextData = React.useCallback(() => {
+    // If there are some postponed requests...
+    if (memo.requested.length) {
+      // If is loading currently...
+      if (memo.isLoading) {
+        if (!memo.loadingDefer) {
+          memo.loadingDefer = createDefer();
+        }
+        if (memo.timeoutHandler) {
+          clearTimeout(memo.timeoutHandler);
+        }
+        memo.timeoutHandler = setTimeout(loadNextData, postponedLoadDelay);
+      } else {
+        // Otherwise try to combine postponed clamps and find the biggest one to load now...
+        memo.requested = joinOverlappedClamps(memo.requested, {
+          joinGaps: memo.batchSize * 5,
+        });
+        // TODO: Select most recent ranges (it's not quite possible while we sort them)?
+        const [biggestClamp, restClamps] = extractTheBiggestClamp(memo.requested);
+        memo.requested = restClamps;
+        const optimizedClamp = substractClamps(biggestClamp, memo.loadingClamp);
+        if (optimizedClamp) {
+          return loadRealData(optimizedClamp).finally(() => {
+            if (memo.requested.length) {
+              memo.timeoutHandler = setTimeout(loadNextData, 0);
+            }
+          });
+        }
+      }
+    }
+
+    return memo.loadingDefer?.promise || Promise.resolve();
+  }, [memo]);
+
+  /** Put the range clamp to the loading queue and start loading if there no active load */
+  const loadData = React.useCallback(
+    (startIndex: number, stopIndex: number) => {
+      memo.requested.push({ startIndex, stopIndex });
+      return loadNextData();
+    },
+    [memo],
+  );
 
   /** Fully reload all the data */
   const reloadData = React.useCallback(() => {
-    // TODO: Reset/init data
     setRecordsData(undefined);
-    loadData(0, initialRecordsCount);
-  }, [loadData]);
+    loadData(0, memo.batchSize - 1);
+  }, [memo, loadData]);
 
   /** Load checked records data */
   const loadCheckedRecords = React.useCallback(() => {
     return new Promise<void>((resolve, reject) => {
       startTransition(async () => {
         try {
-          // DEBUG: Simulate network delay
-          if (__doDebugDelay) {
-            await new Promise((resolve) => setTimeout(resolve, __debugDelay));
-          }
+          await __debugDelayFunc();
           const checkedRecords = await getCheckedRecordsData();
           setCheckedRecords(checkedRecords);
           // prettier-ignore
-          setTimeout(() => toast.success('Checked records succesfully loaded.', defaultToastOptions), 0);
+          setTimeout(() => toast.info('Loaded checked records data.', defaultToastOptions), 0);
           resolve();
         } catch (error) {
           // eslint-disable-next-line no-console
@@ -242,15 +231,12 @@ export function Home() {
     return new Promise<void>((resolve, reject) => {
       startTransition(async () => {
         try {
-          // DEBUG: Simulate network delay
-          if (__doDebugDelay) {
-            await new Promise((resolve) => setTimeout(resolve, __debugDelay));
-          }
+          await __debugDelayFunc();
           const serverSessionData = await getServerSessionData();
           const { filter } = serverSessionData;
           setFilterText(filter || '');
           // prettier-ignore
-          setTimeout(() => toast.success('Filter succesfully loaded.', defaultToastOptions), 0);
+          setTimeout(() => toast.info('Loaded filter data.', defaultToastOptions), 0);
           resolve();
         } catch (error) {
           // eslint-disable-next-line no-console
@@ -269,17 +255,14 @@ export function Home() {
     return new Promise<void>((resolve, reject) => {
       startTransition(async () => {
         try {
-          // DEBUG: Simulate network delay
-          if (__doDebugDelay) {
-            await new Promise((resolve) => setTimeout(resolve, __debugDelay));
-          }
+          await __debugDelayFunc();
           const apiConfigData = await getAPIConfigData();
           // eslint-disable-next-line no-console
           console.info('[Home] Loaded API config', apiConfigData);
           // TODO: Check scheme migration versions and versionInfo?
           setApiConfigData(apiConfigData);
           // prettier-ignore
-          setTimeout(() => toast.success('API config succesfully loaded.', defaultToastOptions), 0);
+          setTimeout(() => toast.info('Loaded API config.', defaultToastOptions), 0);
           resolve();
         } catch (error) {
           // eslint-disable-next-line no-console
@@ -293,14 +276,40 @@ export function Home() {
     });
   }, []);
 
-  /** Inital effect */
-  React.useEffect(() => {
-    // NOTE: Launching async loaders in sync way, instead of Promise.all
-    loadAPIConfig();
-    loadCheckedRecords();
-    loadFilter();
-    reloadData();
-  }, [reloadData]);
+  /** Toggle record state handler */
+  const toggleRecord = React.useCallback((recordId: number, checked: boolean) => {
+    // Update local data...
+    setCheckedRecords((checkedRecords) => {
+      if (checkedRecords) {
+        const isIncluded = checkedRecords?.includes(recordId);
+        if (!checked && isIncluded) {
+          return checkedRecords.filter((id) => id !== recordId);
+        }
+        if (checked && !isIncluded) {
+          return checkedRecords.concat(recordId);
+        }
+      }
+      return checkedRecords;
+    });
+    // Send update to the server...
+    startNonBlockingTransition(async () => {
+      try {
+        await __debugDelayFunc();
+        await saveCheckedToServer({ recordId, checked });
+        // prettier-ignore
+        setTimeout(() => toast.success('Checked record data saved to the server.', defaultToastOptions), 0);
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('[Home:Callback:toggleRecord] error', error, {
+          recordId,
+          checked,
+        });
+        debugger; // eslint-disable-line no-debugger
+        // prettier-ignore
+        setTimeout(() => toast.error('Error saving checked record data to the server.', defaultToastOptions), 0);
+      }
+    });
+  }, []);
 
   /** Update sort order: move a record to the new position
    * @param {number} recordId - Source record id
@@ -326,10 +335,7 @@ export function Home() {
     // Send update to the server
     startNonBlockingTransition(async () => {
       try {
-        // DEBUG: Simulate network delay
-        if (__doDebugDelay) {
-          await new Promise((resolve) => setTimeout(resolve, __debugDelay));
-        }
+        await __debugDelayFunc();
         await saveOrderToServer({ recordId, targetId });
         setTimeout(() => toast.success('Order data saved to the server.', defaultToastOptions), 0);
       } catch (error) {
@@ -345,7 +351,7 @@ export function Home() {
     });
   }, []);
 
-  /** Fully reload all the data */
+  /** Save the filter data to the server */
   const saveFilter = React.useCallback(
     (filterText: string) => {
       // Set local data
@@ -353,10 +359,7 @@ export function Home() {
       // Send data to the server & reload data
       startNonBlockingTransition(async () => {
         try {
-          // DEBUG: Simulate network delay
-          if (__doDebugDelay) {
-            await new Promise((resolve) => setTimeout(resolve, __debugDelay));
-          }
+          await __debugDelayFunc();
           await saveFilterToServer({ filter: filterText });
           // prettier-ignore
           setTimeout(() => toast.success('Filter saved to the server.', defaultToastOptions), 0);
@@ -375,8 +378,29 @@ export function Home() {
     [reloadData],
   );
 
+  /** Inital effect */
+  React.useEffect(() => {
+    // NOTE: Launching async loaders in sync way, instead of Promise.all
+    loadAPIConfig();
+    loadCheckedRecords();
+    loadFilter();
+    loadData(0, memo.batchSize - 1);
+    /* // DEBUG: Test postponed loads
+     * if (isDev) {
+     *   // Overlapping initial
+     *   loadData(memo.batchSize, memo.batchSize * 2 - 1);
+     *   loadData(memo.batchSize * 2, memo.batchSize * 3 - 1);
+     *   // // Range with a gap
+     *   // loadData(memo.batchSize * 2, memo.batchSize * 3 - 1);
+     *   // // Overlapping
+     *   // loadData(memo.batchSize * 2 + 20, memo.batchSize * 3 + 100 - 1);
+     * }
+     */
+  }, [memo, reloadData]);
+
   return (
     <div
+      ref={nodeRef}
       className={cn(
         isDev && '__Home', // DEBUG
         'flex flex-1 flex-col',
@@ -389,7 +413,6 @@ export function Home() {
         hasData={hasData}
         reloadData={reloadData}
         saveFilter={saveFilter}
-        // initialFilter={filterText}
         actualFilter={filterText || ''}
       />
       <HomeListLayout isPending={isPending} hasData={hasData}>
@@ -406,6 +429,7 @@ export function Home() {
               loadMoreItems={loadData}
               checkedRecords={checkedRecords}
               toggleRecord={toggleRecord}
+              batchSize={batchSize}
             />
           </SortableWrapper>
         )}

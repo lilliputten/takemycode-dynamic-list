@@ -54,9 +54,6 @@ export function AppNavBar() {
           <Link to="/" className="text-white">
             Home
           </Link>
-          <Link to="/hello" className="text-white">
-            Hello
-          </Link>
           <Link to="/test" className="text-white">
             Test
           </Link>

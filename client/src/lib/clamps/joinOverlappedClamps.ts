@@ -7,6 +7,9 @@ import { TClamp } from './TClamp';
 import { TClampOptions } from './TClampOptions';
 
 export function joinOverlappedClamps(clamps: TClamp[], opts: TClampOptions = defaultClampOptions) {
+  if (clamps.length <= 1) {
+    return clamps;
+  }
   const sortedClamps = [...clamps];
   sortClampsByStart(sortedClamps);
   const combined: TClamp[] = [];
