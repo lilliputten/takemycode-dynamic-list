@@ -106,6 +106,7 @@ export function RecordsList(props: TProps) {
       >
         {({ onItemsRendered, ref }) => (
           <FixedSizeList
+            // overscanCount={batchSize * 2}
             itemCount={availCount}
             itemSize={size.itemHeight}
             width={size.width}
