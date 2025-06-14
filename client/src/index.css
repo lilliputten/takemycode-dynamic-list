@@ -73,9 +73,19 @@ body {
 /* Tailwind buttons
  * @see https://v1.tailwindcss.com/components/buttons
  */
-.btn {
-  @apply box-border flex items-center gap-2 truncate rounded px-4 py-1 transition-all;
+.btn, .btn-base {
+  @apply box-border flex items-center gap-2 truncate rounded transition-all;
   height: var(--formSize);
+}
+.btn {
+  @apply px-2 py-1;
+}
+.btn-sm-text {
+  /* Button collapses to icon-only button (hides nested span) on sm widths */
+  @apply sm:px-4 [&>span]:hidden [&>span]:sm:block;
+}
+.btn-text {
+  @apply px-4;
 }
 .btn.inactive,
 .btn.disabled {

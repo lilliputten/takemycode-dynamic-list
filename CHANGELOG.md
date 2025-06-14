@@ -1,6 +1,6 @@
 <!--
  @since 2025.06.08
- @changed 2025.06.14, 22:06
+ @changed 2025.06.14, 23:40
 -->
 
 # CHANGELOG
@@ -18,6 +18,7 @@
 - Using pair of indices instead of start and count data. Added ability to load several record ranges at once. Changed the way of handling requested clamps: loading all the requested chunks at the moment.
 - Added a "Reset order" button.
 - Added 'Reset order' button, added server data properties to notify the client if there reorder data on the server (`TRangesData`: `reordered`, `rearrangedCount`).
+- Issue #18: Added a dropdown menu in the app header. Added tailwind layout indicator.
 
 See also:
 

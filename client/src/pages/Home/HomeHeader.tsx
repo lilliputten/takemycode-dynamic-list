@@ -1,5 +1,5 @@
 import React from 'react';
-import { Check, RefreshCcw, ThumbsUp, X } from 'lucide-react';
+import { Check, EllipsisVertical, RefreshCcw, ThumbsUp, X } from 'lucide-react';
 
 import { isDev } from '@/config/env';
 import { cn } from '@/lib/utils';
@@ -27,6 +27,8 @@ export function HomeHeader(props: THomeHeaderProps) {
     saveFilter,
     actualFilter,
   } = props;
+
+  const [isMenuOpen, toggleMenu] = React.useState(false);
 
   const [filterText, setFilterText] = React.useState(actualFilter);
   const [isFilterChanged, setFilterChanged] = React.useState(false);
@@ -78,59 +80,124 @@ export function HomeHeader(props: THomeHeaderProps) {
     </>
   );
 
-  const actionButons = (
+  const closeMenuAndDo = (func: () => void) => () => {
+    toggleMenu(false);
+    func();
+  };
+
+  const createActionButons = (inMenu: boolean) => {
+    const inInline = !inMenu;
+    return [
+      inInline && (
+        <button
+          key="__HomeHeader_ApplyFilterButton"
+          className={cn(
+            isDev && '__HomeHeader_ApplyFilterButton', // DEBUG
+            'btn btn-primary btn-plain btn-sm-text',
+            (isBusy || !isFilterChanged) && 'disabled',
+          )}
+          onClick={closeMenuAndDo(() => {
+            saveFilter(filterText);
+            setFilterChanged(false);
+          })}
+          title="Apply filter"
+        >
+          <Check />
+          <span>Apply filter</span>
+        </button>
+      ),
+      inInline && (
+        <button
+          key="__HomeHeader_ResetFilterButton"
+          className={cn(
+            isDev && '__HomeHeader_ResetFilterButton', // DEBUG
+            'btn btn-primary btn-plain btn-sm-text',
+            (isBusy || !actualFilter) && 'disabled',
+          )}
+          onClick={closeMenuAndDo(() => {
+            setFilterText('');
+            saveFilter('');
+            setFilterChanged(false);
+          })}
+          title="Reset filter"
+        >
+          <X />
+          <span>Reset filter</span>
+        </button>
+      ),
+      inMenu && (
+        <button
+          key="__HomeHeader_ResetOrderButton"
+          className={cn(
+            isDev && '__HomeHeader_ResetOrderButton', // DEBUG
+            'btn btn-primary btn-plain btn-text',
+            (isBusy || !isReordered) && 'disabled',
+          )}
+          onClick={closeMenuAndDo(resetOrder)}
+          title="Reset order"
+        >
+          <X />
+          <span>Reset order</span>
+        </button>
+      ),
+      inMenu && (
+        <button
+          key="__HomeHeader_ReloadDataButton"
+          className={cn(
+            isDev && '__HomeHeader_ReloadDataButton', // DEBUG
+            'btn btn-primary btn-plain btn-text',
+            isBusy && 'disabled',
+          )}
+          onClick={closeMenuAndDo(reloadData)}
+          title="Reload data"
+        >
+          <RefreshCcw />
+          <span>Reload data</span>
+        </button>
+      ),
+    ].filter(Boolean);
+  };
+  const inlineActionButons = createActionButons(false);
+  const menuActionButons = createActionButons(true);
+
+  const dropdownMenu = (
+    <div
+      className={cn(
+        isDev && '__Menu', // DEBUG
+        'focus:outline-hidden absolute right-0 z-10 mt-12 w-64 origin-top-right rounded-md',
+        'flex flex-col gap-2 p-2',
+        'bg-(--primaryColor)/80 shadow-lg ring-1 ring-black/5',
+        // 'bg-white shadow-lg ring-1 ring-black/5',
+        !isMenuOpen && 'hidden',
+      )}
+      role="menu"
+      aria-orientation="vertical"
+      aria-labelledby="menu-button"
+      tabIndex={-1}
+    >
+      {menuActionButons}
+    </div>
+  );
+
+  const menuButton = (
     <>
-      <button
+      <div
         className={cn(
-          isDev && '__HomeHeader_ApplyFilterButton', // DEBUG
-          'btn btn-primary btn-plain',
-          (isBusy || !isFilterChanged) && 'disabled',
+          isDev && '__HomeHeader_MenuButton', // DEBUG
+          'absolute right-0',
+          'btn-base',
+          'text-white',
+          // 'text-(--primaryColor)',
+          isMenuOpen && 'bg-(--primaryColor)/30',
+          'hover:bg-(--primaryColor)/50',
+          // 'hover:text-white',
+          'cursor-pointer',
         )}
-        onClick={() => {
-          saveFilter(filterText);
-          setFilterChanged(false);
-        }}
+        title={isMenuOpen ? 'Hide menu' : 'Show menu'}
+        onClick={() => toggleMenu(!isMenuOpen)}
       >
-        <Check />
-        Apply filter
-      </button>
-      <button
-        className={cn(
-          isDev && '__HomeHeader_ResetFilterButton', // DEBUG
-          'btn btn-primary btn-plain',
-          (isBusy || !actualFilter) && 'disabled',
-        )}
-        onClick={() => {
-          setFilterText('');
-          saveFilter('');
-          setFilterChanged(false);
-        }}
-      >
-        <X />
-        Reset filter
-      </button>
-      <button
-        className={cn(
-          isDev && '__HomeHeader_ResetOrderButton', // DEBUG
-          'btn btn-primary btn-plain',
-          (isBusy || !isReordered) && 'disabled',
-        )}
-        onClick={resetOrder}
-      >
-        <X />
-        Reset order
-      </button>
-      <button
-        className={cn(
-          isDev && '__HomeHeader_ReloadDataButton', // DEBUG
-          'btn btn-primary btn-plain',
-          isBusy && 'disabled',
-        )}
-        onClick={reloadData}
-      >
-        <RefreshCcw className={cn(isPending && 'animate-spin')} />
-        Reload data
-      </button>
+        <EllipsisVertical />
+      </div>
     </>
   );
 
@@ -145,12 +212,15 @@ export function HomeHeader(props: THomeHeaderProps) {
       <MaxWidthWrapper
         className={cn(
           isDev && '__HomeHeader_Wrapper', // DEBUG
-          'flex flex-wrap items-center gap-2',
+          'flex flex-wrap items-stretch gap-2 pr-10',
+          'relative',
         )}
       >
         {indicatorIcon}
         {filterInput}
-        {actionButons}
+        {inlineActionButons}
+        {menuButton}
+        {dropdownMenu}
       </MaxWidthWrapper>
     </header>
   );
