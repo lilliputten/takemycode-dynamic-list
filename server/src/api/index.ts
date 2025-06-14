@@ -4,6 +4,7 @@ import { getCheckedRecords } from './get-checked-records';
 import { getConfig } from './get-config';
 import { getData } from './get-data';
 import { getSessionData } from './get-session-data';
+import { resetCheckedRecords } from './reset-checked-records';
 import { resetSortedRecords } from './reset-sorted-records';
 import { saveCheckedRecord } from './save-checked-record';
 import { saveFilter } from './save-filter';
@@ -28,10 +29,13 @@ export function api(app: Express) {
   app.post('/api/save-sorted-record', saveSortedRecord);
 
   // Save checked state for a record
+  app.post('/api/reset-sorted-records', resetSortedRecords);
+
+  // Save checked state for a record
   app.post('/api/save-checked-record', saveCheckedRecord);
 
   // Save checked state for a record
-  app.post('/api/reset-sorted-records', resetSortedRecords);
+  app.post('/api/reset-checked-records', resetCheckedRecords);
 
   // Get all checked records
   app.get('/api/get-checked-records', getCheckedRecords);

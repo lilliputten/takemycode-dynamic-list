@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 
 import { pool } from '@/lib/db/postgres';
-import { ArgumentsError } from '@/shared/errors/ArgumentsError';
 
 /** API method: get-checked-records */
 export async function getCheckedRecords(req: Request, res: Response) {
