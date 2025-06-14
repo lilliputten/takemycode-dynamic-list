@@ -5,12 +5,7 @@ import React from 'react';
 import { arrayMove } from '@dnd-kit/sortable';
 import { toast } from 'react-toastify';
 
-import {
-  extractTheBiggestClamp,
-  joinOverlappedClamps,
-  substractClamps,
-  TClamp,
-} from '@/lib/clamps';
+import { joinOverlappedPairs, TPair } from '@/lib/clamps';
 import { createDefer, TDefer } from '@/lib/createDefer';
 import {
   fetchServerData,
@@ -45,9 +40,9 @@ interface TMemo {
   /** Currently loading request promise */
   loadingDefer?: TDefer<void>;
   /** Currently loading request (usign if we limit only one loading request in the same time */
-  loadingClamp?: TClamp;
+  loadingPair?: TPair;
   /** Postponed requested data to load */
-  requested: TClamp[];
+  requested: TPair[];
   /** Load data chunk size */
   batchSize: number;
 }
@@ -93,16 +88,14 @@ export function Home() {
 
   /** Load data handler */
   const loadRealData = React.useCallback(
-    (clamp: TClamp) => {
-      const { startIndex, stopIndex } = clamp;
+    (pairs: TPair[]) => {
+      const pairsCount = pairs.reduce((summ, [from, to]) => summ + (to - from + 1), 0);
+      const pairsStr = pairs.map((pair) => pair.join('-')).join(', ');
+      const pairsCountStr = pairs.length > 1 ? ` (${pairs.length} ranges)` : '';
+      const infoStr = `${pairsCount} records${pairsCountStr} (${pairsStr})`;
       // eslint-disable-next-line no-console
-      memo.loadingClamp = { startIndex, stopIndex };
-      const start = startIndex;
-      const count = stopIndex - startIndex + 1;
-      const __debugStr = `${startIndex}-${stopIndex} (${count})`;
-      // eslint-disable-next-line no-console
-      console.log('[Home:Callback:loadRealData] Started', __debugStr, {
-        loadingClamp: memo.loadingClamp,
+      console.log('[Home:Callback:loadRealData] Loading', infoStr, {
+        loadingPair: memo.loadingPair,
         requested: [...memo.requested],
       });
       if (!memo.loadingDefer) {
@@ -112,36 +105,38 @@ export function Home() {
       startTransition(async () => {
         try {
           await __debugDelayFunc();
-          const data = await fetchServerData({ start, count });
+          const data = await fetchServerData(pairs);
           // Combine records and update state data...
           setRecordsData((recordsData) => {
             const records = recordsData?.records ? [...recordsData.records] : [];
-            data.records.forEach((record, index) => {
-              records[start + index] = record;
+            data.ranges.forEach((range) => {
+              range.forEach((record) => {
+                const idx = record.id - 1;
+                records[idx] = record;
+              });
             });
             return { ...data, records };
           });
           // Show success toast
-          const successMsg = `Loaded ${stopIndex - startIndex + 1} record(s) (${startIndex + 1}-${stopIndex + 1}).`;
+          const successMsg = `Loaded ${infoStr}.`;
           setTimeout(() => toast.success(successMsg, defaultToastOptions), 0);
           // Resolve data
           memo.loadingDefer?.resolve();
         } catch (error) {
           // eslint-disable-next-line no-console
           console.error('[Home:Callback:loadRealData] error', error, {
-            start,
-            count,
+            pairs,
           });
           debugger; // eslint-disable-line no-debugger
           // Show error toast
           setTimeout(() => toast.error('Error loading data.', defaultToastOptions), 0);
           memo.loadingDefer?.reject(error);
         } finally {
-          memo.loadingClamp = undefined;
+          memo.loadingPair = undefined;
           memo.loadingDefer = undefined;
           memo.isLoading = false;
           // eslint-disable-next-line no-console
-          console.log('[Home:Callback:loadRealData] Finished', __debugStr, {
+          console.log('[Home:Callback:loadRealData] Loaded', infoStr, {
             requested: [...memo.requested],
           });
         }
@@ -166,20 +161,15 @@ export function Home() {
         memo.timeoutHandler = setTimeout(loadNextData, postponedLoadDelay);
       } else {
         // Otherwise try to combine postponed clamps and find the biggest one to load now...
-        memo.requested = joinOverlappedClamps(memo.requested, {
-          joinGaps: memo.batchSize * 5,
+        const pairs = joinOverlappedPairs(memo.requested, {
+          joinGaps: memo.batchSize,
         });
-        // TODO: Select most recent ranges (it's not quite possible while we sort them)?
-        const [biggestClamp, restClamps] = extractTheBiggestClamp(memo.requested);
-        memo.requested = restClamps;
-        const optimizedClamp = substractClamps(biggestClamp, memo.loadingClamp);
-        if (optimizedClamp) {
-          return loadRealData(optimizedClamp).finally(() => {
-            if (memo.requested.length) {
-              memo.timeoutHandler = setTimeout(loadNextData, 0);
-            }
-          });
-        }
+        memo.requested = [];
+        return loadRealData(pairs).finally(() => {
+          if (memo.requested.length) {
+            memo.timeoutHandler = setTimeout(loadNextData, postponedLoadDelay);
+          }
+        });
       }
     }
 
@@ -189,7 +179,7 @@ export function Home() {
   /** Put the range clamp to the loading queue and start loading if there no active load */
   const loadData = React.useCallback(
     (startIndex: number, stopIndex: number) => {
-      memo.requested.push({ startIndex, stopIndex });
+      memo.requested.push([startIndex, stopIndex]);
       return loadNextData();
     },
     [memo],

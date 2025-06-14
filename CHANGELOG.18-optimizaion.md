@@ -6,3 +6,4 @@
 - Issue #18: Refactored server code & client.
 - Issue #18: Added optimization for data loading (using a postponed queue and range clamps joins).
 - Issue #18: Fixed mobile drag-n-drop issues (using @dnd-kit's MouseSensor and TouchSensor instead of PointerSensor).
+- Issue #18: Using pair of indices instead of start and count data. Added ability to load several record ranges at once. Changed the way of handling requested clamps: loading all the requested chunks at the moment.

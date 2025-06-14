@@ -1,31 +1,13 @@
-import { TRecordsData } from '@shared-types/TRecordsData';
+import { TRangesData } from '@shared-types/TRangesData';
 
 import { dataApiUrl } from '@/config/routes';
 import { jsonContentType } from '@/config/server';
+import { TPair } from '@/lib/clamps';
 import { APIError } from '@/shared/errors/APIError';
 import { TServerDetailsResponse } from '@/types/server';
 
-interface TParams {
-  count?: number;
-  start?: number;
-}
-
-export async function fetchServerData(params: TParams = {}) {
-  const { count, start } = params;
-  const query = [
-    // Construct url query
-    count && `count=${count}`,
-    start && `start=${start}`,
-  ]
-    .filter(Boolean)
-    .join('&');
-  const url = [
-    // Construct url
-    dataApiUrl,
-    query,
-  ]
-    .filter(Boolean)
-    .join('?');
+export async function fetchServerData(pairs: TPair[]) {
+  const url = `${dataApiUrl}?pairs=${JSON.stringify(pairs)}`;
   const method = 'GET';
   const headers = {
     Accept: jsonContentType,
@@ -36,11 +18,10 @@ export async function fetchServerData(params: TParams = {}) {
       method,
       headers,
       credentials: 'include', // Allow to pass cookies (session, csrf etc)
-      // body: requestData ? JSON.stringify(requestData) : null,
     });
     const { ok, status, statusText } = res;
     // TODO: Check if it's json response?
-    let data: (TRecordsData & TServerDetailsResponse) | undefined = undefined;
+    let data: (TRangesData & TServerDetailsResponse) | undefined = undefined;
     let dataStr: string = '';
     try {
       dataStr = await res.text();
@@ -64,7 +45,7 @@ export async function fetchServerData(params: TParams = {}) {
       debugger; // eslint-disable-line no-debugger
       throw new Error(errMsg);
     }
-    return data as TRecordsData;
+    return data as TRangesData;
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('[api/methods/fetchServerData] caught error', {

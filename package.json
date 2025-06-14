@@ -3,7 +3,7 @@
   "description": "Dynamic list implemented via ExpressJS and React with a Vercel-based hosting",
   "main": "src/api/index.ts",
   "version": "0.1.1",
-  "timestamp": "2025.06.13 03:43:41 +0300",
+  "timestamp": "2025.06.14 03:57:16 +0300",
   "changed": "2025.06.12, 11:36",
   "keywords": [],
   "author": "lilliputten@gmail.com",
@@ -44,7 +44,7 @@
   "scripts": {
     "prettier": "echo --Run prettier-- && prettier --write --cache . | grep -v '(cached)' || true",
     "stylelint": "echo --Lint styles-- && stylelint --allow-empty-input ./**/*.{css,scss,less}",
-    "stylelint-fix": "echo --Lint styles-- && stylelint --allow-empty-input ./**/*.{css,scss,less} --fix",
+    "stylelint-fix": "echo --Lint and fix styles-- && stylelint --allow-empty-input ./**/*.{css,scss,less} --fix",
     "type-check": "echo --Run typescript linter-- && pnpm --filter server run type-check && pnpm --filter client run type-check",
     "eslint-debug": "echo --Lint sources with eslint in debug mode-- && cross-env DEBUG=eslint:cli-engine eslint .",
     "eslint-fix": "echo --Lint and auto-fix sources with eslint-- && eslint --fix .",

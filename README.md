@@ -7,7 +7,7 @@
 
 ## Build info (auto-generated)
 
-- Project info: v.0.1.1 / 2025.06.13 03:43:41 +0300
+- Project info: v.0.1.1 / 2025.06.14 03:57:16 +0300
 
 ## Resources
 
@@ -90,12 +90,9 @@ Environment variable: `SESSION_COOKIE_SECRET`.
 ## TODO
 
 - [Add a 'Reset order' action button.](https://github.com/lilliputten/takemycode-dynamic-list/issues/19)
-- [Optimize incremental data load in `client/src/pages/Home/Home:loadData`.](https://github.com/lilliputten/takemycode-dynamic-list/issues/18)
 - Allow to check/uncheck all the records.
-- Fix 'infinity' scrollbar to show real loaded/total data relatioin in Firefox. Also, it's impossible to jump to the bottommost items by keyboard, by press End, only by PgDns.
+- Fix 'infinity' scrollbar to show real loaded/total data relation in in Firefox. Also, it's impossible to jump to the bottommost items by keyboard, by press End, only by PgDns.
 - Add periodical data cleaning code invocation on the server.
-- Fix drag-n-drop on mobile devices.
-- Reduce action notifications amount (completely remove?).
 
 See other [issues](https://github.com/lilliputten/takemycode-dynamic-list/issues) in the project' repository.
 
