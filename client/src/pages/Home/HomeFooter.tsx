@@ -66,7 +66,7 @@ export function HomeFooter() {
             )}
           >
             <Github size={remSize} />
-            GitHub repository
+            GitHub
           </a>
         </span>
       </MaxWidthWrapper>

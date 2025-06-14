@@ -63,6 +63,7 @@ export function Home() {
   const [recordsData, setRecordsData] = React.useState<TRecordsData | undefined>();
   const [checkedRecords, setCheckedRecords] = React.useState<number[] | undefined>();
   const [filterText, setFilterText] = React.useState<string | undefined>();
+  const [isReordered, setReordered] = React.useState(false);
 
   const memo = React.useMemo<TMemo>(() => ({ requested: [], batchSize: calcBatchSize() }), []);
 
@@ -87,14 +88,14 @@ export function Home() {
   const hasData = !!(apiConfigData && recordsData && checkedRecords && filterText !== undefined);
 
   /** Load data handler */
-  const loadRealData = React.useCallback(
+  const loadDataRanges = React.useCallback(
     (pairs: TPair[]) => {
       const pairsCount = pairs.reduce((summ, [from, to]) => summ + (to - from + 1), 0);
       const pairsStr = pairs.map((pair) => pair.join('-')).join(', ');
       const pairsCountStr = pairs.length > 1 ? ` (${pairs.length} ranges)` : '';
       const infoStr = `${pairsCount} records${pairsCountStr} (${pairsStr})`;
       // eslint-disable-next-line no-console
-      console.log('[Home:Callback:loadRealData] Loading', infoStr, {
+      console.log('[Home:Callback:loadDataRanges] Loading', infoStr, {
         loadingPair: memo.loadingPair,
         requested: [...memo.requested],
       });
@@ -106,6 +107,7 @@ export function Home() {
         try {
           await __debugDelayFunc();
           const data = await fetchServerData(pairs);
+          setReordered(data.reordered);
           // Combine records and update state data...
           setRecordsData((recordsData) => {
             const records = recordsData?.records ? [...recordsData.records] : [];
@@ -125,7 +127,7 @@ export function Home() {
           memo.loadingDefer?.resolve();
         } catch (error) {
           // eslint-disable-next-line no-console
-          console.error('[Home:Callback:loadRealData] error', error, {
+          console.error('[Home:Callback:loadDataRanges] error', error, {
             pairs,
           });
           debugger; // eslint-disable-line no-debugger
@@ -137,7 +139,7 @@ export function Home() {
           memo.loadingDefer = undefined;
           memo.isLoading = false;
           // eslint-disable-next-line no-console
-          console.log('[Home:Callback:loadRealData] Loaded', infoStr, {
+          console.log('[Home:Callback:loadDataRanges] Loaded', infoStr, {
             requested: [...memo.requested],
           });
         }
@@ -166,7 +168,7 @@ export function Home() {
           joinGaps: memo.batchSize,
         });
         memo.requested = [];
-        return loadRealData(pairs).finally(() => {
+        return loadDataRanges(pairs).finally(() => {
           if (memo.requested.length) {
             memo.timeoutHandler = setTimeout(loadNextData, postponedLoadDelay);
           }
@@ -305,7 +307,8 @@ export function Home() {
    * @param {number} targetId - Target record id: move source record after that one
    */
   const changeRecordsOrder = React.useCallback((recordId: number, targetId: number) => {
-    // Save to checkedRecords?
+    // Update local data...
+    setReordered(true);
     setRecordsData((recordsData) => {
       if (recordsData?.records) {
         const records = recordsData.records;
@@ -318,8 +321,7 @@ export function Home() {
       }
       return recordsData;
     });
-
-    // Send update to the server
+    // Send update to the server...
     startNonBlockingTransition(async () => {
       try {
         await __debugDelayFunc();
@@ -345,6 +347,7 @@ export function Home() {
       try {
         await __debugDelayFunc();
         await resetOrderOnServer();
+        setReordered(false);
         reloadData();
         // prettier-ignore
         setTimeout(() => toast.success('Order data cleared on the server.', defaultToastOptions), 0);
@@ -392,7 +395,7 @@ export function Home() {
     loadCheckedRecords();
     loadFilter();
     loadData(0, memo.batchSize - 1);
-    /* // DEBUG: Test postponed loads
+    /* // DEBUG: Live test for postponed loads
      * if (isDev) {
      *   // Overlapping with initial range
      *   loadData(memo.batchSize, memo.batchSize * 2 - 1);
@@ -417,6 +420,7 @@ export function Home() {
       <HomeHeader
         isNonBlockingPending={isNonBlockingPending}
         isPending={isPending}
+        isReordered={isReordered}
         hasData={hasData}
         reloadData={reloadData}
         resetOrder={resetRecordsOrder}
