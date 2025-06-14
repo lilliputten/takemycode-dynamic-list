@@ -6,26 +6,30 @@ import { cn } from '@/lib/utils';
 import { MaxWidthWrapper } from '@/blocks/MaxWidthWrapper';
 
 interface THomeHeaderProps {
+  actualFilter: string;
+  hasChecked: boolean;
   hasData: boolean;
   isNonBlockingPending: boolean;
   isPending: boolean;
   isReordered: boolean;
   reloadData: () => void;
+  resetChecked: () => void;
   resetOrder: () => void;
   saveFilter: (filterText: string) => void;
-  actualFilter: string;
 }
 
 export function HomeHeader(props: THomeHeaderProps) {
   const {
+    actualFilter,
+    hasChecked,
+    hasData,
     isNonBlockingPending,
     isPending,
     isReordered,
-    hasData,
     reloadData,
+    resetChecked,
     resetOrder,
     saveFilter,
-    actualFilter,
   } = props;
 
   const [isMenuOpen, toggleMenu] = React.useState(false);
@@ -45,7 +49,7 @@ export function HomeHeader(props: THomeHeaderProps) {
       <div
         className={cn(
           isDev && '__HomeHeader_IndicatorIcon', // DEBUG
-          'btn btn-icon inactive',
+          'btn btn-icon inactive flex',
           'bg-(--primaryColor)/15 !rounded-full',
         )}
         title={isOperating ? 'Operating...' : 'All is Ok'}
@@ -93,7 +97,7 @@ export function HomeHeader(props: THomeHeaderProps) {
           key="__HomeHeader_ApplyFilterButton"
           className={cn(
             isDev && '__HomeHeader_ApplyFilterButton', // DEBUG
-            'btn btn-primary btn-plain btn-sm-text',
+            'btn btn-primary btn-plain btn-sm-text flex',
             (isBusy || !isFilterChanged) && 'disabled',
           )}
           onClick={closeMenuAndDo(() => {
@@ -111,7 +115,7 @@ export function HomeHeader(props: THomeHeaderProps) {
           key="__HomeHeader_ResetFilterButton"
           className={cn(
             isDev && '__HomeHeader_ResetFilterButton', // DEBUG
-            'btn btn-primary btn-plain btn-sm-text',
+            'btn btn-primary btn-plain btn-sm-text flex',
             (isBusy || !actualFilter) && 'disabled',
           )}
           onClick={closeMenuAndDo(() => {
@@ -130,7 +134,7 @@ export function HomeHeader(props: THomeHeaderProps) {
           key="__HomeHeader_ResetOrderButton"
           className={cn(
             isDev && '__HomeHeader_ResetOrderButton', // DEBUG
-            'btn btn-primary btn-plain btn-text',
+            'btn btn-primary btn-plain btn-text flex',
             (isBusy || !isReordered) && 'disabled',
           )}
           onClick={closeMenuAndDo(resetOrder)}
@@ -142,19 +146,34 @@ export function HomeHeader(props: THomeHeaderProps) {
       ),
       inMenu && (
         <button
-          key="__HomeHeader_ReloadDataButton"
+          key="__HomeHeader_ResetCheckedButton"
           className={cn(
-            isDev && '__HomeHeader_ReloadDataButton', // DEBUG
-            'btn btn-primary btn-plain btn-text',
-            isBusy && 'disabled',
+            isDev && '__HomeHeader_ResetCheckedButton', // DEBUG
+            'btn btn-primary btn-plain btn-text flex',
+            (isBusy || !hasChecked) && 'disabled',
           )}
-          onClick={closeMenuAndDo(reloadData)}
-          title="Reload data"
+          onClick={closeMenuAndDo(resetChecked)}
+          title="Reset checked records"
         >
-          <RefreshCcw />
-          <span>Reload data</span>
+          <X />
+          <span>Reset checked records</span>
         </button>
       ),
+      <button
+        key="__HomeHeader_ReloadDataButton"
+        className={cn(
+          isDev && '__HomeHeader_ReloadDataButton', // DEBUG
+          'btn btn-primary btn-plain btn-text flex',
+          inInline && 'max-md:hidden',
+          inMenu && 'md:hidden',
+          isBusy && 'disabled',
+        )}
+        onClick={closeMenuAndDo(reloadData)}
+        title="Reload data"
+      >
+        <RefreshCcw />
+        <span>Reload data</span>
+      </button>,
     ].filter(Boolean);
   };
   const inlineActionButons = createActionButons(false);
@@ -167,7 +186,6 @@ export function HomeHeader(props: THomeHeaderProps) {
         'focus:outline-hidden absolute right-0 z-10 mt-12 w-64 origin-top-right rounded-md',
         'flex flex-col gap-2 p-2',
         'bg-(--primaryColor)/80 shadow-lg ring-1 ring-black/5',
-        // 'bg-white shadow-lg ring-1 ring-black/5',
         !isMenuOpen && 'hidden',
       )}
       role="menu"
@@ -185,12 +203,10 @@ export function HomeHeader(props: THomeHeaderProps) {
         className={cn(
           isDev && '__HomeHeader_MenuButton', // DEBUG
           'absolute right-0',
-          'btn-base',
+          'btn-base flex',
           'text-white',
-          // 'text-(--primaryColor)',
           isMenuOpen && 'bg-(--primaryColor)/30',
           'hover:bg-(--primaryColor)/50',
-          // 'hover:text-white',
           'cursor-pointer',
         )}
         title={isMenuOpen ? 'Hide menu' : 'Show menu'}

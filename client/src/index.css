@@ -73,8 +73,9 @@ body {
 /* Tailwind buttons
  * @see https://v1.tailwindcss.com/components/buttons
  */
-.btn, .btn-base {
-  @apply box-border flex items-center gap-2 truncate rounded transition-all;
+.btn,
+.btn-base {
+  @apply box-border items-center gap-2 truncate rounded transition-all;
   height: var(--formSize);
 }
 .btn {

@@ -11,6 +11,7 @@ import {
   getAPIConfigData,
   getCheckedRecordsData,
   getServerSessionData,
+  resetCheckedOnServer,
   saveCheckedToServer,
   saveFilterToServer,
   saveOrderToServer,
@@ -353,10 +354,30 @@ export function Home() {
         setTimeout(() => toast.success('Order data cleared on the server.', defaultToastOptions), 0);
       } catch (error) {
         // eslint-disable-next-line no-console
-        console.error('[Home:Callback:changeRecordsOrder] error', error);
+        console.error('[Home:Callback:resetRecordsOrder] error', error);
         debugger; // eslint-disable-line no-debugger
         // prettier-ignore
         setTimeout(() => toast.error('Error clearing order data on the server.', defaultToastOptions), 0);
+      }
+    });
+  }, []);
+
+  /** Reset sort order */
+  const resetCheckedRecords = React.useCallback(() => {
+    // Send update to the server
+    startNonBlockingTransition(async () => {
+      try {
+        await __debugDelayFunc();
+        await resetCheckedOnServer();
+        setCheckedRecords([]);
+        // prettier-ignore
+        setTimeout(() => toast.success('Checked records data cleared on the server.', defaultToastOptions), 0);
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('[Home:Callback:resetCheckedRecords] error', error);
+        debugger; // eslint-disable-line no-debugger
+        // prettier-ignore
+        setTimeout(() => toast.error('Error clearing checked records data on the server.', defaultToastOptions), 0);
       }
     });
   }, []);
@@ -418,14 +439,16 @@ export function Home() {
       )}
     >
       <HomeHeader
+        actualFilter={filterText || ''}
+        hasChecked={!!checkedRecords?.length}
+        hasData={hasData}
         isNonBlockingPending={isNonBlockingPending}
         isPending={isPending}
         isReordered={isReordered}
-        hasData={hasData}
         reloadData={reloadData}
+        resetChecked={resetCheckedRecords}
         resetOrder={resetRecordsOrder}
         saveFilter={saveFilter}
-        actualFilter={filterText || ''}
       />
       <HomeListLayout isPending={isPending} hasData={hasData}>
         {hasData && (
