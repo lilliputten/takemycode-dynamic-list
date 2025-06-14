@@ -7,7 +7,7 @@
 
 ## Build info (auto-generated)
 
-- Project info: v.0.1.1 / 2025.06.14 03:57:16 +0300
+- Project info: v.0.1.2 / 2025.06.14 04:03:42 +0300
 
 ## Resources
 
