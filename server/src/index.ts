@@ -11,6 +11,7 @@
  * Environment variables:
  *
  *   - DATABASE_URL: Postgress connection string (`postgres:...`), required.
+ *   - `SESSION_COOKIE_SECRET`: A random value to seed session generator, required.
  *   - VERCEL_URL: A vercel host name (FQDN, automaticallly passed on the deployment server).
  *   - PORT: Server lisntening port address (default: 3000).
  *   - NODE_ENV: Devlopment/production running mode.

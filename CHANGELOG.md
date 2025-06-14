@@ -80,6 +80,4 @@ See also:
 - Added shared types, re-implemented server package build via esbuild.
 - Client: Added tailwind (with demo markups), added router & pages, removed unused dependencies.
 
-See also:
-
-- [Compare](https://github.com/lilliputten/takemycode-dynamic-list/compare/v.0.0.0...v.0.0.2)
+(Initial version.)
