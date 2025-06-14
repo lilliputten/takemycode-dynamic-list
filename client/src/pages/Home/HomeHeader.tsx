@@ -74,7 +74,7 @@ export function HomeHeader(props: THomeHeaderProps) {
             'input input-text input-primary w-full min-w-[8em] flex-1',
             isBusy && 'disabled',
           )}
-          placeholder="Filter records"
+          placeholder="Filter records by id"
           value={filterText}
           onChange={(ev) => {
             setFilterText(ev.target.value);

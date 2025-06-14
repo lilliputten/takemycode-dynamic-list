@@ -1,22 +1,35 @@
+import { TRangesData } from '@/shared-types/TRangesData';
 import { TRecord } from '@/shared-types/TRecord';
-import { TRecordsData } from '@/shared-types/TRecordsData';
 import { TSortedRecord } from '@/shared-types/TSortedRecord';
+import { TPair } from '@/types/TPair';
 
-import { generateOneRecord } from './generateOneRecord';
+function getIdForIndex(index: number) {
+  return index + 1;
+}
+
+function createRecordById(id: number) {
+  const text = `Item ${id}`;
+  return { id, text } as TRecord;
+}
 
 interface TGenerateSortedRecordsParams {
-  start: number;
-  count: number;
+  pairs: TPair[];
   totalCount: number;
   sortedRecords: TSortedRecord[];
   filter?: string;
 }
 
+/** Generates records list in the given range (start, count) according to filter and order in sortedRecords
+ * @param {TGenerateSortedRecordsParams} params
+ * @param {number[][]} params.pairs - Ranges list.
+ * @param {number} params.totalCount - Total records count to generate.
+ * @param {TSortedRecord[]} params.sortedRecords - Records reordering data.
+ * @param {string} params.filter - Filter string (applies only to a record id id, treated as a string).
+ */
 export function generateSortedRecords(params: TGenerateSortedRecordsParams) {
   const {
     // Parameters
-    start,
-    count,
+    pairs,
     totalCount,
     sortedRecords,
     filter,
@@ -24,18 +37,19 @@ export function generateSortedRecords(params: TGenerateSortedRecordsParams) {
 
   // Create filter lambda
   const filterCmp = filter?.toLowerCase();
-  const isRecordPassFilter = (record: TRecord) =>
-    !filterCmp || record.text.toLowerCase().includes(filterCmp);
+  const isProtoPassFilter = !filterCmp
+    ? () => true
+    : (id: number) => String(id).includes(filterCmp);
 
-  // Generate all the available records...
-  const availRecords: TRecord[] = [];
-  for (let realIdx = 0; realIdx < totalCount; realIdx++) {
-    const record = generateOneRecord(realIdx);
+  // Generate only ids first and only later convert them to real data (use more lightweight data)
+  const availIds: number[] = [];
+  for (let index = 0; index < totalCount; index++) {
+    const id = getIdForIndex(index);
     // Check if pass filter?
-    if (!isRecordPassFilter(record)) {
+    if (!isProtoPassFilter(id)) {
       continue;
     }
-    availRecords.push(record);
+    availIds.push(id);
   }
 
   // Sort records...
@@ -44,29 +58,30 @@ export function generateSortedRecords(params: TGenerateSortedRecordsParams) {
       // Do nothing if ids are the same
       continue;
     }
-    const recordIndex = availRecords.findIndex(({ id }) => id === record_id);
-    const targetIndex = availRecords.findIndex(({ id }) => id === target_id);
-    if (recordIndex === -1 || targetIndex === -1) {
-      // Don't throw an error: we're looking in the filtered data, something might be missed, that's ok.
-      continue;
+    // Swap items if both of them are available. Don't throw an error if no
+    // items found: we're looking in the filtered data, something might be
+    // missed, that's ok.
+    const recordIndex = availIds.indexOf(record_id);
+    const targetIndex = availIds.indexOf(target_id);
+    if (recordIndex !== -1 && targetIndex !== -1) {
+      availIds.splice(targetIndex, 0, availIds.splice(recordIndex, 1)[0]);
     }
-    // Swap records
-    availRecords.splice(targetIndex, 0, availRecords.splice(recordIndex, 1)[0]);
   }
 
   // Get amount of available records and the last (stop) index of the required records portion...
-  const availCount = availRecords.length;
-  const stop = Math.min(availCount, start + count);
+  const availCount = availIds.length;
 
-  // Get slice...
-  const records = availRecords.slice(start, stop);
+  // Get range slices...
+  const ranges = pairs.map(([start, stop]) => {
+    start = Math.min(start, totalCount);
+    stop = Math.min(stop + 1, totalCount + 1);
+    return availIds.slice(start, stop).map(createRecordById);
+  });
 
-  const recordsData: TRecordsData = {
-    start,
-    count: records.length,
-    records,
+  const recordsData: TRangesData = {
     totalCount,
     availCount,
+    ranges,
   };
 
   return recordsData;

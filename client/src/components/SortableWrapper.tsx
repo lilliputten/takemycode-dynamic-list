@@ -6,7 +6,8 @@ import {
   Active,
   DndContext,
   DragEndEvent,
-  PointerSensor,
+  MouseSensor,
+  TouchSensor,
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
@@ -45,8 +46,9 @@ export function SortableWrapper(props: TProps) {
     [active, records],
   );
   const sensors = useSensors(
-    // Sortable sensors list (only for mouse pointer so far)
-    useSensor(PointerSensor),
+    // Sortable sensors list (only for mouse pointer and touch devices so far)
+    useSensor(MouseSensor),
+    useSensor(TouchSensor),
   );
 
   const onDragEnd = (event: DragEndEvent) => {
@@ -62,9 +64,18 @@ export function SortableWrapper(props: TProps) {
   return (
     <DndContext
       sensors={sensors}
-      onDragStart={({ active }) => setActive(active)}
-      onDragCancel={() => setActive(null)}
-      onDragEnd={onDragEnd}
+      onDragStart={({ active }) => {
+        console.log('onDragStart');
+        setActive(active);
+      }}
+      onDragCancel={() => {
+        console.log('onDragCancel');
+        setActive(null);
+      }}
+      onDragEnd={(ev) => {
+        console.log('onDragEnd');
+        onDragEnd(ev);
+      }}
     >
       <SortableContext items={records}>
         {/* Records list */}
