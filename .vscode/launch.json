@@ -8,8 +8,8 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "type": "node-terminal",
       "name": "server: dev",
+      "type": "node-terminal",
       "request": "launch",
       "command": "pnpm --filter server run dev",
       "cwd": "${workspaceFolder}/server",

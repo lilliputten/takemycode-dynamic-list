@@ -1,6 +1,6 @@
 import { TClamp } from './TClamp';
 
-export function substractClamps(orig?: TClamp, subs?: TClamp): TClamp | undefined {
+export function substractPairs(orig?: TClamp, subs?: TClamp): TClamp | undefined {
   if (!orig) {
     return undefined;
   }

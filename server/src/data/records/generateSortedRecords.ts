@@ -1,6 +1,7 @@
+import { TRangesData } from '@/shared-types/TRangesData';
 import { TRecord } from '@/shared-types/TRecord';
-import { TRecordsData } from '@/shared-types/TRecordsData';
 import { TSortedRecord } from '@/shared-types/TSortedRecord';
+import { TPair } from '@/types/TPair';
 
 function getIdForIndex(index: number) {
   return index + 1;
@@ -12,8 +13,7 @@ function createRecordById(id: number) {
 }
 
 interface TGenerateSortedRecordsParams {
-  start: number;
-  count: number;
+  pairs: TPair[];
   totalCount: number;
   sortedRecords: TSortedRecord[];
   filter?: string;
@@ -21,8 +21,7 @@ interface TGenerateSortedRecordsParams {
 
 /** Generates records list in the given range (start, count) according to filter and order in sortedRecords
  * @param {TGenerateSortedRecordsParams} params
- * @param {number} params.start - Range start.
- * @param {number} params.count - Range width.
+ * @param {number[][]} params.pairs - Ranges list.
  * @param {number} params.totalCount - Total records count to generate.
  * @param {TSortedRecord[]} params.sortedRecords - Records reordering data.
  * @param {string} params.filter - Filter string (applies only to a record id id, treated as a string).
@@ -30,8 +29,7 @@ interface TGenerateSortedRecordsParams {
 export function generateSortedRecords(params: TGenerateSortedRecordsParams) {
   const {
     // Parameters
-    start,
-    count,
+    pairs,
     totalCount,
     sortedRecords,
     filter,
@@ -72,17 +70,18 @@ export function generateSortedRecords(params: TGenerateSortedRecordsParams) {
 
   // Get amount of available records and the last (stop) index of the required records portion...
   const availCount = availIds.length;
-  const stop = Math.min(availCount, start + count);
 
-  // Get slice...
-  const records = availIds.slice(start, stop).map(createRecordById);
+  // Get range slices...
+  const ranges = pairs.map(([start, stop]) => {
+    start = Math.min(start, totalCount);
+    stop = Math.min(stop + 1, totalCount + 1);
+    return availIds.slice(start, stop).map(createRecordById);
+  });
 
-  const recordsData: TRecordsData = {
-    start,
-    count: records.length,
-    records,
+  const recordsData: TRangesData = {
     totalCount,
     availCount,
+    ranges,
   };
 
   return recordsData;

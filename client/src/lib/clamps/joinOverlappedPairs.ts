@@ -2,46 +2,46 @@
 // import { capitalize } from '@/lib/utils';
 
 import { defaultClampOptions } from './defaultClampOptions';
-import { sortClampsByStart } from './sortClampsByStart';
-import { TClamp } from './TClamp';
+import { sortPairsByStart } from './sortPairsByStart';
 import { TClampOptions } from './TClampOptions';
+import { TPair } from './TPair';
 
-export function joinOverlappedClamps(clamps: TClamp[], opts: TClampOptions = defaultClampOptions) {
-  if (clamps.length <= 1) {
-    return clamps;
+export function joinOverlappedPairs(pairs: TPair[], opts: TClampOptions = defaultClampOptions) {
+  if (pairs.length <= 1) {
+    return pairs;
   }
-  const sortedClamps = [...clamps];
-  sortClampsByStart(sortedClamps);
-  const combined: TClamp[] = [];
-  let last: TClamp | undefined;
-  for (const curr of sortedClamps) {
+  const sortedPairs = [...pairs];
+  sortPairsByStart(sortedPairs);
+  const combined: TPair[] = [];
+  let last: TPair | undefined;
+  for (const curr of sortedPairs) {
     // No last item, just save current
     if (!last) {
-      last = { ...curr };
+      last = [...curr];
       continue;
     }
-    const startInCurr = curr.startIndex >= last.startIndex && curr.startIndex <= last.stopIndex;
-    const stopInCurr = curr.stopIndex >= last.startIndex && curr.stopIndex <= last.stopIndex;
+    const startInCurr = curr[0] >= last[0] && curr[0] <= last[1];
+    const stopInCurr = curr[1] >= last[0] && curr[1] <= last[1];
     if (startInCurr && stopInCurr) {
       // Completely folded, just skip
       continue;
     }
     if (!startInCurr && !stopInCurr) {
       // Not folded
-      if (opts.joinGaps && curr.startIndex - last.stopIndex <= opts.joinGaps) {
+      if (opts.joinGaps && curr[0] - last[1] <= opts.joinGaps) {
         // If the gap is narrower than joinGaps, then extend the last clamp
-        last.stopIndex = curr.stopIndex;
+        last[1] = curr[1];
         continue;
       }
       // Save last item and save current
       combined.push(last);
-      last = { ...curr };
+      last = [...curr];
     } else if (startInCurr) {
       // Start in the last clamp, extend to the end of the current
-      last.stopIndex = curr.stopIndex;
+      last[1] = curr[1];
     } else if (stopInCurr) {
       // (???) Stop in the last clamp, extend to the end of the current (impossible case as we wlak thru the list sorted by startIndex)
-      last.startIndex = curr.startIndex;
+      last[0] = curr[0];
     }
   }
   if (last) {

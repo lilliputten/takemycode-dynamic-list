@@ -3,7 +3,7 @@ import cors from 'cors';
 import express, { Express } from 'express';
 import expressSession from 'express-session';
 
-import { isDev, ORIGIN_HOST } from '@/config/env';
+import { dataContentType, isDev, ORIGIN_HOST } from '@/config/env';
 import { pool } from '@/lib/db/postgres';
 
 /** Amount of milliseconds in a day */
@@ -47,4 +47,18 @@ export function configure(app: Express) {
       },
     }),
   );
+
+  // Default request
+  app.use((_req, res, next) => {
+    /* // CORS headers (unused: see cors settings above)
+     * res.header('Access-Control-Allow-Credentials', 'true');
+     * res.header('Access-Control-Allow-Origin', ORIGIN_HOST);
+     * res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+     * res.header('Access-Control-Allow-Headers', 'Content-Type');
+     */
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.setHeader('Expires', '0');
+    res.setHeader('Content-Type', dataContentType);
+    next();
+  });
 }
