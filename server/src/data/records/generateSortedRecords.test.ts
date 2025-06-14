@@ -13,7 +13,7 @@ test('Should create {count} records even there are more records', () => {
   });
   expect(typeof res).toBe('object');
   const range = res.ranges[0];
-  expect(range.length).toBe(2);
+  expect(range.count).toBe(2);
 });
 
 test('Should create a range staring from particular start index', () => {
@@ -24,7 +24,7 @@ test('Should create a range staring from particular start index', () => {
     filter: '',
   });
   const range = res.ranges[0];
-  expect(range[0].id).toBe(3);
+  expect(range.records[0].id).toBe(3);
 });
 
 test('Should not exceed total count', () => {
@@ -35,7 +35,7 @@ test('Should not exceed total count', () => {
     filter: '',
   });
   const range = res.ranges[0];
-  expect(range.length).toBe(2);
+  expect(range.count).toBe(2);
 });
 
 test('Should create an inclusive range', () => {
@@ -46,7 +46,7 @@ test('Should create an inclusive range', () => {
     filter: '',
   });
   const range = res.ranges[0];
-  expect(range.length).toBe(10);
+  expect(range.count).toBe(10);
 });
 
 test('Should filter records', () => {
@@ -57,9 +57,9 @@ test('Should filter records', () => {
     filter: '1',
   });
   const range = res.ranges[0];
-  expect(range.length).toBe(2);
-  expect(range[0].id).toBe(1);
-  expect(range[1].id).toBe(10);
+  expect(range.count).toBe(2);
+  expect(range.records[0].id).toBe(1);
+  expect(range.records[1].id).toBe(10);
 });
 
 test('Should provide correct availCount', () => {
@@ -70,7 +70,7 @@ test('Should provide correct availCount', () => {
     filter: '5',
   });
   const range = res.ranges[0];
-  expect(range.length).toBe(2);
+  expect(range.count).toBe(2);
   expect(res.availCount).toBe(3); // There are 3 records with '5' below 30: 5, 15, 25
 });
 
@@ -88,7 +88,7 @@ test('Should sort records', () => {
     filter: '',
   });
   const range = res.ranges[0];
-  expect(range.length).toBe(2);
-  expect(range[0].id).toBe(2);
-  expect(range[1].id).toBe(1);
+  expect(range.count).toBe(2);
+  expect(range.records[0].id).toBe(2);
+  expect(range.records[1].id).toBe(1);
 });

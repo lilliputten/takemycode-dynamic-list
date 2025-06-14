@@ -2,7 +2,6 @@ import { APIConfig } from '@shared-types/APIConfig';
 import { TRecordsData } from '@shared-types/TRecordsData';
 
 import React from 'react';
-import { arrayMove } from '@dnd-kit/sortable';
 import { toast } from 'react-toastify';
 
 import { joinOverlappedPairs, TPair } from '@/lib/clamps';
@@ -16,6 +15,7 @@ import {
   saveFilterToServer,
   saveOrderToServer,
 } from '@/api/methods';
+import { resetOrderOnServer } from '@/api/methods/resetOrderOnServer';
 import { RecordsList, SortableWrapper } from '@/components';
 import { defaultToastOptions, isDev } from '@/config';
 import { cn, getRemSize } from '@/lib';
@@ -110,9 +110,10 @@ export function Home() {
           setRecordsData((recordsData) => {
             const records = recordsData?.records ? [...recordsData.records] : [];
             data.ranges.forEach((range) => {
-              range.forEach((record) => {
-                const idx = record.id - 1;
-                records[idx] = record;
+              const { start } = range;
+              range.records.forEach((record, idx) => {
+                const pos = start + idx; // record.pos !== undefined ? record.pos : record.id - 1;
+                records[pos] = record;
               });
             });
             return { ...data, records };
@@ -304,18 +305,16 @@ export function Home() {
    * @param {number} targetId - Target record id: move source record after that one
    */
   const changeRecordsOrder = React.useCallback((recordId: number, targetId: number) => {
+    // Save to checkedRecords?
     setRecordsData((recordsData) => {
       if (recordsData?.records) {
         const records = recordsData.records;
-        const moveIndex = records.findIndex(({ id }) => id === recordId);
-        const overIndex = records.findIndex(({ id }) => id === targetId);
-        // Update local data.
-        const updatedRecords = arrayMove(records, moveIndex, overIndex);
-        // NOTE: If moveIndex > overIndex then source (move) item inserts after target (over), otherwise before
-        recordsData = {
-          ...recordsData,
-          records: updatedRecords,
-        };
+        const moveIndex = records.findIndex((rec) => rec?.id === recordId);
+        const overIndex = records.findIndex((rec) => rec?.id === targetId);
+        if (moveIndex !== -1 && overIndex !== -1) {
+          records.splice(overIndex, 0, records.splice(moveIndex, 1)[0]);
+          recordsData = { ...recordsData, records };
+        }
       }
       return recordsData;
     });
@@ -339,6 +338,26 @@ export function Home() {
     });
   }, []);
 
+  /** Reset sort order */
+  const resetRecordsOrder = React.useCallback(() => {
+    // Send update to the server
+    startNonBlockingTransition(async () => {
+      try {
+        await __debugDelayFunc();
+        await resetOrderOnServer();
+        reloadData();
+        // prettier-ignore
+        setTimeout(() => toast.success('Order data cleared on the server.', defaultToastOptions), 0);
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('[Home:Callback:changeRecordsOrder] error', error);
+        debugger; // eslint-disable-line no-debugger
+        // prettier-ignore
+        setTimeout(() => toast.error('Error clearing order data on the server.', defaultToastOptions), 0);
+      }
+    });
+  }, []);
+
   /** Save the filter data to the server */
   const saveFilter = React.useCallback(
     (filterText: string) => {
@@ -349,9 +368,9 @@ export function Home() {
         try {
           await __debugDelayFunc();
           await saveFilterToServer({ filter: filterText });
+          reloadData();
           // prettier-ignore
           setTimeout(() => toast.success('Filter saved to the server.', defaultToastOptions), 0);
-          reloadData();
         } catch (error) {
           // eslint-disable-next-line no-console
           console.error('[Home:Callback:saveFilter] error', error, {
@@ -375,13 +394,13 @@ export function Home() {
     loadData(0, memo.batchSize - 1);
     /* // DEBUG: Test postponed loads
      * if (isDev) {
-     *   // Overlapping initial
+     *   // Overlapping with initial range
      *   loadData(memo.batchSize, memo.batchSize * 2 - 1);
      *   loadData(memo.batchSize * 2, memo.batchSize * 3 - 1);
-     *   // // Range with a gap
-     *   // loadData(memo.batchSize * 2, memo.batchSize * 3 - 1);
-     *   // // Overlapping
-     *   // loadData(memo.batchSize * 2 + 20, memo.batchSize * 3 + 100 - 1);
+     *   // Range with a gap
+     *   loadData(memo.batchSize * 2, memo.batchSize * 3 - 1);
+     *   // Overlapping
+     *   loadData(memo.batchSize * 2 + 20, memo.batchSize * 3 + 100 - 1);
      * }
      */
   }, [memo, reloadData]);
@@ -400,6 +419,7 @@ export function Home() {
         isPending={isPending}
         hasData={hasData}
         reloadData={reloadData}
+        resetOrder={resetRecordsOrder}
         saveFilter={saveFilter}
         actualFilter={filterText || ''}
       />

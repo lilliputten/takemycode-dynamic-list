@@ -1,7 +1,7 @@
-import { TRecord } from './TRecord';
+import { TRange } from './TRange';
 
 export interface TRangesData {
   totalCount: number;
   availCount: number;
-  ranges: TRecord[][];
+  ranges: TRange[];
 }

@@ -7,7 +7,7 @@
 
 ## Build info (auto-generated)
 
-- Project info: v.0.1.2 / 2025.06.14 04:03:42 +0300
+- Project info: v.0.1.2 / 2025.06.14 05:31:54 +0300
 
 ## Resources
 
@@ -89,7 +89,6 @@ Environment variable: `SESSION_COOKIE_SECRET`.
 
 ## TODO
 
-- [Add a 'Reset order' action button.](https://github.com/lilliputten/takemycode-dynamic-list/issues/19)
 - Allow to check/uncheck all the records.
 - Fix 'infinity' scrollbar to show real loaded/total data relation in in Firefox. Also, it's impossible to jump to the bottommost items by keyboard, by press End, only by PgDns.
 - Add periodical data cleaning code invocation on the server.

@@ -1,3 +1,4 @@
+import { TRange } from '@/shared-types/TRange';
 import { TRangesData } from '@/shared-types/TRangesData';
 import { TRecord } from '@/shared-types/TRecord';
 import { TSortedRecord } from '@/shared-types/TSortedRecord';
@@ -75,7 +76,16 @@ export function generateSortedRecords(params: TGenerateSortedRecordsParams) {
   const ranges = pairs.map(([start, stop]) => {
     start = Math.min(start, totalCount);
     stop = Math.min(stop + 1, totalCount + 1);
-    return availIds.slice(start, stop).map(createRecordById);
+    const records: TRecord[] = availIds.slice(start, stop).map((id) => {
+      const text = `Item ${id}`;
+      return { id, text };
+    });
+    const range: TRange = {
+      start,
+      count: records.length,
+      records,
+    };
+    return range;
   });
 
   const recordsData: TRangesData = {

@@ -1,10 +1,10 @@
 {
   "name": "takemycode-dynamic-list",
-  "description": "Dynamic list implemented via ExpressJS and React with a Vercel-based hosting",
+  "description": "Vercel + Express + Vite + React + TS: Dynamic list demo app",
   "main": "src/api/index.ts",
   "version": "0.1.2",
-  "timestamp": "2025.06.14 04:03:42 +0300",
-  "changed": "2025.06.12, 11:36",
+  "timestamp": "2025.06.14 05:31:54 +0300",
+  "changed": "2025.06.14, 05:43",
   "keywords": [],
   "author": "lilliputten@gmail.com",
   "license": "ISC",

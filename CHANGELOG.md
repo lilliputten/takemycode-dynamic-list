@@ -1,6 +1,6 @@
 <!--
  @since 2025.06.08
- @changed 2025.06.14, 04:04
+ @changed 2025.06.14, 05:34
 -->
 
 # CHANGELOG
@@ -16,6 +16,7 @@
 - Added optimization for data loading (using a postponed queue and range clamps joins).
 - Fixed mobile drag-n-drop issues (using @dnd-kit's MouseSensor and TouchSensor instead of PointerSensor).
 - Using pair of indices instead of start and count data. Added ability to load several record ranges at once. Changed the way of handling requested clamps: loading all the requested chunks at the moment.
+- Added a "Reset order" button.
 
 See also:
 

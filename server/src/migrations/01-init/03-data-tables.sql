@@ -45,7 +45,7 @@ create table if not exists sorted_records (
 --  insert into checked_records (sid, record_id, checked) values ('xxx', 1, true)
 --    on conflict do nothing;
 --  -- Delete checked value
---  delete from checked_records WHERE sid='xxx' and record_id=1;
+--  delete from checked_records where sid='xxx' and record_id=1;
 --
 --  -- Add sorted record
 --  insert into sorted_records (sid, record_id, target_id) values ('xxx', 1, 2)
@@ -56,4 +56,4 @@ create table if not exists sorted_records (
 --    set target_id=9;
 --
 --  -- Delete the session and all the cascaded data
---  delete from session WHERE sid='xxx';
+--  delete from session where sid='xxx';

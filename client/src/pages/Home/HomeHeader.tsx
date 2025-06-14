@@ -10,20 +10,19 @@ interface THomeHeaderProps {
   isNonBlockingPending: boolean;
   isPending: boolean;
   reloadData: () => void;
+  resetOrder: () => void;
   saveFilter: (filterText: string) => void;
-  // initialFilter: string;
   actualFilter: string;
 }
 
 export function HomeHeader(props: THomeHeaderProps) {
   const {
-    // TODO?
     isNonBlockingPending,
     isPending,
     hasData,
     reloadData,
+    resetOrder,
     saveFilter,
-    // initialFilter,
     actualFilter,
   } = props;
 
@@ -71,7 +70,7 @@ export function HomeHeader(props: THomeHeaderProps) {
           type="text"
           className={cn(
             isDev && '__HomeHeader_FilterTextInput', // DEBUG
-            'input input-text input-primary w-full min-w-[8em] flex-1',
+            'input input-text input-primary w-full min-w-[6em] flex-1',
             isBusy && 'disabled',
           )}
           placeholder="Filter records by id"
@@ -112,6 +111,17 @@ export function HomeHeader(props: THomeHeaderProps) {
         </button>
         <button
           className={cn(
+            isDev && '__HomeHeader_ResetOrderButton', // DEBUG
+            'btn btn-primary btn-plain',
+            isBusy && 'disabled',
+          )}
+          onClick={resetOrder}
+        >
+          <X />
+          Reset order
+        </button>
+        <button
+          className={cn(
             isDev && '__HomeHeader_ReloadDataButton', // DEBUG
             'btn btn-primary btn-plain',
             isBusy && 'disabled',
@@ -121,7 +131,6 @@ export function HomeHeader(props: THomeHeaderProps) {
           <RefreshCcw className={cn(isPending && 'animate-spin')} />
           Reload data
         </button>
-        {/* TODO: Add 'Reset order' button */}
       </MaxWidthWrapper>
     </header>
   );

@@ -1,10 +1,8 @@
 import { Request, Response } from 'express';
 
-import { defaultCount, recordsCount } from '@/config/data';
 import { getErrorText } from '@/lib/helpers/strings';
 import { generateRecords } from '@/data/generateRecords';
 import { ArgumentsError } from '@/shared/errors/ArgumentsError';
-import { TClamp } from '@/types/TClamp';
 import { TPair } from '@/types/TPair';
 
 /** API method: get-data */
@@ -57,11 +55,6 @@ export async function getData(req: Request, res: Response) {
     res.status(500).json({ detail });
     return;
   }
-  console.log('[get-data]', {
-    sid,
-    pairs,
-    pairsStr,
-  });
   try {
     const resData = await generateRecords(sid, pairs);
     res.end(JSON.stringify(resData));

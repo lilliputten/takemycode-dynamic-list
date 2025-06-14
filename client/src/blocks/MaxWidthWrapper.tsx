@@ -8,9 +8,8 @@ export function MaxWidthWrapper(props: TPropsWithChildrenAndClassName) {
     <div
       className={cn(
         isDev && '__MaxWidthWrapper', // DEBUG
-        // isDev && 'border', // DEBUG
         className,
-        'mx-auto max-w-3xl',
+        'mx-auto max-w-4xl',
       )}
     >
       {children}

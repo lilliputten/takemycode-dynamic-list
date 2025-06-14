@@ -64,18 +64,9 @@ export function SortableWrapper(props: TProps) {
   return (
     <DndContext
       sensors={sensors}
-      onDragStart={({ active }) => {
-        console.log('onDragStart');
-        setActive(active);
-      }}
-      onDragCancel={() => {
-        console.log('onDragCancel');
-        setActive(null);
-      }}
-      onDragEnd={(ev) => {
-        console.log('onDragEnd');
-        onDragEnd(ev);
-      }}
+      onDragStart={({ active }) => setActive(active)}
+      onDragCancel={() => setActive(null)}
+      onDragEnd={onDragEnd}
     >
       <SortableContext items={records}>
         {/* Records list */}
