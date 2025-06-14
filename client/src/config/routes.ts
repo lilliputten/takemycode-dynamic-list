@@ -5,6 +5,7 @@ export const configApiUrl = apiUrl + '/get-config/';
 export const dataApiUrl = apiUrl + '/get-data/';
 
 export const saveOrderApiUrl = apiUrl + '/save-sorted-record/';
+export const resetOrderApiUrl = apiUrl + '/reset-sorted-records/';
 export const saveFilterApiUrl = apiUrl + '/save-filter/';
 export const saveCheckedApiUrl = apiUrl + '/save-checked-record/';
 
