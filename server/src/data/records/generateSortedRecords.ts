@@ -8,11 +8,6 @@ function getIdForIndex(index: number) {
   return index + 1;
 }
 
-function createRecordById(id: number) {
-  const text = `Item ${id}`;
-  return { id, text } as TRecord;
-}
-
 interface TGenerateSortedRecordsParams {
   pairs: TPair[];
   totalCount: number;
@@ -53,6 +48,8 @@ export function generateSortedRecords(params: TGenerateSortedRecordsParams) {
     availIds.push(id);
   }
 
+  let rearrangedCount = 0;
+
   // Sort records...
   for (const { record_id, target_id } of sortedRecords) {
     if (record_id === target_id) {
@@ -66,6 +63,7 @@ export function generateSortedRecords(params: TGenerateSortedRecordsParams) {
     const targetIndex = availIds.indexOf(target_id);
     if (recordIndex !== -1 && targetIndex !== -1) {
       availIds.splice(targetIndex, 0, availIds.splice(recordIndex, 1)[0]);
+      rearrangedCount++;
     }
   }
 
@@ -92,6 +90,8 @@ export function generateSortedRecords(params: TGenerateSortedRecordsParams) {
     totalCount,
     availCount,
     ranges,
+    reordered: !!sortedRecords.length,
+    rearrangedCount,
   };
 
   return recordsData;

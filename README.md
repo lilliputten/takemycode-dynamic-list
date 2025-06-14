@@ -9,7 +9,7 @@ The applicaiton is implemented via ExpressJS, React, Vite, TS, and Tailwind, and
 
 ## Build info (auto-generated)
 
-- Project info: v.0.1.2 / 2025.06.14 05:31:54 +0300
+- Project info: v.0.1.2 / 2025.06.14 22:06:22 +0300
 
 ## Resources
 
@@ -27,10 +27,12 @@ Core resources:
 
 - Vercel deploy configuration file: [vercel.json](vercel.json). See [vercel deploy configuration](#vercel-deploy-integration) section.
 - Server entry point: [server/src/index.ts](server/src/index.ts). This script could be run with `--migration` argument to update database schema (not implemented yet). Key `--dev` is used to run in a development mode (the same as with `NODE_ENV=development` environment variable).
-- Server API' methods: [server/src/api](server/src/api).
+- Server API methods: [server/src/api](server/src/api).
+- Server-side records generator function (with filtering and sort): [server/src/data/records/generateSortedRecords.ts](server/src/data/records/generateSortedRecords.ts).
 - Server creation: [server/src/server](server/src/server).
 - Client entry point (react app): [client/src/main.tsx](client/src/main.tsx).
 - Client template: [client/index.html](client/index.html).
+- Client-side core data-handling component: [client/src/pages/Home/Home.tsx](client/src/pages/Home/Home.tsx).
 
 ## Installation
 
@@ -56,6 +58,7 @@ It's possible to run servers separately, via:
 pnpm --filter server run dev
 pnpm --filter client run dev
 ```
+
 Or:
 
 ```bash
