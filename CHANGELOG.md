@@ -1,44 +1,59 @@
 <!--
- @since 2025.05.02
- @changed 2025.06.12, 15:00
+ @since 2025.06.08
+ @changed 2025.06.14, 04:04
 -->
 
 # CHANGELOG
+
+## [v.0.1.2](https://github.com/lilliputten/takemycode-dynamic-list/releases/tag/v.0.1.2) - 2025.06.13
+
+- [Issue #18: Optimize data processing on both client and server](https://github.com/lilliputten/takemycode-dynamic-list/issues/18)
+
+- Optimized data generation on server: using only ids to filter and re-order the data, and only final ids list is converting to full-fledge records data (id & text). See `src/data/records/generateSortedRecords.ts`.
+- Added jest to the client workspace.
+- Added helpers to work with clamps (will be used in loading data optimized algorithm).
+- Refactored server code & client.
+- Added optimization for data loading (using a postponed queue and range clamps joins).
+- Fixed mobile drag-n-drop issues (using @dnd-kit's MouseSensor and TouchSensor instead of PointerSensor).
+- Using pair of indices instead of start and count data. Added ability to load several record ranges at once. Changed the way of handling requested clamps: loading all the requested chunks at the moment.
+
+See also:
+
+- [Compare](https://github.com/lilliputten/takemycode-dynamic-list/compare/v.0.1.1...v.0.1.2)
 
 ## [v.0.1.1](https://github.com/lilliputten/takemycode-dynamic-list/releases/tag/v.0.1.1) - 2025.06.12
 
 [Issue #11: Create simple data load routine on the client](https://github.com/lilliputten/takemycode-dynamic-list/issues/11)
 
-- Issue #11: Implemented basic data load (on both server & client).
-- Issue #11: Loading splash, basic data render using react-window.
-- Issue #11: Incremental records loading (via `react-window-infinite-loader`), records toggling.
+- Implemented basic data load (on both server & client).
+- Loading splash, basic data render using react-window.
+- Incremental records loading (via `react-window-infinite-loader`), records toggling.
 
 [Issue #12: Implement records drag and drop on the client](https://github.com/lilliputten/takemycode-dynamic-list/issues/12)
 
-- Issue #12: Added sortable support for the records list (using `@dnd-kit`).
+- Added sortable support for the records list (using `@dnd-kit`).
 
 [Issue #15: Create toolbar panel with filters and controls](https://github.com/lilliputten/takemycode-dynamic-list/issues/15)
 
-- Issue #15: Added toast notifications.
-- Issue #15: Added toolbar panel with an indicator, a filter and action buttons.
+- Added toast notifications.
+- Added toolbar panel with an indicator, a filter and action buttons.
 
 [Issue #16: Upgrade server database scheme to handle filter and sort order](https://github.com/lilliputten/takemycode-dynamic-list/issues/16)
 
-- Issue #16: Added server api methods (without actual data save) and client handlers for save order, checkbox and filter data.
-- Issue #16: Migrations divided to a set of separated sql files, added jest (in the server workspace), added tests for records generation code.
-- Issue #16: The investigation of the error related to the very long scrolls has been finished so far just decreased row sizes).
+- Added server api methods (without actual data save) and client handlers for save order, checkbox and filter data.
+- Migrations divided to a set of separated sql files, added jest (in the server workspace), added tests for records generation code.
+- The investigation of the error related to the very long scrolls has been finished so far just decreased row sizes).
 
 [Issue #3: Create basic application layout (nav bar with control buttons & filters & adaptive layout)](https://github.com/lilliputten/takemycode-dynamic-list/issues/3)
 
-- Issue #3: Created a simple adaptive layout.
+- Created a simple adaptive layout.
 
 [Issue #8: Add server sessions](https://github.com/lilliputten/takemycode-dynamic-list/issues/8)
 
-- Issue #8: Added server sessions, fixed cors settings on client and server.
+- Added server sessions, fixed cors settings on client and server.
 
 See also:
 
-- [Issue #4: Add server database & prisma types](https://github.com/lilliputten/takemycode-dynamic-list/issues/4)
 - [Compare](https://github.com/lilliputten/takemycode-dynamic-list/compare/v.0.1.0...v.0.1.1)
 
 ## [v.0.1.0](https://github.com/lilliputten/takemycode-dynamic-list/releases/tag/v.0.1.0) - 2025.06.10
