@@ -5,6 +5,8 @@ import { AppNavBar } from '@/components/AppNavBar';
 import { Home } from '@/pages/Home';
 import { Test } from '@/pages/Test';
 
+import { TailwindIndicator } from './blocks/TailwindIndicator';
+
 function AppRoutes() {
   return (
     <Routes>
@@ -20,6 +22,7 @@ function App() {
       <AppNavBar />
       <AppRoutes />
       <ToastContainer />
+      <TailwindIndicator />
     </BrowserRouter>
   );
 }
