@@ -30,7 +30,7 @@ const __debugDelayFunc = isDev
   ? async () => await new Promise((r) => setTimeout(r, 500))
   : async () => {};
 
-const postponedLoadDelay = 500;
+const postponedLoadDelay = 100;
 
 // Postponed loading and other memoized parameters
 interface TMemo {
@@ -171,6 +171,9 @@ export function Home() {
         memo.requested = [];
         return loadDataRanges(pairs).finally(() => {
           if (memo.requested.length) {
+            if (memo.timeoutHandler) {
+              clearTimeout(memo.timeoutHandler);
+            }
             memo.timeoutHandler = setTimeout(loadNextData, postponedLoadDelay);
           }
         });
@@ -184,7 +187,11 @@ export function Home() {
   const loadData = React.useCallback(
     (startIndex: number, stopIndex: number) => {
       memo.requested.push([startIndex, stopIndex]);
-      return loadNextData();
+      if (!memo.loadingDefer) {
+        memo.loadingDefer = createDefer();
+      }
+      setTimeout(loadNextData, 100);
+      return memo.loadingDefer.promise;
     },
     [memo],
   );
