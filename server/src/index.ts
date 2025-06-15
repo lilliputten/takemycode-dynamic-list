@@ -60,7 +60,7 @@ if (process.argv?.includes('--migrate')) {
     .catch((error) => {
       console.error('Migration error:', error);
       debugger; // eslint-disable-line no-debugger
-      process.exit();
+      process.exit(1);
     });
 } else {
   // Create the ExpressJS server...
