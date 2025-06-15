@@ -5,5 +5,3 @@ node_modules
 .next
 build
 .contentlayer
-
-client/@dnd-kit

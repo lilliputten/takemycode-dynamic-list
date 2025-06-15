@@ -74,10 +74,12 @@ export function generateSortedRecords(params: TGenerateSortedRecordsParams) {
   const ranges = pairs.map(([start, stop]) => {
     start = Math.min(start, totalCount);
     stop = Math.min(stop + 1, totalCount + 1);
+    // Inflate records data from ids...
     const records: TRecord[] = availIds.slice(start, stop).map((id) => {
       const text = `Item ${id}`;
       return { id, text };
     });
+    // Create range data...
     const range: TRange = {
       start,
       count: records.length,
@@ -86,7 +88,7 @@ export function generateSortedRecords(params: TGenerateSortedRecordsParams) {
     return range;
   });
 
-  const recordsData: TRangesData = {
+  const rangesData: TRangesData = {
     totalCount,
     availCount,
     ranges,
@@ -94,5 +96,5 @@ export function generateSortedRecords(params: TGenerateSortedRecordsParams) {
     rearrangedCount,
   };
 
-  return recordsData;
+  return rangesData;
 }

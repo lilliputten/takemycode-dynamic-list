@@ -8,22 +8,6 @@ importers:
 
   .:
     dependencies:
-      lucide-react:
-        specifier: ^0.514.0
-        version: 0.514.0(react@19.1.0)
-      react:
-        specifier: ^19.1.0
-        version: 19.1.0
-      react-dom:
-        specifier: ^19.1.0
-        version: 19.1.0(react@19.1.0)
-      react-router-dom:
-        specifier: ^7.6.2
-        version: 7.6.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      tailwindcss:
-        specifier: ^4.1.8
-        version: 4.1.8
-    devDependencies:
       '@dnd-kit/core':
         specifier: ^6.3.1
         version: 6.3.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -45,6 +29,58 @@ importers:
       '@tailwindcss/vite':
         specifier: ^4.1.8
         version: 4.1.8(vite@6.3.5(@types/node@22.15.30)(jiti@2.4.2)(lightningcss@1.30.1))
+      '@vitejs/plugin-react-swc':
+        specifier: ^3.9.0
+        version: 3.10.1(vite@6.3.5(@types/node@22.15.30)(jiti@2.4.2)(lightningcss@1.30.1))
+      autoprefixer:
+        specifier: ^10.4.21
+        version: 10.4.21(postcss@8.5.4)
+      clsx:
+        specifier: ^2.1.1
+        version: 2.1.1
+      lucide-react:
+        specifier: ^0.514.0
+        version: 0.514.0(react@19.1.0)
+      ms:
+        specifier: ^2.1.3
+        version: 2.1.3
+      react:
+        specifier: ^19.1.0
+        version: 19.1.0
+      react-dom:
+        specifier: ^19.1.0
+        version: 19.1.0(react@19.1.0)
+      react-router-dom:
+        specifier: ^7.6.2
+        version: 7.6.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      react-toastify:
+        specifier: ^11.0.5
+        version: 11.0.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      react-window:
+        specifier: ^1.8.11
+        version: 1.8.11(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      react-window-infinite-loader:
+        specifier: ^1.0.10
+        version: 1.0.10(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      tailwind-merge:
+        specifier: ^3.3.0
+        version: 3.3.0
+      tailwindcss:
+        specifier: ^4.1.8
+        version: 4.1.8
+      tailwindcss-animate:
+        specifier: ^1.0.7
+        version: 1.0.7(tailwindcss@4.1.8)
+      typescript:
+        specifier: ~5.8.3
+        version: 5.8.3
+      vite:
+        specifier: ^6.3.5
+        version: 6.3.5(@types/node@22.15.30)(jiti@2.4.2)(lightningcss@1.30.1)
+      vite-tsconfig-paths:
+        specifier: ^5.1.4
+        version: 5.1.4(typescript@5.8.3)(vite@6.3.5(@types/node@22.15.30)(jiti@2.4.2)(lightningcss@1.30.1))
+    devDependencies:
       '@types/jest':
         specifier: ^29.5.14
         version: 29.5.14
@@ -66,15 +102,6 @@ importers:
       '@types/react-window-infinite-loader':
         specifier: ^1.0.9
         version: 1.0.9
-      '@vitejs/plugin-react-swc':
-        specifier: ^3.9.0
-        version: 3.10.1(vite@6.3.5(@types/node@22.15.30)(jiti@2.4.2)(lightningcss@1.30.1))
-      autoprefixer:
-        specifier: ^10.4.21
-        version: 10.4.21(postcss@8.5.4)
-      clsx:
-        specifier: ^2.1.1
-        version: 2.1.1
       concurrently:
         specifier: ^9.1.2
         version: 9.1.2
@@ -87,39 +114,12 @@ importers:
       mkdirp:
         specifier: ^3.0.1
         version: 3.0.1
-      ms:
-        specifier: ^2.1.3
-        version: 2.1.3
-      react-toastify:
-        specifier: ^11.0.5
-        version: 11.0.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      react-window:
-        specifier: ^1.8.11
-        version: 1.8.11(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      react-window-infinite-loader:
-        specifier: ^1.0.10
-        version: 1.0.10(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       rimraf:
         specifier: ^6.0.1
         version: 6.0.1
-      tailwind-merge:
-        specifier: ^3.3.0
-        version: 3.3.0
-      tailwindcss-animate:
-        specifier: ^1.0.7
-        version: 1.0.7(tailwindcss@4.1.8)
       ts-jest:
         specifier: ^29.4.0
         version: 29.4.0(@babel/core@7.27.4)(@jest/transform@30.0.0)(@jest/types@30.0.0)(babel-jest@30.0.0(@babel/core@7.27.4))(jest-util@30.0.0)(jest@30.0.0(@types/node@22.15.30)(ts-node@10.9.2(@swc/core@1.11.31)(@types/node@22.15.30)(typescript@5.8.3)))(typescript@5.8.3)
-      typescript:
-        specifier: ~5.8.3
-        version: 5.8.3
-      vite:
-        specifier: ^6.3.5
-        version: 6.3.5(@types/node@22.15.30)(jiti@2.4.2)(lightningcss@1.30.1)
-      vite-tsconfig-paths:
-        specifier: ^5.1.4
-        version: 5.1.4(typescript@5.8.3)(vite@6.3.5(@types/node@22.15.30)(jiti@2.4.2)(lightningcss@1.30.1))
 
 packages:
 

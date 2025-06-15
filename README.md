@@ -9,7 +9,7 @@ The applicaiton is implemented via ExpressJS, React, Vite, TS, and Tailwind, and
 
 ## Build info (auto-generated)
 
-- Project info: v.0.1.2 / 2025.06.14 22:06:22 +0300
+- Project info: v.0.1.2 / 2025.06.16 00:48:39 +0300
 
 ## Resources
 
@@ -136,7 +136,7 @@ psql "$DATABASE_URL" < server/src/migrations/01-init/03-data-tables.sql
 
 See also a script [server/src/migrations/01-init/install-all.sh](server/src/migrations/01-init/install-all.sh).
 
-HINT: Use `set -a; source .env; set +a` in to expose local variables form a local `.env` file. Check the environment variable via: `echo $DATABASE_URL` (see [environent variables](#environent-variables) section).
+HINT: Use `set -a; source .env; set +a` in  your shell to expose local variables form a local `.env` file. Check the environment variable via: `echo $DATABASE_URL` (see [environent variables](#environent-variables) section).
 
 ## Server sessions
 
@@ -159,4 +159,4 @@ See other [issues](https://github.com/lilliputten/takemycode-dynamic-list/issues
 
 ## See also
 
-- [Changelog](CHANGELOG.md)
+- [Change log](CHANGELOG.md)
