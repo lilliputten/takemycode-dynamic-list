@@ -16,7 +16,7 @@ export async function getConfig(req: Request, res: Response) {
     const config = await getServerConfig();
     const schemeMigration = await getSchemeMigration();
     // eslint-disable-next-line no-console
-    console.log('[express-app:get-config]', {
+    console.log('[get-config:getConfig]', {
       sid,
       session,
       config,
@@ -36,7 +36,7 @@ export async function getConfig(req: Request, res: Response) {
   } catch (error) {
     const detail = String(error);
     // eslint-disable-next-line no-console
-    console.error('[express-app:get-config] caught error', detail, {
+    console.error('[get-config:getConfig] caught error', detail, {
       sid,
     });
     debugger; // eslint-disable-line no-debugger

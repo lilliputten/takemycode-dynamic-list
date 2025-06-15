@@ -21,7 +21,7 @@ export async function getCheckedRecords(req: Request, res: Response) {
   } catch (error) {
     const detail = String(error);
     // eslint-disable-next-line no-console
-    console.error('[express-app:get-checked-records] caught error', detail);
+    console.error('[get-checked-records] caught error', detail);
     debugger; // eslint-disable-line no-debugger
     res.status(500).json({ detail });
     return;
