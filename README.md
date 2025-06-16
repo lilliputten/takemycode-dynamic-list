@@ -102,6 +102,8 @@ vercel remove --safe --yes takemycode-dynamic-list
 
 ## Environent variables
 
+The server application variables could be provided by the environment or in the local `.env` file (see a template in [server/.env.SAMPLE](server/.env.SAMPLE));
+
 - `DATABASE_URL`: Postgress connection string (`postgres:...`), **REQUIRED**.
 - `SESSION_COOKIE_SECRET`: A random value to seed session generator, **REQUIRED**.
 - `VERCEL_URL`: A vercel host name (FQDN, automaticallly passed on the deployment server).
@@ -109,8 +111,9 @@ vercel remove --safe --yes takemycode-dynamic-list
 - `NODE_ENV`: Devlopment/production running mode.
 - `CONFIG_ID`: Config id (a configs database record id, default: 1).
 - `DEV_CLIENT_HOST`: Client host for development mode (used to set up CORS headers, default: `http://localhost:5173`). Used `VERCEL_URL` if has been provided.
+- `RECORDS_COUNT`: Total records count to generate. Default value is 1000000 for production mode (see [server/src/config/data.ts](server/src/config/data.ts)).
 
-The variables could be provided by the environment or in the local `.env` file (see a template in [server/.env.SAMPLE](server/.env.SAMPLE); and there no specific variables are required for the client app).
+There are no client application environment variables expected (only a Vite-provided `DEV` one to determine whether it's a development mode).
 
 ## Database
 
@@ -136,7 +139,7 @@ psql "$DATABASE_URL" < server/src/migrations/01-init/03-data-tables.sql
 
 See also a script [server/src/migrations/01-init/install-all.sh](server/src/migrations/01-init/install-all.sh).
 
-HINT: Use `set -a; source .env; set +a` in  your shell to expose local variables form a local `.env` file. Check the environment variable via: `echo $DATABASE_URL` (see [environent variables](#environent-variables) section).
+HINT: Use `set -a; source .env; set +a` in your shell to expose local variables form a local `.env` file. Check the environment variable via: `echo $DATABASE_URL` (see [environent variables](#environent-variables) section).
 
 ## Server sessions
 

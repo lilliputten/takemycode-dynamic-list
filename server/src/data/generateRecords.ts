@@ -1,4 +1,4 @@
-import { recordsCount } from '@/config/data';
+import { RECORDS_COUNT } from '@/config/data';
 import { DatabaseError } from '@/shared/errors/DatabaseError';
 import { TPair } from '@/types/TPair';
 
@@ -13,7 +13,7 @@ export async function generateRecords(sid: string, pairs: TPair[]) {
   try {
     const recordsData = generateSortedRecords({
       pairs,
-      totalCount: recordsCount,
+      totalCount: RECORDS_COUNT,
       sortedRecords,
       filter,
     });

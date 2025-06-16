@@ -1,11 +1,8 @@
 import { isDev } from './env';
 
-/** Default records count */
-export const defaultCount = 20;
-
 // TODO: Get the value from the environment
-export const recordsCount =
-  process.env.recordsCount && !isNaN(Number(process.env.recordsCount))
+export const RECORDS_COUNT =
+  process.env.RECORDS_COUNT && !isNaN(Number(process.env.RECORDS_COUNT))
     ? Number(process.env.recordsCount)
     : isDev
       ? 10000

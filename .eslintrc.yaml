@@ -1,18 +1,18 @@
-# @changed 2025.06.10, 21:05
+# @changed 2025.06.16, 21:41
 # @see https://eslint.org/docs/rules/
 
 '$schema': https://json.schemastore.org/eslintrc
 root: true
 extends:
   - prettier
-  - plugin:tailwindcss/recommended
-plugins:
-  - tailwindcss
-  # - jest
+  # - plugin:tailwindcss/recommended
+# plugins:
+#   - tailwindcss
+#   # - jest
 rules:
   react/jsx-key: off
-  tailwindcss/no-custom-classname: off
-  tailwindcss/classnames-order: warn
+  # tailwindcss/no-custom-classname: off
+  # tailwindcss/classnames-order: warn
   no-console: warn
   no-debugger: warn
   no-extra-semi: warn
@@ -66,13 +66,11 @@ overrides:
       curly:
         - 'warn'
         - 'all'
-      # curly: warn
       no-undef: off # Disable js no-undef rule for typescript sources. Using ts2304 instead.
-      # eslint-comments/no-use: warn
       no-debugger: warn
-      no-console: warn # TODO: To use if console debugging output is deprecated (44 warnings as on 2022.04.06).
+      no-console: warn
       prettier/prettier: # prettier: Slighly slower (+0.3s)
-        - 'warn' # Can we to use warn if we still use `eslint --max-warnings=0` in `package.json`?
+        - 'warn' # Can we use warn if we still use `eslint --max-warnings=0` in `package.json`?
         - endOfLine: 'auto'
       import/no-namespace: off
       no-unused-vars: off
@@ -88,19 +86,8 @@ overrides:
       '@typescript-eslint/no-require-imports': warn
       '@typescript-eslint/array-type': error
       '@typescript-eslint/ban-ts-comment': off
-      # NOTE 2024.09.08, 23:11 -- Disabled because of several 'ts-nocheck'
-      # '@typescript-eslint/ban-ts-comment':
-      #   - 'error'
-      #   - ts-ignore: 'allow-with-description'
-      # NOTE 2024.09.08, 23:11 -- It's false-positive for typescript's 'in', like: `export type ChartConfig = { [k in string]: ... }`
-      # '@typescript-eslint/naming-convention':
-      #   - 'error'
-      #   - selector: 'function'
-      #     format:
-      #       - 'PascalCase'
-      #       - 'camelCase'
       '@typescript-eslint/explicit-module-boundary-types': off # Disable 'Missing return type on function' if no explicit `: void` specified
-      '@typescript-eslint/explicit-function-return-type': 0 # Causes 'Missing return type on function' if no explicit `: void` specified
+      '@typescript-eslint/explicit-function-return-type': off # Causes 'Missing return type on function' if no explicit `: void` specified
       'func-call-spacing':
         - 'error'
         - 'never'
@@ -108,15 +95,10 @@ overrides:
       '@typescript-eslint/no-extraneous-class':
         - 'error'
         - allowStaticOnly: true
-      # '@typescript-eslint/no-non-null-assertion': warn
       '@typescript-eslint/no-useless-constructor': error
       '@typescript-eslint/prefer-for-of': warn
       '@typescript-eslint/prefer-function-type': warn
-      # NOTE 2024.09.08, 23:49 -- Disabled due to multiple 'An interface declaring no members...'
       '@typescript-eslint/no-empty-object-type': off
-      # NOTE 2024.09.08, 23:49 -- Disabled due to multiple 'Use an `interface` instead of a `type`'
-      # '@typescript-eslint/consistent-type-definitions': error
-      # 'type-annotation-spacing': error # ???
       react/no-unescaped-entities: off
       react/prop-types: off
       react/no-multi-comp:
@@ -126,14 +108,8 @@ overrides:
       react/no-unstable-nested-components: off
       react/style-prop-object: error
       react/jsx-handler-names: error
-      # react/jsx-no-bind: error
       react/jsx-no-constructed-context-values: warn
-      # NOTE 2024.09.08, 23:49 -- Disabled due to multiplee warnings for 'Icons.xxx'
-      # react/jsx-pascal-case: error
       react/boolean-prop-naming: error
-      # react/function-component-definition:
-      #   - 'error'
-      #   - namedComponents: 'arrow-function'
       react/jsx-uses-react: off
       react/react-in-jsx-scope: off
       react/no-array-index-key: warn
@@ -152,7 +128,6 @@ overrides:
             rendering:
               - '/^render.+$/'
               - 'render'
-      # react/sort-prop-types: warn
       react/jsx-closing-tag-location: warn
       react/jsx-curly-newline: off
       react/jsx-curly-spacing: error
@@ -182,12 +157,8 @@ overrides:
     extends:
       - 'eslint:recommended'
       - 'plugin:prettier/recommended'
-      # - 'plugin:import/recommended'
     plugins:
       - 'prettier' # prettier: Slighly slower (+~0.3s)
-    # globals:
-    #   require: true
-    #   process: true
     rules:
       prettier/prettier: warn
       no-unused-vars:
@@ -214,7 +185,6 @@ overrides:
     extends:
       - 'eslint:recommended'
       - 'plugin:prettier/recommended'
-      # - 'plugin:import/recommended'
     plugins:
       - 'prettier' # prettier: Slighly slower (+~0.3s)
     rules:
@@ -244,37 +214,6 @@ overrides:
       - 'plugin:jest/recommended'
     rules:
       jest/prefer-expect-assertions: 'off'
-
-  # - # Raw js project files...
-  #   files: '**/*.js'
-  #   parser: null
-  #   env:
-  #     es6: true
-  #     browser: true
-  #   globals:
-  #     modules: true
-  #   extends:
-  #     - 'eslint:recommended'
-  #     - 'plugin:prettier/recommended'
-  #   plugins:
-  #     - 'prettier' # prettier: Slighly slower (+~0.3s)
-  #   rules:
-  #     no-var: warn
-  #     prettier/prettier: warn
-  #     no-unused-vars:
-  #       - 'warn'
-  #       - argsIgnorePattern: '^_'
-  #     no-console: warn
-  #     no-debugger: warn
-  #     no-extra-semi: warn
-  #     no-redeclare: warn
-  #     no-undef: error
-  #     no-unreachable: warn
-  #     prefer-const: warn
-  #     semi:
-  #       - 'warn'
-  #       - 'always'
-
   - # jsonc files - commented json (@see https://www.npmjs.com/package/eslint-plugin-jsonc)...
     files: '**/*.jsonc'
     extends:

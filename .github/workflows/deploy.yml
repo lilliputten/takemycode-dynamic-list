@@ -22,7 +22,7 @@ jobs:
           node-version: 20
           cache: 'pnpm'
 
-      - name: Install dependencies
+      - name: Install workspaces' dependencies
         run: pnpm install --filter server --filter client --frozen-lockfile --config.confirmModulesPurge=false
 
       - name: Build workspaces
