@@ -1,0 +1,30 @@
+# .github/workflows/cleanup.yaml
+
+name: Clean Up Deployments
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+    inputs:
+      daysAgo:
+        description: Delete actions older than this many days
+        required: false
+        default: 0
+      keepLatest:
+        description: Number of latest actions to keep
+        required: false
+        default: 1
+
+jobs:
+  delete-old-actions:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: yanovation/delete-old-actions@v1
+        with:
+          # @see https://github.com/marketplace/actions/delete-old-github-actions-runs#options
+          token: ${{ secrets.GITHUB_TOKEN }}
+          days-ago: 1
+          keep-latest: 1
+          # dry-run: true
