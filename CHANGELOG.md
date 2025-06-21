@@ -1,6 +1,6 @@
 <!--
  @since 2025.06.08
- @changed 2025.06.16, 01:29
+ @changed 2025.06.21, 05:30
 -->
 
 # CHANGELOG
@@ -21,6 +21,7 @@
 - Added a dropdown menu in the app header. Added tailwind layout indicator.
 - Added a server method to clear checked data, added toolbar/menu action button and all the required handlers.
 - Added github actions for vercel deploy.
+- Minor changes: use correct cygwin alternative command names, updated github action names & parameters, moved remove outdated vercel deploys to the 'clean' task'.
 
 See also:
 

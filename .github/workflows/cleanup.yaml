@@ -10,17 +10,18 @@ on:
       daysAgo:
         description: Delete actions older than this many days
         required: false
-        default: 0
+        default: 1
       keepLatest:
         description: Number of latest actions to keep
         required: false
         default: 1
 
 jobs:
-  delete-old-actions:
+  cleanup:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: yanovation/delete-old-actions@v1
         with:
           # @see https://github.com/marketplace/actions/delete-old-github-actions-runs#options
@@ -28,3 +29,13 @@ jobs:
           days-ago: 1
           keep-latest: 1
           # dry-run: true
+
+      - name: Install Vercel CLI
+        run: npm install -g vercel@latest
+
+      - name: Remove outdated Vercel builds
+        run: vercel remove --safe --yes --token=${VERCEL_TOKEN} takemycode-dynamic-list
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
