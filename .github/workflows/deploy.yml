@@ -5,6 +5,8 @@ name: Vercel Deployment
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
   deploy:
@@ -13,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Setup pnpm using the official action (version 8)
+      # Setup pnpm using the official action
       - uses: pnpm/action-setup@v4
         with:
           version: 10
