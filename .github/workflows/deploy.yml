@@ -3,6 +3,7 @@
 name: Vercel Deployment
 
 on:
+. # TODO: Use tagged push?
   push:
     branches: [main]
   pull_request:
@@ -15,16 +16,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Setup pnpm using the official action
-      - uses: pnpm/action-setup@v4
+      - name: Setup pnpm using the official action
+        uses: pnpm/action-setup@v4
         with:
           version: 10
 
-      # Setup Node.js with caching for pnpm dependencies
-      - uses: actions/setup-node@v4
+      - name: Setup Node.js with caching for pnpm dependencies
+        uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'pnpm'
+          cache: pnpm
 
       - name: Install workspaces' dependencies
         run: pnpm install --filter server --filter client --frozen-lockfile --config.confirmModulesPurge=false
