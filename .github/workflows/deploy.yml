@@ -3,7 +3,7 @@
 name: Vercel Deployment
 
 on:
-. # TODO: Use tagged push?
+  # TODO: Use tagged push?
   push:
     branches: [main]
   pull_request:
