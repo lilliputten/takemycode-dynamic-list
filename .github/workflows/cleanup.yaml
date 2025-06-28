@@ -29,13 +29,3 @@ jobs:
           days-ago: 1
           keep-latest: 1
           # dry-run: true
-
-      - name: Install Vercel CLI
-        run: npm install -g vercel@latest
-
-      - name: Remove outdated Vercel builds
-        run: vercel remove --safe --yes --token=${VERCEL_TOKEN} takemycode-dynamic-list
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
