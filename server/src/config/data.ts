@@ -5,5 +5,5 @@ export const RECORDS_COUNT =
   process.env.RECORDS_COUNT && !isNaN(Number(process.env.RECORDS_COUNT))
     ? Number(process.env.recordsCount)
     : isDev
-      ? 10000
-      : 1000000;
+      ? 1000
+      : 100000;
