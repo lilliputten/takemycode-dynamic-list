@@ -89,6 +89,23 @@ export function HomeHeader(props: THomeHeaderProps) {
     func();
   };
 
+  React.useEffect(() => {
+    if (isMenuOpen) {
+      const closeMenu = () => toggleMenu(false);
+      const detectEsc = (ev: KeyboardEvent) => {
+        if (ev.key === 'Escape') {
+          closeMenu();
+        }
+      };
+      document.addEventListener('mouseup', closeMenu, true);
+      document.addEventListener('keydown', detectEsc);
+      return () => {
+        document.removeEventListener('mouseup', closeMenu);
+        document.removeEventListener('keydown', detectEsc);
+      };
+    }
+  }, [isMenuOpen, toggleMenu]);
+
   const createActionButons = (inMenu: boolean) => {
     const inInline = !inMenu;
     return [
