@@ -4,6 +4,10 @@
 @tailwind components;
 @tailwind utilities;
 
+/* NOTE: Fix a wierd unsupported `@media (hover:hover)` media queries */
+/* stylelint-disable-next-line scss/at-rule-no-unknown, at-rule-no-unknown */
+@custom-variant hover (&:hover);
+
 :root {
   /* Define colors */
   --backgroundColor: #242424;
